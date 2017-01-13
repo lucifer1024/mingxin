@@ -162,6 +162,7 @@ public class TalkHandler extends TextWebSocketHandler {
 	 */
 	private void sendUserOnline(User user) {
 		// TODO
+		System.out.println("用户 "+user.getNickName()+"上线啦");
 	}
 
 	/**
