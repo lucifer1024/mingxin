@@ -1,0 +1,278 @@
+body {
+}
+/****************************对齐修改**********************************/
+/*.ar-d {
+    display: inline-block;
+    max-width: 60px;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+    /*vertical-align: middle;*/
+    white-space: nowrap;
+}*/
+.fli-cz {
+    border-bottom: 3px solid #ff552e;
+    opacity: 1;
+    line-height:0px;
+}
+/*.fli-cz a {
+    color: red !important;
+}*/
+
+
+/************************************************滚动********************************************************/
+.chat-box-marbox {
+    overflow: hidden;
+}
+
+.chat-box-marquee {
+    width: 8000%;
+    height: 26px;
+}
+
+.chat-box-tip-i {
+    background: initial !important;
+    height: 26px;
+    float: left;
+}
+
+.chat-box-tip-i li{
+    background: url(../img/ico16-tip.png) 0px 5px no-repeat;
+}
+
+.chat-box-tip-i > ul {
+    overflow: hidden;
+    zoom: 1;
+    float: left;
+    height: 26px;
+    width: auto;
+}
+
+.chat-box-tip-i > ul > li {
+    width: auto !important;
+    float: left;
+    height: 26px;
+    margin-right: 150px;
+    background: url(../img/ico16-tip.png) no-repeat 5px 50%;
+    padding-left: 30px;
+}
+/************************************************新增小图标***************************************************/
+.big-change {
+    height:167px;
+}
+.chat-fn-box2 {
+    margin-top:-30px;
+    background: rgba(0, 0, 0, 0) url("../img/bg3.png") repeat-x scroll 0 0;
+    left: 0;
+    text-align: right;
+}
+.chat-fn-box2 {
+    display:none;
+}
+.chat-fn-box2 a {
+    display: inline-block;
+    margin-right: 20px;
+    margin-top: 10px;
+    opacity: 0.7;
+    position: relative;
+    text-align: center;
+}
+.chat-fn-box2 a p {
+    display: none;
+    left: -26px;
+    position: absolute;
+    text-align: center;
+    top: -28px;
+    width: 68px;
+}
+.box1:hover .chat-fn-box2{
+    display:block;
+    transition:all 0.5s ease 0s;
+}
+.chat-fn-box2 a p span {
+    background: rgba(0, 0, 0, 0) url("../img/bg-d-2.png") repeat scroll 0 0;
+    border-radius: 100px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 10px;
+}
+.chat-fn-box2 a:hover p{
+    display: block;
+    transition:all .5s ease 0s;
+}
+/************************************************图片对齐********************************************************/
+#dlUserList img {
+    vertical-align:middle;
+}
+
+#dlRelatedUserList img {
+  vertical-align:middle;
+}
+
+/************************************************表格********************************************************/
+.tab-statts {
+    width:100%;
+}
+.tab-statts a {
+    color:#24c8de;
+    cursor:pointer;
+}
+.tab-statts thead tr th,.tab-statts tbody tr td,.tab-statts tfoot tr td{
+    text-align:center;
+    border:0px solid;
+    color:#000;
+}
+
+
+/************************************************图标切换********************************************************/
+.the-checkbox input[type=checkbox] {
+    display:none;
+}
+.the-checkbox input[type=checkbox]:checked.roll + label  {
+    background-position: -240px -30px;
+}
+.the-checkbox input[type=checkbox]:checked.autoclean + label  {
+    background-position: -260px -30px;
+}
+.the-checkbox input[type=checkbox]:checked.clean + label  {
+    background-position: -280px -30px;
+}
+
+
+/************************************************发送********************************************************/
+.send-box-btn {
+    position:absolute;
+    right:10px;
+    margin-top: 50px;
+}
+.insbtn{
+    -moz-user-select: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 30px;
+    text-align: center;
+    white-space: nowrap;
+    background-color:#2996e8;
+}
+
+.insbtn4Mobile{
+    position:absolute;
+    -moz-user-select: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 6px 20px;
+    text-align: center;
+    white-space: nowrap;
+    background-color:#2996e8;
+}
+.btn-set:hover {
+    color:#fff;
+    background-color:#428bca;
+}
+
+
+
+.chat-tip-in img {
+    vertical-align:middle;
+}
+
+
+.ico24_gift{background: url(../img/sprite.png) no-repeat; height: 24px; width: 24px; overflow: hidden; display: inline-block;  *display: inline; *zoom: 1;}
+.ico16_chat{height: 16px; width: 16px; overflow: hidden; display: inline-block;  *display: inline; *zoom: 1; text-indent: 999em;}
+.msg-bubble-user .ico16_chat{vertical-align: middle; margin-left: 2px;}
+.bubble-cont .contact-name-at_flower{color: #666 !important;}
+/*送礼物*/
+.giftBox{height: 140px;width: 290px;*width:300px;position: absolute;top:-146px;left:-40px;background: #fff;display: none;border:1px solid #ccc;box-shadow:0 2px 5px #ccc;z-index:99999; }
+/*.giftBox li .thumb{height: 36px;width: 36px;}*/
+.giftBox li .datu{background: #fff;height:60px;width: 60px;position: absolute;top:0;left:-62px;border:2px solid #ff0000;display: none;}
+.giftBox li{float:left;margin:5px;cursor: pointer;}
+.giftBox li:hover .datu{display: block;}
+#clickGift{color: #333;}
+.clear { clear: both;}
+.pl10{padding-left:10px;}
+.pt5{padding-top:5px;}
+.giftInfo .jiage{width:30px;}
+
+
+.editor{width:100%; height:114px ;}
+.editor{position:absolute; width:100%;}
+.editorBox{height:109px;position: relative; padding-right: 111px;}
+.editor{  position:relative; z-index:1;}
+
+.send-write {
+     border: 1px solid white;
+     height: 50px;
+     margin-left: 5px;
+     margin-top: -21px; 
+     opacity:0.1;
+}
+
+/**QQ聊天*/
+.top_center{padding-top: 5px; float: left; height: 57px; overflow: hidden;}
+.top_center li{ float: left;}
+.top_center li a{ display:block; height:25px; line-height:25px; width:54px; padding-left:20px; font-size:12px; text-shadow:1px 1px 0 #fff; margin:0 0 3px 3px;color:#666;}
+.top_center li a.more{ background-position:100% 0;}
+.top_center li a:hover{ color:#000;}
+.top_center li a{ background:url(/images/kf_bg.png) no-repeat 0 0;}
+.top_right li .setting_sel_ul li a{background:url(/images/sel_bg.png) no-repeat 0 -41px;}
+
+.ViewDetail{text-decoration:none;color: #fff;}ViewDetail:active{background-color:transparent}ViewDetail:active,a:hover{outline:0 none; color:#f00;}
+
+
+.r_top {
+  display: inline-block;
+  width: 100%;
+  height: 3.0rem;
+  line-height: 3.0rem;
+  margin: 0 auto;
+  text-align: center;
+  color: #fff;
+  font-size: 1.3rem;
+  background-color: #393a3f;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.r_top a {
+  color: #fff;
+}
+.r_top a.r_back {
+  color: #fff;
+  padding-left: 2.4rem;
+  background: url(../images/r_back.png) no-repeat left;
+  background-size: 1.2rem 2.1rem;
+  margin-left: 1rem;
+}
+.r_top span {
+  display: block;
+  margin-right: 1rem;
+}
+.mtop {
+  margin-top: 3.5rem;
+}
+
+.main .video {
+  width: 100%;
+}
+.main .video img {
+  width: 100%;
+  height: auto;
+}
+
+.r_icon
+{
+    height: 16px; 
+    width: 16px; 
+    overflow: hidden; 
+    display: inline-block;  
+    text-indent: 999em; 
+}

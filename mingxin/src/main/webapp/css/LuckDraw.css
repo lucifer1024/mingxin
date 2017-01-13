@@ -1,0 +1,276 @@
+        /*charset "utf-8";*/
+        
+        .dowebok {
+            width: 940px;
+            height: 563px;
+            margin: 0 auto;
+            background-image: url(basePath+"/images/LuckDraw/LuckBackground.png");
+            margin-top: 10px;
+        }
+
+        .dowebok .close{
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top:50px;
+	right: 12px;
+}
+.dowebok .close a{
+	display: block;
+	background: url(basePath+"/images/Pop4Startup/close.png") no-repeat;
+	width: 20px;
+	height: 20px;
+}
+
+        .rotary {
+            position: relative;
+            float: left;
+            width: 504px;
+            height: 504px;
+            margin: 30px 0 0 30px;
+            background-image: url(basePath+"/images/LuckDraw/back.png");
+        }
+
+        .hand {
+            position: absolute;
+            left: 147px;
+            top: 144px;
+            width: 216px;
+            height: 216px;
+            cursor: pointer;
+        }
+
+        /*.list {
+            float: right;
+            width: 330px;
+            padding-top: 44px;
+        }
+
+            .list h4 {
+                height: 45px;
+                margin: 25px 0px 50px;
+                line-height: 45px;
+                font-size: 45px;
+                color: #fff;
+            }
+
+            .list ul {
+                line-height: 30px;
+                list-style-type: none;
+                font-size: 12px;
+                color: #fff;
+            }
+
+            .list span:first-child {
+                display: inline-block;
+                width: 80px;
+            }
+
+        .wenxin {
+            width: 100%;
+            margin: 0 auto;
+            padding-top: 30px;
+        }
+
+            .wenxin p {
+                color: #fff;
+                font-size: 15px;
+            }
+
+                .wenxin p em {
+                    display: inline-block;
+                    font-size: 12px;
+                    height: 25px;
+                    line-height: 25px;
+                    font-style: normal;
+                    color: #ccc;
+                }*/
+
+        .list_lcj {
+            height: 300px;
+            overflow: hidden;
+            width: 98%;
+            margin: 0 auto;
+        }
+
+            .list_lcj.lieven { }
+
+            .list_lcj span {
+                height: 30px;
+                line-height: 30px;
+            }
+
+        .btn_lh:hover {
+            color: #fff;
+            text-decoration: none;
+        }
+        .tzck {
+            position: fixed;
+            width: 384px;
+            background: #fff;
+            border: 8px solid #f60;
+            top: 15%;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            text-align: center;
+            height:330px;
+            border-radius: 15px;
+        }
+
+            .tzck h1 {
+                margin: 15px auto;
+                font: 18px "Microsoft Yahei";
+                text-align: center;
+                color: #f60;
+                font-weight: bold;
+            }
+
+            .tzck span {
+                position: absolute;
+                right: -10px;
+                height: 30px;
+                background: #F60;
+                line-height: 30px;
+                width: 30px;
+                text-align: center;
+                top: -20px;
+                border: 5px solid #fff;
+                border-radius: 30px;
+                color: #fff;
+                cursor: pointer;
+            }
+
+       
+             .zjl {
+            position: fixed;
+            margin: 0 auto;
+            z-index: 999999;
+            left: 0;
+            top: 0;
+            right: 0;
+            background: #fff5d4;
+            width: 900px;
+            height: 580px;
+            padding-top: 40px;
+        }
+
+        .zjla_title  {
+            background: url(/images/title.png) no-repeat;
+            width: 546px;
+            height: 231px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+            .zjla_title h1 {
+                top: 170px;
+                position: absolute;
+                left: 100px;
+                right: 0;
+                font-size: 50px;
+                font-family: å¾®è½¯é›…é»‘;
+                letter-spacing: 5px;
+                color: #fff;
+            }
+
+        .zjla_conter {
+            border-bottom: 8px #f60 solid;
+            border-left: 8px #f60 solid;
+            border-right: 8px #f60 solid;
+            margin: 0 auto;
+            width: 400px;
+            height: 210px;
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            text-align: center;
+        }
+
+            .zjla_conter h1 {
+                height: 30px;
+                line-height: 30px;
+                margin: 0 auto;
+                padding: 15px 0;
+                color: #f00;
+                font-size: 30px;
+            }
+
+            .zjla_conter p {
+                height: 30px;
+                line-height: 30px;
+                font-size: 15px;
+            }
+
+                .zjla_conter p em {
+                    color: #f60;
+                }
+
+        .LuckDrawbutton {
+	display: inline-block;
+	position: relative;
+	margin: 10px;
+	padding: 0 20px;
+	text-align: center;
+	text-decoration: none;
+	font: bold 12px/25px Arial, sans-serif;
+
+	text-shadow: 1px 1px 1px rgba(255,255,255, .22);
+
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+
+	-webkit-box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
+	-moz-box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
+	box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
+
+	-webkit-transition: all 0.15s ease;
+	-moz-transition: all 0.15s ease;
+	-o-transition: all 0.15s ease;
+	-ms-transition: all 0.15s ease;
+	transition: all 0.15s ease;
+}
+
+        .LuckDrawRed {
+	color: #F00;
+
+	background: #70c9e3; 
+	background: -moz-linear-gradient(top,  #F2F2F2 0%, #dcac6c 100%); // FF3.6+ 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F2F2F2), color-stop(100%,#dcac6c)); //Chrome,Safari4+ 
+	background: -webkit-linear-gradient(top,  #F2F2F2 0%,#dcac6c 100%); // Chrome10+,Safari5.1+ 
+	background: -o-linear-gradient(top,  #F2F2F2 0%,#dcac6c 100%); // Opera 11.10+ 
+	background: -ms-linear-gradient(top,  #F2F2F2 0%,#dcac6c 100%); // IE10+ 
+	background: linear-gradient(top,  #F2F2F2 0%,#dcac6c 100%); // W3C 
+}
+
+        .LuckDrawBig {
+	padding: 0 20px;
+	padding-top: 10px;
+	height: 30px;
+	text-transform: uppercase;
+	font: 18px/20px å¾®è½¯é›…é»‘,å®‹ä½“;
+}
+        .LuckDrawbutton:hover {
+	-webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
+	-moz-box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
+	box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
+}
+.LuckDrawbutton:active {
+	-webkit-box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
+	-moz-box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
+	box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
+}
+
+
+.list_nav{  display:block; width:377px; height:66px;  float:right; margin:40px 28px 0 0; position:relative;}
+.list_nav .list_bar li{display:block; float:left; font-size:20px; line-height:67px; padding:0 22px; font-weight:normal; cursor:pointer;}
+.list_nav .list_bar li a{ color:#fee79d;}
+.list_nav .list_bar span{ display:block; float:left; width:2px; height:27px; background:url(listnav_bg.png) no-repeat; margin-top:21px;}
+.list_nav .list_bar .on{ color:#f8f8f8; border-bottom:solid 2px #f8f8f8;}
+.list_nav .list_bar .on a{ color:#f8f8f8;}
+.list_nav .fudai{ width:150px; height:60px; position:absolute; top:364px; left:254px; color:#fee79d; font-size:14px; line-height:70px; text-indent:18px; background:url(/images/luckdraw/fudai.png) no-repeat;}
+.list_neirong{ display:block; float:left; width:340px; height:348px; padding-top:10px; padding-left:30px; overflow:hidden; font-size:14px; color:#fee79d;}
+.list_neirong dl b{ color:#f8f8f8; text-decoration:underline; font-weight:normal; padding:0 6px;}
+.list_neirong dl dd{ margin:10px 0; line-height:20px;}
+
+.zhujie{ display:block; float:left; width:300px; height:14px; padding-left:74px; color:#fee79d; margin-top:10px;}

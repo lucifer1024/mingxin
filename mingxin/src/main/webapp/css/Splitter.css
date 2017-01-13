@@ -1,0 +1,44 @@
+.ui-state-default {background-color: #a0b7ca; }
+.ui-state-hover { background-color: #a0b7ca }
+.ui-state-highlight { background-color: #a0b7ca }
+.ui-state-error { background-color: #a0b7ca }
+
+.splitter-pane {
+    overflow: auto;
+}
+.splitter-bar-vertical {
+    width: 6px;
+    height-x: 100%;
+    background-image: url(images/Splitter/vgrabber.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.splitter-bar-horizontal {
+    height: 2px;
+    background-image: url(images/Splitter/hgrabber.gif");
+    background-repeat: no-repeat;
+    background-position: center;
+    width:100%;
+    margin-left:0px;
+    
+}
+
+.splitter-bar-vertical-docked {
+    width: 10px;
+    background-image: url(images/Splitter/vdockbar-trans.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.splitter-bar-horizontal-docked {
+    height: 10px;
+    background-image: url(images/Splitter/hdockbar-trans.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.splitter-bar.ui-state-highlight {
+    opacity: 0.7;
+}
+.splitter-iframe-hide {
+    visibility: hidden;
+}

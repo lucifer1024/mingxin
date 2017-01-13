@@ -1,0 +1,22 @@
+.wxtip{
+				position: absolute;
+				left: 70px;
+				top: 20px;
+				width: 120px;
+				height: 116px;
+				background:url(basePath+"/images/WeChat/wx_bg.png") no-repeat;
+				padding: 10px 0 0 13px;
+				z-index:1000;
+			}
+			.wxtip a{
+				display: block;
+				position: absolute;
+				right: 0;
+				top:-5px;
+				width: 14px;
+				height: 18px;
+				font-size: 14px;
+				font-weight: bold;
+				text-decoration: none;
+				color: #666;
+			}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuzx.mingxin.dao.RoleMapper">
+	<resultMap id="BaseResultMap" type="com.liuzx.mingxin.domain.Role">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="role_order" property="roleOrder" jdbcType="INTEGER" />
+		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,name,role_order,img_url,note
+	</sql>
+	<select id="selectById" resultMap="BaseResultMap"
+		parameterType="int">
+		select
+		<include refid="Base_Column_List" />
+		from t_role
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="selectSelective" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select <include refid="Base_Column_List" /> from t_role 
+        where 1=1
+           <if test="name != null">
+				and  name=#{name,jdbcType=VARCHAR}
+			</if>
+			<if test="roleOrder != null">
+				and role_order=#{roleOrder,jdbcType=INTEGER}
+			</if>
+    </select>
+	<delete id="deleteById" parameterType="int">
+		delete from t_role
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.liuzx.mingxin.domain.Role">
+		insert into t_user 
+		(name,role_order,img_url,note)
+		values (#{name,jdbcType=VARCHAR},#{roleOrder,jdbcType=INTEGER},
+		#{imgUrl,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.liuzx.mingxin.domain.Role">
+		insert into t_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				name,
+			</if>
+			<if test="roleOrder != null">
+				role_order,
+			</if>
+			<if test="imgUrl != null">
+				img_url,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="name != null">
+				#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="roleOrder != null">
+				#{roleOrder,jdbcType=VARCHAR},
+			</if>
+			<if test="imgUrl != null">
+				#{imgUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByIdSelective" parameterType="com.liuzx.mingxin.domain.Role">
+		update t_role
+		<set>
+			<if test="name != null">
+				name=#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="roleOrder != null">
+				role_order=#{roleOrder,jdbcType=INTEGER},
+			</if>
+			<if test="imgUrl != null">
+				img_url = #{imgUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				note=#{note,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateById" parameterType="com.liuzx.mingxin.domain.Role">
+		update t_role
+		set name = #{name,jdbcType=VARCHAR},
+		role_order=#{roleOrder,jdbcType=INTEGER},
+		img_url = #{imgUrl,jdbcType=VARCHAR},
+		note=#{note,jdbcType=VARCHAR},
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+</mapper>

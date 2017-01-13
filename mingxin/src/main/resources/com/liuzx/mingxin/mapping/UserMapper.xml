@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.liuzx.mingxin.dao.UserMapper">
+	<resultMap id="BaseResultMap" type="com.liuzx.mingxin.domain.User">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="uid" property="uid" jdbcType="VARCHAR" />
+		<result column="user_name" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+		<result column="mobile" property="mobile" jdbcType="VARCHAR" />
+		<result column="qq" property="qq" jdbcType="VARCHAR" />
+		<result column="user_order" property="userOrder" jdbcType="INTEGER" />
+		<result column="is_subscribe" property="isSubscribe" jdbcType="INTEGER" />
+		<result column="is_qq" property="isQQ" jdbcType="INTEGER" />
+		<result column="role_id" property="roleId" jdbcType="INTEGER" />
+		<result column="register_ip" property="registerIp" jdbcType="VARCHAR" />
+		<result property="create_time" column="createTime" javaType="java.util.Date"
+			jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,uid, user_name, password,nick_name,mobile
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip,create_time
+	</sql>
+	<select id="selectByUid" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_user
+		where uid = #{uid,jdbcType=VARCHAR}
+	</select>
+	<select id="selectByOrder" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select u.*,r.name roleName,r.role_order roleOrder,r.img_url roleImgUrl from t_user u INNER JOIN t_role r on u.role_id=r.id ORDER BY r.role_order,u.user_order,u.id 
+	</select>
+	<select id="selectSelective" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select <include refid="Base_Column_List" /> from t_user 
+        where 1=1
+           <if test="userName != null">
+				and  user_name=#{userName,jdbcType=VARCHAR}
+			</if>
+			<if test="password != null">
+				and password=#{password,jdbcType=VARCHAR}
+			</if>
+			<if test="nickName != null">
+				and  nick_name = #{nickName,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null">
+				and  mobile=#{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="qq != null">
+				and  qq=#{qq,jdbcType=VARCHAR}
+			</if>
+			<if test="userOrder != null">
+				and  user_order = #{userOrder,jdbcType=INTEGER}
+			</if>
+			<if test="isSubscribe != null">
+				and is_subscribe = #{isSubscribe,jdbcType=INTEGER}
+			</if>
+			<if test="isQQ != null">
+				and is_qq = #{isQQ,jdbcType=INTEGER}
+			</if>
+			<if test="roleId != null">
+				and role_id = #{roleId,jdbcType=INTEGER}
+			</if>
+			<if test="registerIp != null">
+				and register_ip = #{registerIp,jdbcType=VARCHAR}
+			</if>
+    </select>
+	<delete id="deleteByUid" parameterType="java.lang.String">
+		delete from t_user
+		where uid = #{uid,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.liuzx.mingxin.domain.User">
+		insert into t_user 
+		(uid, user_name,password, nick_name,mobile,
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip)
+		values (#{uid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
+		#{nickName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},#{qq,jdbcType=VARCHAR},#{userOrder,jdbcType=INTEGER},
+		#{isSubscribe,jdbcType=INTEGER}, #{isQQ,jdbcType=INTEGER},
+		#{roleId,jdbcType=INTEGER} ),#{registerIp,jdbcType=VARCHAR},
+	</insert>
+	<insert id="insertSelective" parameterType="com.liuzx.mingxin.domain.User">
+		insert into t_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="uid != null">
+				uid,
+			</if>
+			<if test="userName != null">
+				user_name,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="nickName != null">
+				nick_name,
+			</if>
+			<if test="mobile != null">
+				mobile,
+			</if>
+			<if test="qq != null">
+				qq,
+			</if>
+			<if test="userOrder != null">
+				user_order,
+			</if>
+			<if test="isSubscribe != null">
+				is_subscribe,
+			</if>
+			<if test="isQQ != null">
+				is_qq,
+			</if>
+			<if test="roleId != null">
+				role_id,
+			</if>
+			<if test="registerIp != null">
+				register_ip,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="uid != null">
+				#{uid,jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="nickName != null">
+				#{nickName,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				#{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="qq != null">
+				#{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="userOrder != null">
+				#{userOrder,jdbcType=INTEGER},
+			</if>
+			<if test="isSubscribe != null">
+				#{isSubscribe,jdbcType=INTEGER},
+			</if>
+			<if test="isQQ != null">
+				#{isQQ,jdbcType=INTEGER},
+			</if>
+			<if test="roleId != null">
+				#{roleId,jdbcType=INTEGER},
+			</if>
+			<if test="registerIp != null">
+				#{registerIp,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByUidSelective" parameterType="com.liuzx.mingxin.domain.User">
+		update t_user
+		<set>
+			<if test="userName != null">
+				user_name=#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				password=#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="nickName != null">
+				nick_name = #{nickName,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				mobile=#{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="qq != null">
+				qq=#{qq,jdbcType=VARCHAR},
+			</if>
+			<if test="userOrder != null">
+				user_order = #{userOrder,jdbcType=INTEGER},
+			</if>
+			<if test="isSubscribe != null">
+				is_subscribe = #{isSubscribe,jdbcType=INTEGER},
+			</if>
+			<if test="isQQ != null">
+				is_qq = #{isQQ,jdbcType=INTEGER},
+			</if>
+			<if test="roleId != null">
+				role_id = #{roleId,jdbcType=INTEGER},
+			</if>
+			<if test="registerIp != null">
+				register_ip = #{registerIp,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where uid = #{uid,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByUid" parameterType="com.liuzx.mingxin.domain.User">
+		update t_user
+		set user_name = #{userName,jdbcType=VARCHAR},
+		password=#{password,jdbcType=VARCHAR},
+		nick_name = #{nickName,jdbcType=VARCHAR},
+		mobile=#{mobile,jdbcType=VARCHAR},
+		qq = #{qq,jdbcType=VARCHAR},
+		user_order = #{userOrder,jdbcType=INTEGER},
+		is_subscribe = #{isSubscribe,jdbcType=INTEGER},
+		is_qq = #{isQQ,jdbcType=INTEGER},
+		role_id = #{roleId,jdbcType=INTEGER},
+		register_ip = #{registerIp,jdbcType=INTEGER}
+		where uid = #{uid,jdbcType=VARCHAR}
+	</update>
+</mapper>

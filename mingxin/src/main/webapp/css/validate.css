@@ -1,0 +1,16 @@
+﻿label.ValidateError{background: url("../images/tishi.png"/*tpa=http://58ymy.com/images/tishi.png*/) no-repeat;height:16px;padding-left:20px;display: inline-block;line-height: 16px;margin-left:5px;background-position: 0 -16px;color:#f34c58;}
+label.validateSuccess{background: url("../images/tishi.png"/*tpa=http://58ymy.com/images/tishi.png*/) no-repeat;height:16px;padding-left:20px;display: inline-block;line-height: 16px;margin-left:5px;background-position: 0 0;color:#9fc174;}
+/*.validateError{background: url(../images/tishi.png) no-repeat;height:16px;padding-left:20px; margin-top:20px; display: inline-block;line-height: 16px;margin-left:5px;background-position: 0 -16px;color:#f34c58;}*/
+.ValidateErrorInServer{background: url("../images/tishi.png"/*tpa=http://58ymy.com/images/tishi.png*/) no-repeat;height:16px;padding-left:20px;margin-top:20px;display: inline-block;line-height: 16px;margin-left:5px;background-position: 0 -16px;color:#f34c58;}
+.SaveSussessInServer{background: url("../images/tishi.png"/*tpa=http://58ymy.com/images/tishi.png*/) no-repeat;height:16px;padding-left:20px;display: inline-block;line-height: 16px;margin-left:5px;background-position: 0 0;color:#9fc174;}
+
+
+.editorBox4SilverDiscuss{width:720px;height:430px;overflow-x:hidden;overflow-y:auto}
+.regBtnPop{background:#ee6229;height:34px;width:150px;color:#fff;font-size:16px;font-weight:bold;text-align: center;line-height: 34px;display: inline-block;}
+.regBtnPop:hover{background:#d54206;}
+.roomLogin .regBtnPop, .roomLogin .loginBtn{width:150px;height:34px;font-size: 16px;line-height: 34px;}
+
+.cancelBtnPop{width: 150px;height:34px;line-height: 34px;text-align: center;color:#666;font-size: 16px;font-weight: bold;display: inline-block;background:#ddd;}
+.cancelBtnPop:hover{background: #bbb;color:#333;}
+
+.loginForm .itemName{width:90px;}
