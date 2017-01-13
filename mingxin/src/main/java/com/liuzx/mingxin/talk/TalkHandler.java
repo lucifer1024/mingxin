@@ -72,7 +72,7 @@ public class TalkHandler extends TextWebSocketHandler {
 			if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
 				sendPublicMessage(returnMsg);
 			} else {
-				sendPirateMssage(toUserSNNO, returnMsg);
+				sendPirateMssage(toUserSNNO,fromUser.getUid(), returnMsg);
 			}
 		} else {
 			System.out.println("msgService is null ");
@@ -96,13 +96,21 @@ public class TalkHandler extends TextWebSocketHandler {
 	/**
 	 * 私聊
 	 */
-	private void sendPirateMssage(String toUserSNNO, String sendMsg) {
-		WebSocketSession session = webSocketMap.get(toUserSNNO);
+	private void sendPirateMssage(String toUserSNNO,String fromUserSNNO, String sendMsg) {
+		WebSocketSession sendSession = webSocketMap.get(fromUserSNNO);
+		WebSocketSession receiveSession = webSocketMap.get(toUserSNNO);
 		//TODO 如果用户不在线  保存到队列 等用户上线 再发送   并具有时效性
-		if (session != null) {
-			TextMessage returnMessage = new TextMessage(sendMsg);
+		TextMessage returnMessage = new TextMessage(sendMsg);
+		if (sendSession != null) {
 			try {
-				session.sendMessage(returnMessage);
+				sendSession.sendMessage(returnMessage);
+			} catch (IOException e) {
+				logger.error(e);
+			}
+		}
+		if (receiveSession != null) {
+			try {
+				receiveSession.sendMessage(returnMessage);
 			} catch (IOException e) {
 				logger.error(e);
 			}
