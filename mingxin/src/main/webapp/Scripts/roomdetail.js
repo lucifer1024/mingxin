@@ -1266,8 +1266,8 @@ function AddChatMessage() {
 		return
 	}
 	var a = "Method=AddChatMessage&RoomId=" + $("#hfCurrentRoomId").val();
-	a += "&Content=" + escape(c);
-	//a += "&Content=" + c;
+//	a += "&Content=" + escape(c);
+	a += "&Content=" + c;
 	a += "&ToUserSNNO=" + $("#ddlMsgToUser").val();
 	a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
 	//a += "&ToUserName=" + escape($("#ddlMsgToUser option:selected").text());
