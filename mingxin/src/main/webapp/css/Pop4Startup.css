@@ -20,7 +20,7 @@
 }
 .layer_bg .close a{
 	display: block;
-	background: url(/Images/Pop4Startup/close.png) no-repeat;
+	background: url(../images/Pop4Startup/close.png) no-repeat;
 	width: 20px;
 	height: 20px;
 }
@@ -33,7 +33,7 @@
 }
 .layer_bg .btn4StartUp a{
 	display: block;
-	background: url(/Images/Pop4Startup/btn.png?1) no-repeat;
+	background: url(../images/Pop4Startup/btn.png?1) no-repeat;
 	width: 348px;
 	height: 42px;
 	
@@ -81,7 +81,7 @@
 }
 .layer_bg .qq li a{
 	display: block;
-	background: url(/Images/Pop4Startup/qq.png) no-repeat;
+	background: url(../images/Pop4Startup/qq.png) no-repeat;
 	width: 54px;
 	height: 28px;
 	line-height: 25px;
@@ -108,7 +108,7 @@
 }
 .popup-layer .close a{
 	display: block;
-	background: url(/Images/Pop4Startup/close.png) no-repeat;
+	background: url(../images/Pop4Startup/close.png) no-repeat;
 	width: 20px;
 	height: 20px;
 }
@@ -135,7 +135,7 @@
 }
 .popup-layer .qq li a{
 	display: block;
-	background: url(/Images/Pop4Startup/qq.png) no-repeat;
+	background: url(../images/Pop4Startup/qq.png) no-repeat;
 	width: 54px;
 	height: 28px;
 	line-height: 25px;
