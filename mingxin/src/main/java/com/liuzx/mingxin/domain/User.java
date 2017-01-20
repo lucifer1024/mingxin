@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class User {
 	public static final String SESSION_ID = "loginUser";
+	public static final String ALL_USER_ID = "00000000-0000-0000-0000-000000000000";
+	
 	private int id;
 	private String uid;
 	private String userName;

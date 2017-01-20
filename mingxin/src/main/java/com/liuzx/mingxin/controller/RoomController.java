@@ -1,6 +1,7 @@
 package com.liuzx.mingxin.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
@@ -15,7 +16,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.service.RoleService;
+import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.utils.HttpRequestUtils;
 
 @Controller
 @RequestMapping("/Room")
@@ -23,6 +27,10 @@ public class RoomController {
 	private static Log logger = LogFactory.getLog(RoomController.class);
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private RoomService roomService;
+	@Autowired
+	private RoleService roleService;
 
 	@RequestMapping("/RiskRemind")
 	String RiskRemind(ModelMap model, @RequestParam String RoomId, @RequestParam(required = false) String eventTarget) {
@@ -57,24 +65,36 @@ public class RoomController {
 	}
 	
 	@RequestMapping("/RoomDetail")
-	String RoomDetail(ModelMap model,HttpSession session, @RequestParam String RoomId,@RequestParam(required = false) String eventTarget) {
+	String RoomDetail(ModelMap model,HttpSession session, HttpServletRequest request,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String eventTarget) {
 		logger.info("RoomId  " + RoomId);
 		User loginUser = (User)session.getAttribute(User.SESSION_ID);
 		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
+		if("lbSignOut".equals(eventTarget)){
+			//注销
+			logger.info("注销");
+			loginUser = null;
+			loginRole = null;
+			model.put("eventTarget", "");
+			
+		}
 		if(loginUser==null){
-			return "redirect:/Account/Login";
+			// 生成游客信息
+			//注册用户
+			String registerIp = HttpRequestUtils.getRemortIP(request);
+			// 保存到session
+			loginUser = userService.checkGuestUser(registerIp);
+			session.setAttribute(User.SESSION_ID, loginUser);
+			loginRole = roleService.selectById(loginUser.getRoleId());
+			session.setAttribute(Role.SESSION_ID, loginRole);
 		}
 		//根据roomId 查询room信息
-		Room room = new Room();
-		room.setNum(RoomId);
-		room.setName("赢油天下");
-		room.setLineNum(250);
+		Room room = roomService.selectById(RoomId);
 		JSONArray userArray = userService.findOnlineUser(); //用户列表
 		model.put("room", room);
 		model.put("user", loginUser);
 		model.put("role", loginRole); 
 		model.put("userArray", userArray);
-		model.put("eventTarget", eventTarget);
+//		model.put("eventTarget", eventTarget);
 		return "/RoomDetail.jsp";
 	}
 	

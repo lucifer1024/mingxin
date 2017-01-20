@@ -17,12 +17,13 @@ public class IndexController {
 
 	@RequestMapping("/index")
 	String indexjsp(ModelMap model,HttpServletRequest request, HttpSession session) {
-		//TODO  拦截器 判断是否登录 
-		User loginUser = (User)session.getAttribute(User.SESSION_ID);
-		if(loginUser!=null){
-			return "redirect:/Room/CommunityHome";
-		}else{
-			return "redirect:/Account/Login";
-		}
+//		//TODO  拦截器 判断是否登录 
+//		User loginUser = (User)session.getAttribute(User.SESSION_ID);
+//		if(loginUser!=null){
+//			return "redirect:/Room/CommunityHome";
+//		}else{
+//			return "redirect:/Account/Login";
+//		}
+		return "redirect:/Room/RoomDetail";
 	}
 }

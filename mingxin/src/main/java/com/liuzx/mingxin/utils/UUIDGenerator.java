@@ -19,7 +19,7 @@ public class UUIDGenerator {
 	public static String chUid(String uid){
 		return "ch"+uid+getStringRandom(3);
 	}
-	private static String getStringRandom(int length) {  
+	public static String getStringRandom(int length) {  
         
         String val = "";  
         Random random = new Random();  

@@ -10,7 +10,16 @@ import com.liuzx.mingxin.domain.Role;
 public class RoleService {
 	@Autowired
 	RoleMapper roleMapper;
+	
 	public Role selectById(int roleId){
 		return roleMapper.selectById(roleId);
+	}
+	public Role createGustRole(){
+		Role role = new Role();
+		role.setId(7);
+		role.setName("游客");
+		role.setRoleOrder(50);
+		role.setImgUrl("/images/newrole/guest.png");
+		return role;
 	}
 }

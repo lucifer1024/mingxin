@@ -3,7 +3,13 @@ package com.liuzx.mingxin.domain;
 public class Room {
 	
 	private int id;
-	private String num; //房间号
+	private String roomId; //房间号
+	public String getRoomId() {
+		return roomId;
+	}
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
 	private String name;
 	private int lineNum; //在线人数
 	
@@ -25,10 +31,10 @@ public class Room {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getNum() {
-		return num;
+	public void incr(){
+		lineNum++;
 	}
-	public void setNum(String num) {
-		this.num = num;
+	public void decr(){
+		lineNum--;
 	}
 }

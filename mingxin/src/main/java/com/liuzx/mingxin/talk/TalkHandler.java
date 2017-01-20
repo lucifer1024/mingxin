@@ -18,15 +18,28 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.alibaba.fastjson.JSONObject;
 import com.liuzx.mingxin.controller.AccountController;
 import com.liuzx.mingxin.domain.Message;
+import com.liuzx.mingxin.domain.Role;
+import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.service.MsgService;
+import com.liuzx.mingxin.service.RoleService;
+import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
 
 @Component
 public class TalkHandler extends TextWebSocketHandler {
 	private static Log logger = LogFactory.getLog(TextWebSocketHandler.class);
+
+	private static final String METHOD_MESSAGE = "message";
+	private static final String METHOD_ON_LINE = "online";
+	private static final String METHOD_DOWN_LINE = "downline";
 	@Autowired
 	private MsgService msgService;
+	@Autowired
+	private RoomService roomService;
+	@Autowired
+	private RoleService roleService;
+
 	@Autowired
 	private UserService userService;
 	// 静态变量，用来记录当前在线连接数。应该把它设计成线程安全的。
@@ -35,6 +48,8 @@ public class TalkHandler extends TextWebSocketHandler {
 	private static CopyOnWriteArraySet<WebSocketSession> webSocketSet = new CopyOnWriteArraySet<WebSocketSession>();
 	private static Map<String, WebSocketSession> webSocketMap = new LinkedHashMap<String, WebSocketSession>();
 	private static Map<String, User> sessionId2UserMap = new LinkedHashMap<String, User>();
+	private static Map<String, Room> sessionId2RoomMap = new LinkedHashMap<String, Room>();
+	private static Map<String, Role> sessionId2RolemMap = new LinkedHashMap<String, Role>();
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -52,30 +67,72 @@ public class TalkHandler extends TextWebSocketHandler {
 	 */
 	private void dealReceveMsg(String receiveMsg, WebSocketSession session) {
 		JSONObject obj = JSONObject.parseObject(receiveMsg);
+
+		//
 		String currentUserUid = obj.getString("currentUserUid");
-		webSocketMap.put(currentUserUid, session);
+		String roomId = obj.getString("roomId");
+		webSocketMap.put(getKey(roomId, currentUserUid), session);
 		String sessionId = session.getId();
 		User user = userService.findUserByUid(currentUserUid);
+		Room room = roomService.selectById(roomId);
+		room.incr();
+		Role role = null;
 		if (user == null) {
 			user = new User();
 			user.setUid(currentUserUid);
+			role = roleService.createGustRole();
 		} else {
-			sendUserOnline(user);
+			sendUserOnline(user, room);
+			role = roleService.selectById(user.getRoleId());
 		}
+		sessionId2RoomMap.put(sessionId, room);
 		sessionId2UserMap.put(sessionId, user);
+		sessionId2RolemMap.put(user.getUid(), role);
 	}
 
 	public void sendMessage(Message msg, User fromUser) {
-		if (msgService != null) {
-			String returnMsg = msgService.dealMsg(msg, fromUser);
-			String toUserSNNO = msg.getToUserSNNO();
-			if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
-				sendPublicMessage(returnMsg);
-			} else {
-				sendPirateMssage(toUserSNNO,fromUser.getUid(), returnMsg);
-			}
+		String toUserSNNO = msg.getToUserSNNO();
+		Role role = sessionId2RolemMap.get(fromUser.getUid());
+		User toUser = null;
+		if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
+//			sendPublicMessage(returnMsg);
 		} else {
-			System.out.println("msgService is null ");
+			 toUser = userService.findUserByUid(msg.getToUserSNNO());
+		}
+		String returnMsg = msgService.dealMsg(msg, fromUser,toUser, METHOD_MESSAGE,role);
+		if ("1".equals(msg.getIsWhisper())) {
+//			String fromMsg = msgService.dealMsg(msg, fromUser, METHOD_MESSAGE);
+//			String toMsg = msgService.dealPrivateToMsg(msg, fromUser, toUser, METHOD_MESSAGE);
+			// 私聊
+			sendPirateMssage(toUserSNNO, returnMsg, fromUser.getUid(), returnMsg, msg.getRoomId());
+		} else {
+
+//			String toMsg = msgService.dealPublicToMsg(msg, fromUser, toUser, METHOD_MESSAGE);
+			// 群聊
+			sendPublicMessage(returnMsg);
+		}
+	}
+
+	public void sendFlowerMessage(Message msg, User fromUser) {
+		String toUserSNNO = msg.getToUserSNNO();
+		if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
+			String returnMsg = msgService.dealPublicToFlower(msg, fromUser, METHOD_MESSAGE);
+			sendPublicMessage(returnMsg);
+		} else {
+			User toUser = userService.findUserByUid(msg.getToUserSNNO());
+			if ("1".equals(msg.getIsWhisper())) {
+				// String fromMsg = msgService.dealPublicToFlower(msg,
+				// fromUser,METHOD_MESSAGE);
+				String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser, METHOD_MESSAGE);
+				// 私聊 发送和接收人 看到的一样
+				sendPirateMssage(toUserSNNO, toMsg, fromUser.getUid(), toMsg, msg.getRoomId());
+			} else {
+
+				String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser, METHOD_MESSAGE);
+				// 群聊
+				sendPublicMessage(toMsg);
+			}
+
 		}
 	}
 
@@ -93,24 +150,30 @@ public class TalkHandler extends TextWebSocketHandler {
 		}
 	}
 
+	private String getKey(String roomId, String uid) {
+		return roomId + "_" + uid;
+	}
+
 	/**
 	 * 私聊
 	 */
-	private void sendPirateMssage(String toUserSNNO,String fromUserSNNO, String sendMsg) {
-		WebSocketSession sendSession = webSocketMap.get(fromUserSNNO);
-		WebSocketSession receiveSession = webSocketMap.get(toUserSNNO);
-		//TODO 如果用户不在线  保存到队列 等用户上线 再发送   并具有时效性
-		TextMessage returnMessage = new TextMessage(sendMsg);
-		if (sendSession != null) {
+	private void sendPirateMssage(String toUserSNNO, String toMsg, String fromUserSNNO, String fromMsg, String roomId) {
+		WebSocketSession fromSession = webSocketMap.get(getKey(roomId, fromUserSNNO));
+		WebSocketSession toSession = webSocketMap.get(getKey(roomId, toUserSNNO));
+		// TODO 如果用户不在线 保存到队列 等用户上线 再发送 并具有时效性
+
+		if (fromSession != null) {
 			try {
-				sendSession.sendMessage(returnMessage);
+				TextMessage returnMessage = new TextMessage(fromMsg);
+				fromSession.sendMessage(returnMessage);
 			} catch (IOException e) {
 				logger.error(e);
 			}
 		}
-		if (receiveSession != null) {
+		if (toSession != null) {
 			try {
-				receiveSession.sendMessage(returnMessage);
+				TextMessage returnMessage = new TextMessage(toMsg);
+				toSession.sendMessage(returnMessage);
 			} catch (IOException e) {
 				logger.error(e);
 			}
@@ -137,10 +200,15 @@ public class TalkHandler extends TextWebSocketHandler {
 		System.out.println("连接断开 session.id=" + session.getId());
 		String sessionId = session.getId();
 		User user = sessionId2UserMap.get(sessionId);
+		Room room = sessionId2RoomMap.get(sessionId);
+		String roomId = room.getRoomId();
 		if (user != null) {
-			sendUserDownline(user);
-			webSocketMap.remove(user.getUid());
+			sendUserDownline(user, roomId);
+			room.decr();
+			webSocketMap.remove(getKey(roomId, user.getUid()));
+			sessionId2RolemMap.remove(user.getUid());
 			sessionId2UserMap.remove(sessionId);
+			sessionId2RoomMap.remove(sessionId);
 		}
 		webSocketSet.remove(session);
 		subOnlineCount();
@@ -168,15 +236,19 @@ public class TalkHandler extends TextWebSocketHandler {
 	/**
 	 * 通知用户上线
 	 */
-	private void sendUserOnline(User user) {
-		// TODO
-		System.out.println("用户 "+user.getNickName()+"上线啦");
+	private void sendUserOnline(User user, Room room) {
+		// 获取上线提醒信息
+		Role role = roleService.selectById(user.getRoleId());
+		String onlineMsg = msgService.dealLineMsg(user, role, METHOD_ON_LINE, room);
+		// 私聊
+		sendPirateMssage(user.getUid(), onlineMsg, "", "", room.getRoomId());
+		System.out.println("用户 " + user.getNickName() + "上线啦");
 	}
 
 	/**
 	 * 通知用户下线
 	 */
-	private void sendUserDownline(User user) {
+	private void sendUserDownline(User user, String roomId) {
 		// TODO
 	}
 }

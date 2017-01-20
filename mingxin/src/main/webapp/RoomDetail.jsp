@@ -9,7 +9,7 @@
 <meta name="renderer" content="webkit" />
 <meta property="qc:admins" content="64542271216301164756375" />
 <meta property="wb:webmaster" content="ee600f35c5ff2cdc" />
-<title>银蚂蚁社区</title>
+<title>铭鑫财富</title>
 <script type="text/javascript">
 	var basePath = "${rc.getContextPath()}";
 </script>
@@ -131,7 +131,7 @@
 		SetCurrentUserSNNOInSignalR($("#uid").val(),
 				$("#registerIp").val(), $("#hfCurrentRoomId").val(),
 				$("#saleManId").val(), '1', 1, 600, 30, 100,
-				0, 0, false);
+				1, 1, false);
 		InitialSignalR();
 		$(document).bind("contextmenu", function(e) {
 			return false;
@@ -173,10 +173,10 @@ table td, table th {
 	<input type="hidden" id="saleManId" value="${user.saleManId}" />
 	<input type="hidden" id="eventTarget" value="${eventTarget}" />
 	<form method="post"
-		action="${rc.getContextPath()}/Room/RoomDetail.aspx?RoomId=${room.num}"
+		action="${rc.getContextPath()}/Room/RoomDetail?RoomId=${room.roomId}"
 		id="mainForm">
 		<div class="aspNetHidden">
-			<input type="hidden" name="eventTarget" id="eventTarget" value="" />
+			<input type="hidden" name="eventTarget" id="eventTarget" value="${eventTarget}" />
 			<input type="hidden" name="eventArgument" id="eventArgument" value="" />
 			<input type="hidden" name="viewstate" id="viewstate" value="" />
 		</div>
@@ -206,19 +206,27 @@ table td, table th {
 				<a href="javascript://"> <img id="imgRoomImage"
 					src="${rc.getContextPath()}/images/RoomLogo/100001_64c01a42-26da-4ae1-aa5d-9030ad935ee5_logoRoom.png"
 					style="height: 50px;" />
-					<h1>${room.name }</h1> <span id="spnTotalOnlineUserCountInRoom">${room.lineNum }</span><span>人在线(ID:${room.num })</span>
+					<h1>${room.name }</h1> <span id="spnTotalOnlineUserCountInRoom">${room.lineNum }</span><span>人在线</span>
 				</a>
 			</div>
 
 			<ul class="t-ul-r">
+				<c:if test="${user.roleId ==7 }">
+					 <li id="liGuestLogin"><a class="btn-o" href="javascript://" onclick="RegistyInRoom(1);return false;">注册</a>
+	        			<a class="btn-w" href="javascript://" onclick="LoginInRoom(1);return false;">登录</a>
+	       		   </li>
+	       		    <iframe id="iframeLoginInRoom" frameborder="0" scrolling="no" style="height: 350px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 100px; margin: 0 auto; top: 100px; left: 50%; margin-left: -160px; border: 0;"></iframe>
+       				 <iframe id="iframeRegisterInRoom" frameborder="0" scrolling="no" style="height: 550px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 50px; margin: 0 auto; top: 50px; left: 50%; margin-left: -160px; border: 0;"></iframe>
+	       		   
+				</c:if>
 				<li><a href="javascript://"
 					onclick="$('#divbg4Popup').show();$('#divSelectSkin').show();return false;">
 						<i class="ico ico24 ico24-skin">皮肤</i>
 				</a></li>
-				<li id="liCustomerIntegral"><a href="javascript://"
+				<!-- <li id="liCustomerIntegral"><a href="javascript://"
 					class="t-gold"> <i class="ico ico24 ico24-gold">金币</i> <span>
 							0</span>
-				</a></li>
+				</a></li> -->
 				<li>
 					<div class="dropdown-box" onclick="CancelEventBubble(event);">
 						<a class="dropdown-a" href="javascript://"
@@ -233,16 +241,16 @@ table td, table th {
 							<i class="ar" style="left: 71px; top: -14px;"> <i></i>
 							</i>
 							<ul>
-								<li><a href="javascript://"
+								<!-- <li><a href="javascript://"
 									onclick="roomChangeMyProfile();$('#divUserDropdown').hide();return false;"><i
-										class="ico24"></i>个性化设置</a></li>
+										class="ico24"></i>个性化设置</a></li> -->
 
 								<li id="liChangePasswordInRoom"><a href="javascript://"
 									onclick="roomChangeMyPassword();$('#divUserDropdown').hide();return false;"><i
 										class="ico24"></i>修改密码</a></li>
-								<li id="liReturnHome"><a
+								<%-- <li id="liReturnHome"><a
 									href="${rc.getContextPath()}/Room/CommunityHome"><i
-										class="ico24"></i>返回社区</a></li>
+										class="ico24"></i>返回社区</a></li> --%>
 								<li><a id="lbSignOut"
 									href="javascript:__doPostBack('lbSignOut','')"><i
 										class="ico ico24 ico24-logout"></i>注销</a></li>
@@ -251,7 +259,7 @@ table td, table th {
 					</div>
 				</li>
 				<li><a class="quick-save"
-					href="/ShortCut.aspx?RoomId=${room.num }"> <img
+					href="/ShortCut.aspx?RoomId=${room.roomId }"> <img
 						src="${rc.getContextPath()}/img/quick-save.png" alt="保存到桌面" />
 				</a></li>
 			</ul>
@@ -322,7 +330,7 @@ table td, table th {
 											<p>老师点赞</p>
 									</a></li>
 									<li><a
-										href="/teacher/teacherList.aspx?RoomId=${room.num }"
+										href="/teacher/teacherList.aspx?RoomId=${room.roomId }"
 										id="hlTeacher" target="_blank"> <i
 											class="ico ico24 ico24-gift"></i>
 											<p>老师专栏</p>
@@ -572,18 +580,18 @@ table td, table th {
 					type="hidden" name="UserOnline1$hfPageSize4OnlineUser"
 					id="hfPageSize4OnlineUser" value="5" />
 
-				<div class="search1">
+			<!-- 	<div class="search1">
 
 					<input name="UserOnline1$txtSearchCondition4OnlineUser" type="text"
 						id="txtSearchCondition4OnlineUser" placeholder="搜索联系人..." /> <i
 						class="ico ico16 ico16-search"></i>
-				</div>
+				</div> -->
 				<div class="tab1 chat-contact-tab mt10" id="divUserOnlineHead">
 					<ul class="tab2-change">
 						<li id="liOnlineUser"><a href="javascript://" class="active">在线<span
 								id="spnOnlineUserCount">${room.lineNum }</span></a></li>
-						<li id="liMyRelatedOnlineUser"><a href="javascript://"><span
-								id="UserOnline1_spnMyRelatedUser">我的客服</span></a></li>
+						<!-- <li id="liMyRelatedOnlineUser"><a href="javascript://"><span
+								id="UserOnline1_spnMyRelatedUser">我的客服</span></a></li> -->
 					</ul>
 				</div>
 
@@ -595,11 +603,12 @@ table td, table th {
 									<span name="spnUserOrder" style="display: none">${item.ShowOrder }</span>
 									<a class="contact-name" href="javascript://"
 									id='lnkUser_${item.SUserSNNO }'><span>${item.NickName }</span></a>
-									<c:if test="${item.SubscribeType==1 }">
+									<%--删除订阅 <c:if test="${item.SubscribeType==1 }">
 										<a href="javascript://" id="lnkSubscribeTeacher"
 											class="subscribe-y"
 											onclick="SubscribeTeacher('${item.SUserSNNO }',this);">订阅老师</a>
-									</c:if> <c:if test="${item.IsQQ ==1 }">
+									</c:if> --%> 
+									<c:if test="${item.IsQQ ==1 }">
 										<a target="_blank"
 											href="tencent://message/?uin=${item.QQ}&site=qq&menu=yes"><i
 											class="ico ico16 ico16-qq" alt="点击这里给我发消息" title="点击这里给我发消息"></i></a>
@@ -780,9 +789,10 @@ table td, table th {
 
 							<a href="javascript://" id="MessageInput1_lnkAddFlowMessage"
 								class="ico ico24 ico24-flower"
-								onclick="AddFlowerMessage();return false;"></a> <a
+								onclick="AddFlowerMessage();return false;"></a>
+							<!-- 	 <a
 								href="javascript://" id="MessageInput1_clickGift"
-								class="ico ico24 ico24-gift"> </a>
+								class="ico ico24 ico24-gift"> </a> -->
 
 							<script language="javascript" type="text/javascript">
 								var iCount = 0;
@@ -959,7 +969,7 @@ table td, table th {
 			</div>
 			<ul id="ulForignProduct"></ul>
 		</div>
-		<input type="hidden" name="hfCurrentRoomId" id="hfCurrentRoomId" value="${room.num }" />
+		<input type="hidden" name="hfCurrentRoomId" id="hfCurrentRoomId" value="${room.roomId }" />
 		 <input type="hidden" name="hfUseSignalR"	id="hfUseSignalR" value="1" /> 
 		 <input type="hidden"
 			name="hfIsUserOnline" id="hfIsUserOnline" /> 
@@ -1310,8 +1320,8 @@ table td, table th {
 							}
 						});
 			}
-
-			InitialRoomDetail('0000001101100100', 'YY', '',
+//第一个参数 是权限
+			InitialRoomDetail('1000001101100100', 'YY', '',
 					'http://115.29.249.68/',
 					'0a4df49f380e019b734099ace31c5ea4', '1');
 			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));

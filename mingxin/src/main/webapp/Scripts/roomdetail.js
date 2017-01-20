@@ -1266,11 +1266,11 @@ function AddChatMessage() {
 		return
 	}
 	var a = "Method=AddChatMessage&RoomId=" + $("#hfCurrentRoomId").val();
-//	a += "&Content=" + escape(c);
-	a += "&Content=" + c;
+	a += "&Content=" + encodeURI(c);
+//	a += "&Content=" + c;
 	a += "&ToUserSNNO=" + $("#ddlMsgToUser").val();
-	a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
-	//a += "&ToUserName=" + escape($("#ddlMsgToUser option:selected").text());
+	//a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
+	a += "&ToUserName=" + encodeURI($("#ddlMsgToUser option:selected").text());
 	var b = 0;
 	if (document.getElementById("ckMsgIsWhisper") == null) {
 		b = 0
@@ -1534,7 +1534,7 @@ function CloseRoomChangeMyProfile() {
 	$("#iframeChangeMyProfile")[0].src = ""
 }
 function RegistyInRoom(a) {
-	$("#iframeRegisterInRoom")[0].src = basePath+"/Account/RegistyInRoom.aspx?RegisterRoomId=" + $("#hfCurrentRoomId").val() + "&CanClose=" + a;
+	$("#iframeRegisterInRoom")[0].src = basePath+"/Account/RegistyInRoom?RegisterRoomId=" + $("#hfCurrentRoomId").val() + "&CanClose=" + a;
 	$("#iframeRegisterInRoom").show();
 	$("#divbg4Popup").show()
 }
@@ -1544,7 +1544,7 @@ function CloseRegistyInRoom() {
 	$("#divbg4Popup").hide()
 }
 function LoginInRoom(a) {
-	$("#iframeLoginInRoom")[0].src = basePath+"/Account/LoginInRoom.aspx?RegisterRoomId=" + $("#hfCurrentRoomId").val() + "&CanClose=" + a;
+	$("#iframeLoginInRoom")[0].src = basePath+"/Account/LoginInRoom?RegisterRoomId=" + $("#hfCurrentRoomId").val() + "&CanClose=" + a;
 	$("#divbg4Popup").show();
 	$("#iframeLoginInRoom").show()
 }

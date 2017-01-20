@@ -1,15 +1,15 @@
 var websocket = null;
 var chatHub;
-var currentUserSNNOInSignalR; //当前登录用户
-var roomIdInSignalR; //房间ID
-var currentClientIPInSignalR; //当前用户IP
-var relatedSaleManSNNOInSignalR; //关联的销售人员
-var currentUserTypeInSignalR; //当前用户类型  角色  1
-var showEnterRoomMessage = false; //是否显示进入房间信息
-var showLeaveRoomMessage = false; //是否显示离开房间信息
-var chatHubConnected = false;//旧的聊天连接
-var connectedCount = 0;  //连接数
-var isMobile = false;  //是否手机端
+var currentUserSNNOInSignalR; // 当前登录用户
+var roomIdInSignalR; // 房间ID
+var currentClientIPInSignalR; // 当前用户IP
+var relatedSaleManSNNOInSignalR; // 关联的销售人员
+var currentUserTypeInSignalR; // 当前用户类型 角色 1
+var showEnterRoomMessage = false; // 是否显示进入房间信息
+var showLeaveRoomMessage = false; // 是否显示离开房间信息
+var chatHubConnected = false;// 旧的聊天连接
+var connectedCount = 0;  // 连接数
+var isMobile = false;  // 是否手机端
 
 function SetCurrentUserSNNOInSignalR(h, c, g, k, d, a, b, e, f, j, i, l) {
 	isMobile = l;
@@ -30,21 +30,21 @@ function SetCurrentUserSNNOInSignalR(h, c, g, k, d, a, b, e, f, j, i, l) {
 }
 function InitialSignalR() {
 	try {
-		//初始化聊天工具 弃用
+		// 初始化聊天工具 弃用
 		chatHubConnected = false;
-//		connectedCount = 0;
-//		chatHub = $.connection.chatHub;
-//		registerClientMethods();
-//		$.connection.hub.connectionSlow(function() {
-//			console.log("The connection of SignalR is slow,please check your network.")
-//		});
-//		$.connection.hub.error(function(c) {
-//			console.log("SignalR error: " + c)
-//		});
-//		setTimeout(ConnectHub, 500);
-//		$.connection.hub.disconnected(function() {
-//			setTimeout(ReconnectHub, 10000)
-//		})
+// connectedCount = 0;
+// chatHub = $.connection.chatHub;
+// registerClientMethods();
+// $.connection.hub.connectionSlow(function() {
+// console.log("The connection of SignalR is slow,please check your network.")
+// });
+// $.connection.hub.error(function(c) {
+// console.log("SignalR error: " + c)
+// });
+// setTimeout(ConnectHub, 500);
+// $.connection.hub.disconnected(function() {
+// setTimeout(ReconnectHub, 10000)
+// })
 	} catch (b) {
 		var a;
 		if (navigator.userAgent.indexOf("MSIE") > 0) {
@@ -923,7 +923,14 @@ function ScrollMarketTrendMessage4Mobile() {
 
 
 $(function () {
-	var webSocketUrl = "ws://localhost:8080/mingxin/talk";
+	var strUrl = window.location.href;
+	var arrUrl = strUrl.split("/");
+	var webUrl = "localhost:8080";
+	if(arrUrl.length>2){
+		 webUrl = arrUrl[2];
+	}
+	var webSocketUrl = "ws://"+ webUrl+"/"+basePath+"/talk";
+// var webSocketUrl = "ws://localhost:8080/mingxin/talk";
 	// 判断当前浏览器是否支持WebSocket
 	try{
 	if ('WebSocket' in window) {
@@ -947,8 +954,8 @@ $(function () {
 	// 连接成功建立的回调方法
 	websocket.onopen = function() {
 		console.log("WebSocket连接成功");
-		//发送当前用户uid
-		var message = '{"currentUserUid":"'+currentUserSNNOInSignalR+'"}';
+		// 发送当前用户uid
+		var message = '{"currentUserUid":"'+currentUserSNNOInSignalR+'","roomId":"'+roomIdInSignalR+'"}';
 		 websocket.send(message);
 		// 获取在线人数
 	};
@@ -961,19 +968,20 @@ $(function () {
 		try{
 		console.log(data);
 		var jsonData = JSON.parse(data);
-		var messageContent = jsonData.messageContent;
-		var messageId = jsonData.messageId;
-		var toUserSNNO = jsonData.toUserSNNO;
-		var toUserType = jsonData.toUserType;
-		var toUserSaleMan = jsonData.toUserSaleMan;
-		var isShield = jsonData.isShield;
-		var fromUserSNNO = jsonData.fromUserSNNO;
-		var fromUserType = jsonData.fromUserType;
-		var fromUserSaleMan = jsonData.fromUserSaleMan;
-		var isDiffPubliAndPrivateChatAre =jsonData.isDiffPubliAndPrivateChatAre;
-		isDiffPubliAndPrivateChatAre = true;
-		isShield = true;
-		chatMessageReceived(messageContent, messageId, toUserSNNO, toUserType, toUserSaleMan, isShield, fromUserSNNO, fromUserType, fromUserSaleMan, isDiffPubliAndPrivateChatAre);
+		var method = jsonData.method; // 根据method不同 调用不同的处理方法
+		
+		
+		if(method == "message"){
+			// 接收消息var messageContent = jsonData.messageContent;
+			var isShield = jsonData.isShield;
+			var isDiffPubliAndPrivateChatAre =jsonData.isDiffPubliAndPrivateChatAre;
+// isDiffPubliAndPrivateChatAre = true;
+			chatMessageReceived(jsonData.messageContent, jsonData.messageId, jsonData.toUserSNNO, jsonData.toUserSaleMan, isShield, jsonData.fromUserSNNO, jsonData.fromUserSaleMan, isDiffPubliAndPrivateChatAre,jsonData.isWhisper);
+		}else if(method == "online"){
+			// 用户上线
+			onNewUserConnected(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
+			onConnected (id, userSNNO, sRoomId, chatMessages, myChatMessages, marketTrendMessages, onlineUser) ;
+		}
 		}catch(e){
 			console.log(e.message);
 		}
@@ -988,12 +996,19 @@ $(function () {
 	window.onbeforeunload = function() {
 		closeWebSocket();
 	};
-	chatMessageReceived = function(messageContent, messageId, toUserSNNO, toUserType, toUserSaleMan, isShield, fromUserSNNO, fromUserType, fromUserSaleMan, isDiffPubliAndPrivateChatArea) {
+	chatMessageReceived = function(messageContent, messageId, toUserSNNO,  toUserSaleMan, isShield, fromUserSNNO,  fromUserSaleMan, isDiffPubliAndPrivateChatArea,isWhisper) {
 		if (isMobile) {
 			isDiffPubliAndPrivateChatArea = false
 		}
 		if (isDiffPubliAndPrivateChatArea) {
-			if (fromUserSNNO == currentUserSNNOInSignalR || toUserSNNO == currentUserSNNOInSignalR) {
+// if (fromUserSNNO == currentUserSNNOInSignalR || toUserSNNO ==
+// currentUserSNNOInSignalR) {
+// addMySingleChatMessage4SignalR(messageContent, messageId)
+// } else {
+// addSingleChatMessage4SignalR(messageContent, messageId)
+// }
+			// 私聊
+			if (isWhisper == "1"&&(fromUserSNNO == currentUserSNNOInSignalR || toUserSNNO == currentUserSNNOInSignalR)) {
 				addMySingleChatMessage4SignalR(messageContent, messageId)
 			} else {
 				addSingleChatMessage4SignalR(messageContent, messageId)
@@ -1003,7 +1018,7 @@ $(function () {
 		}
 		var selfControl = $("[id^='lnkUser_ch" + currentUserSNNOInSignalR + "']");
 		selfControl.find("span").html("[您]");
-		if ((isShield && (fromUserSNNO != currentUserSNNOInSignalR))) {
+		if ((isShield == "1" && (fromUserSNNO != currentUserSNNOInSignalR))) {
 			var mid = AddBeforeZero(messageId, 8);
 			var divMessage = $("[id^='li" + mid + "']");
 			divMessage.find(".msg-bubble").removeClass().addClass("msg-bubble bubble-del");
@@ -1017,8 +1032,65 @@ $(function () {
 			} else {}
 		}
 	};
+	
+	onConnected = function(userSNNO, sRoomId, chatMessages, myChatMessages, marketTrendMessages, onlineUser) {
+		if ((userSNNO != currentUserSNNOInSignalR) || (sRoomId != roomIdInSignalR)) {
+			return
+		}
+		addChatMessage4SignalR(chatMessages);
+		if (false == isMobile) {
+			if (myChatMessages != null) {
+				addMyChatMessage4SignalR(myChatMessages)
+			}
+		}
+		addMargetTrendMessage4SignalR(marketTrendMessages);
+		if (false == isMobile) {
+			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));
+			AddUser(onlineUser, false)
+		}
+	};
+	onConnectedAfterDisconnect = function(id, userSNNO, sRoomId, chatMessages, myChatMessages, marketTrendMessages, onlineUser) {
+		if ((userSNNO != currentUserSNNOInSignalR) || (sRoomId != roomIdInSignalR)) {
+			return
+		}
+		addChatMessage4SignalR(chatMessages);
+		if (false == isMobile) {
+			if (myChatMessages != null) {
+				addMyChatMessage4SignalR(myChatMessages)
+			}
+		}
+		ClearMarketTrend();
+		addMargetTrendMessage4SignalR(marketTrendMessages);
+		if (false == isMobile) {
+			AddUser(onlineUser, false)
+		}
+	};
+	var userType_SaleMan = 2;
+	var userType_User = 1;
+	onNewUserConnected = function(enterRoomMessage, onlineUser, enterRoomMessageId, relatedSaleManSNNO) {
+		if ((enterRoomMessage.length > 0) && (showEnterRoomMessage)) {
+			addSingleChatMessage4SignalR(enterRoomMessage, enterRoomMessageId)
+		}
+		if (false == isMobile) {
+			var isClient = $("#hfIsClient").val();
+			var onlineUserSNNO = onlineUser.SUserSNNO.substr(2, onlineUser.SUserSNNO.length - 5);
+			if (isClient == "1") {
+				if ((relatedSaleManSNNOInSignalR == onlineUserSNNO) && (relatedSaleManSNNOInSignalR.length > 0)) {
+					AddUser(onlineUser, true)
+				} else {
+					AddUser(onlineUser, false)
+				}
+			} else {
+				if ((currentUserSNNOInSignalR == relatedSaleManSNNO) && (relatedSaleManSNNO.length > 0)) {
+					AddUser(onlineUser, true)
+				} else {
+					AddUser(onlineUser, false)
+				}
+			}
+		}
+	};
 });
-//关闭WebSocket连接
+// 关闭WebSocket连接
 function closeWebSocket() {
     websocket.close();
 }

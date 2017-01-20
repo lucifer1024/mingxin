@@ -8,7 +8,7 @@ public class Message {
 	private String Content;
 	private String ToUserSNNO;
 	private String ToUserName;
-	private String IsWhisper;
+	private String IsWhisper; // 是否悄悄的   是  1 否 0 
 	public String getMessageId() {
 		return messageId;
 	}

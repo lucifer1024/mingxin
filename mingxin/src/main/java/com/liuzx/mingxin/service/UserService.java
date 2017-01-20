@@ -170,7 +170,8 @@ public class UserService {
 		map.put("roleId", 7);
 		map.put("userOrder", 999);
 		
-		List<User> list = userMapper.selectSelective(map);
+//		List<User> list = userMapper.selectSelective(map);
+		List<User> list = null; //test
 		User user = null;
 		if(list != null&&list.size()>0){
 			user = list.get(0);
