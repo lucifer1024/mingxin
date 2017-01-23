@@ -23,6 +23,10 @@ public interface UserMapper {
 
 	    int updateByUid(User user);
 	    
+	    
+	    int updateByMap(Map<String,Object> map);
+
+	    
 	    List<HashMap<String,Object>> selectByOrder(Map<String,Object> map);
 
 	    

@@ -15,7 +15,7 @@ import com.liuzx.mingxin.utils.UUIDGenerator;
 
 @Service
 public class MsgService {
-	private static String objectName = "/mingxin";
+	private static String objectName = "";
 	/**
 	 * 了解框背景颜色
 	 */

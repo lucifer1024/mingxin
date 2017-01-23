@@ -23,7 +23,7 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 	
-	public static int guestNum = 600;
+	public static int guestNum = 1200;
 	
 	public JSONArray findOnlineUser() {
 		List<HashMap<String,Object>> userList = getAllUserByOrder();
@@ -218,8 +218,8 @@ public class UserService {
 		map.put("roleId", 7);
 		map.put("userOrder", 999);
 		
-		List<User> list = userMapper.selectSelective(map);
-//		List<User> list = null; //test
+//		List<User> list = userMapper.selectSelective(map);
+		List<User> list = null; //test
 		User user = null;
 		if(list != null&&list.size()>0){
 			user = list.get(0);
@@ -242,6 +242,7 @@ public class UserService {
 		user.setRoleId(7);
 		user.setUserOrder(999);
 		user.setRegisterIp(registerIp);
+		user.setSkinId("skin0");
 		return user;
 	}
 	
@@ -251,16 +252,21 @@ public class UserService {
 		return list;
 	}
 	
+	public User findUserByUserControlId(String userControlId){
+		String uid = UUIDGenerator.unChUid(userControlId);
+		return userMapper.selectByUid(uid);
+	}
 	public User findUserByUid(String uid){
 		return userMapper.selectByUid(uid);
 	}
 	public int updateUser(User user){
 		return userMapper.updateByUidSelective(user);
 	}
-	public int noTalkUser(String uid,int isNoTalk){
-//		User user = new User();
-//		return userMapper.updateByUidSelective(user);
-		return 0;
+	public int noTalkUser(String uid,int isNoTalking){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("uid", uid);
+		map.put("isNoTalking", isNoTalking);
+		return userMapper.updateByMap(map);
 	}
 	
 }

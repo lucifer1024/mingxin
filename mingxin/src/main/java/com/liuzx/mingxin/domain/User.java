@@ -22,7 +22,7 @@ public class User {
 	private String mobile; //手机号
 	private String saleManId; //对应的销售人员
 	private int isOnline; //是否在线 0 不在线 1 在线
-	private String skinId; // 默认皮肤id 0 
+	private String skinId = "skin0"; // 默认皮肤id 0 
 	private int isNoTalking; //是否禁言  1 是  0 否 
 	
 //	private int userType;//用户类型    1 游客、2 注册未激活、3 观摩用户.
@@ -201,5 +201,13 @@ public class User {
 
 	public void setIsNoTalking(int isNoTalking) {
 		this.isNoTalking = isNoTalking;
+	}
+	public String getUserStatus(){
+//		第一位 是否禁言  1 被禁言 0 未被禁言
+//		第二位 是否屏蔽信息 
+//		第三位 是否封闭ip
+//		第四位 是否封闭账号
+//		第五位  1 上麦 2 下麦
+		return isNoTalking+"0001";
 	}
 }

@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.liuzx.mingxin.domain.Message;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.talk.TalkHandler;
 import com.liuzx.mingxin.utils.HttpRequestUtils;
 
 @Controller
@@ -28,13 +30,15 @@ public class AccountController {
 	private UserService userService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private TalkHandler talkHandler;
 
 	@RequestMapping("/UserManager")
 	@ResponseBody
 	String UserManager(ModelMap model, HttpSession session, @RequestParam String Method,
 			@RequestParam(required = false) String RoomId, @RequestParam(required = false) String QQCount,
 			@RequestParam(required = false) String SubLink, @RequestParam(required = false) String userName,
-			@RequestParam(required = false) String Password) {
+			@RequestParam(required = false) String Password,Message msg) {
 		logger.info(" UserManager " + Method);
 		// return WRONG_ROOM_ID 房间号不正确
 		// return LOGIN_EXPIRED 登录过期 重新登录
@@ -52,6 +56,17 @@ public class AccountController {
 			User loginUser = (User) session.getAttribute(User.SESSION_ID);
 			if (!loginUser.getPassword().equals(Password)) {
 				return "密码错误";
+			}
+		}else if("NoTalking".equals(Method)){
+			//禁言
+			talkHandler.noTalking(msg);
+		}else if("CheckUserStatus".equals(Method)){
+			//建议 用户是否 被禁言 \ 屏蔽消息 封ip 封账号 一键清除
+			User user = userService.findUserByUserControlId(msg.getUserControlId());
+			if(user != null){
+				return user.getUserStatus();
+			}else{
+				return "00001";
 			}
 		}
 		return returnMsg;

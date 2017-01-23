@@ -1007,7 +1007,8 @@ $(function () {
 			onNewUserConnected(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
 			onConnected (jsonData.userSNNO, jsonData.sRoomId, jsonData.chatMessages, jsonData.myChatMessages, jsonData.marketTrendMessages, jsonData.onlineUser) ;
 		}else if(method == "noTalking"){
-			
+			 //禁言
+			noTalkFunc(jsonData.toUserSNNO,jsonData.noTalking);
 		}
 		}catch(e){
 			console.log(e.message);
@@ -1023,17 +1024,23 @@ $(function () {
 	window.onbeforeunload = function() {
 		closeWebSocket();
 	};
+	noTalkFunc= function(toUserSNNO,noTalking){
+		if (toUserSNNO == currentUserSNNOInSignalR) {
+			if(noTalking == "1"){
+				//禁言
+				
+				 $("#editorNoTalk").show();   
+			}else{
+				//解禁
+				 $("#editorNoTalk").hide();   
+			}
+		} 
+	}
 	chatMessageReceived = function(messageContent, messageId, toUserSNNO,  toUserSaleMan, isShield, fromUserSNNO,  fromUserSaleMan, isDiffPubliAndPrivateChatArea,isWhisper) {
 		if (isMobile) {
 			isDiffPubliAndPrivateChatArea = false
 		}
 		if (isDiffPubliAndPrivateChatArea) {
-// if (fromUserSNNO == currentUserSNNOInSignalR || toUserSNNO ==
-// currentUserSNNOInSignalR) {
-// addMySingleChatMessage4SignalR(messageContent, messageId)
-// } else {
-// addSingleChatMessage4SignalR(messageContent, messageId)
-// }
 			// 私聊
 			if (isWhisper == "1"&&(fromUserSNNO == currentUserSNNOInSignalR || toUserSNNO == currentUserSNNOInSignalR)) {
 				addMySingleChatMessage4SignalR(messageContent, messageId)

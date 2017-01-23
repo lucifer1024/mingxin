@@ -22,9 +22,6 @@ public class MessageController {
 	private static Log logger = LogFactory.getLog(MessageController.class);
 	@Autowired
 	private TalkHandler talkHandler;
-
-	@RequestMapping(value = "/Message", produces = "text/html;charset=UTF-8")
-	@ResponseBody
 	/**
 	 * 
 	 * @param model
@@ -34,6 +31,8 @@ public class MessageController {
 	 * @param TrueOrFalse 是否  1 是  0 否
 	 * @return
 	 */
+	@RequestMapping(value = "/Message", produces = "text/html;charset=UTF-8")
+	@ResponseBody
 	String message(ModelMap model, HttpSession session, Message msg,@RequestParam(required = false) String userControlId,@RequestParam(required = false) String TrueOrFalse) {
 		logger.info("接受到的信息 " + msg.toString());
 		logger.info("talkHandler " + talkHandler);
@@ -51,12 +50,6 @@ public class MessageController {
 			talkHandler.sendMessage(msg, loginUser);
 		} else if ("AddFlowerMessage".equals(method)) {
 			talkHandler.sendFlowerMessage(msg, loginUser);
-		}else if("CheckUserStatus".equals(method)){
-			//用户权限 TODO
-			return "111111";
-		}else if("NoTalking".equals(method)){
-			//禁言
-			talkHandler.noTalking(msg);
 		}
 		return "Ok";
 	}

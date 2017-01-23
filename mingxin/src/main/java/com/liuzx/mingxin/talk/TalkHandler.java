@@ -267,7 +267,8 @@ public class TalkHandler extends TextWebSocketHandler {
 		Role role = roleService.selectById(user.getRoleId());
 		String onlineMsg = msgService.dealLineMsg(user, role, METHOD_ON_LINE, room);
 		// 私聊
-		sendPirateMssage(user.getUid(), onlineMsg, "", "", room.getRoomId());
+		sendPublicMessage(onlineMsg);
+//		sendPirateMssage(user.getUid(), onlineMsg, "", "", room.getRoomId());
 		System.out.println("用户 " + user.getNickName() + "上线啦");
 	}
 
@@ -282,14 +283,13 @@ public class TalkHandler extends TextWebSocketHandler {
 	 * 禁言/解禁 某用户
 	 */
 	public void noTalking(Message msg) {
-		// TODO
 		String uid = UUIDGenerator.unChUid(msg.getUserControlId());
 		WebSocketSession session = webSocketMap.get(getKey(msg.getRoomId(), uid));
 		if (session != null) {
-			// TODO 更新缓存用户
+			//  更新缓存用户
 			User user = sessionId2UserMap.get(session.getId());
 			user.setIsNoTalking(msg.getTrueOrFalse());
-			// TODO 发送禁言信息
+			//  发送禁言信息
 			if(user != null){
 				String toMsg = msgService.dealToNoTalk(msg, user, METHOD_NO_TALKING);
 				sendPirateMssage(user.getUid(), toMsg, "", "", msg.getRoomId());

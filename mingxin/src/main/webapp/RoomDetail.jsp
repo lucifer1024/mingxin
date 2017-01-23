@@ -214,11 +214,10 @@ table td, table th {
 					src="${rc.getContextPath()}/img/quick-save.png" alt="保存到桌面" />
 				</a> <a class="qq"
 					href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
-					alt="点击这里给客服-小雪发消息,QQ:515898519"
-					title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a> <a class="qq"
+					alt="点击这里给客服-小雪发消息,QQ:515898519" title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a>
+				<a class="qq"
 					href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
-					alt="点击这里给客服-小薇发消息,QQ:815898519"
-					title="点击这里给客服-小薇发消息,QQ:815898519">客服小薇</a>
+					alt="点击这里给客服-小薇发消息,QQ:815898519" title="点击这里给客服-小薇发消息,QQ:815898519">客服小薇</a>
 
 			</div>
 
@@ -944,10 +943,10 @@ table td, table th {
 										<li style="display:inline">第二次是省份分付付付付付付付付付付付付付付</li>
 									</ul>
 								</marquee> -->
-								
+
 								<ul id="Marbox-ul">
-										<li style="display:inline">系统公告：喊单时间...</li>
-									</ul>
+									<li style="display: inline">系统公告：喊单时间...</li>
+								</ul>
 							</div>
 						</div>
 					</div>
@@ -1166,18 +1165,25 @@ table td, table th {
 								onclick="AddChatMessage();return false;">发送</a>
 						</div>
 						<div class="send-box-b">
-
-
 							<div class="send-box-text">
 
 								<div class="editor">
 									<script id="editor" type="text/plain"></script>
 								</div>
 							</div>
-
 						</div>
-					</div>
+						<c:if test="${user.isNoTalking==0 }">
+							<div id="editorNoTalk"
+								style="display: none;position: absolute; bottom: 0; left: 0; z-index: 10000; width: 100%; height: 100px; background: rgba(255, 245, 212, 0.8); color: #F00; text-align: center; font-size: 28px">
+								你已被禁言,请联系QQ客服解禁！</div>
+						</c:if>
+						<c:if test="${user.isNoTalking!=0 }">
+							<div id="editorNoTalk"
+								style="position: absolute; bottom: 0; left: 0; z-index: 10000; width: 100%; height: 100px; background: rgba(255, 245, 212, 0.8); color: #F00; text-align: center; font-size: 28px">
+								你已被禁言,请联系QQ客服解禁！</div>
+						</c:if>
 
+					</div>
 				</div>
 			</div>
 
@@ -1359,69 +1365,16 @@ table td, table th {
 
 					<ul class="qq">
 						<li><a
-							href="tencent://message/?uin=2880677165&amp;site=qq&amp;menu=yes"
-							alt="点击这里给分析助理-土豆发消息,QQ:2880677165"
-							title="点击这里给分析助理-土豆发消息,QQ:2880677165">助理土豆</a></li>
+							href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
+							alt="点击这里给客服-小雪发消息,QQ:515898519"
+							title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a></li>
 
 						<li><a
-							href="tencent://message/?uin=2880677161&amp;site=qq&amp;menu=yes"
-							alt="点击这里给分析助理-小雨发消息,QQ:2880677161"
-							title="点击这里给分析助理-小雨发消息,QQ:2880677161">顾问小雨</a></li>
+							href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
+							alt="点击这里给 客服-小薇发消息,QQ:815898519"
+							title="点击这里给 客服-小薇发消息,QQ:815898519">顾问小雨</a></li>
 
-						<li><a
-							href="tencent://message/?uin=2880677172&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-小萌发消息,QQ:2880677172"
-							title="点击这里给投资顾问-小萌发消息,QQ:2880677172">顾问小萌</a></li>
 
-						<li><a
-							href="tencent://message/?uin=2880677170&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-红豆发消息,QQ:2880677170"
-							title="点击这里给投资顾问-红豆发消息,QQ:2880677170">客服红豆</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677162&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-温娅发消息,QQ:2880677162"
-							title="点击这里给投资顾问-温娅发消息,QQ:2880677162">顾问温娅</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677160&amp;site=qq&amp;menu=yes"
-							alt="点击这里给分析助理-小周发消息,QQ:2880677160"
-							title="点击这里给分析助理-小周发消息,QQ:2880677160">顾问小周</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677173&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-小超发消息,QQ:2880677173"
-							title="点击这里给投资顾问-小超发消息,QQ:2880677173">顾问小超</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677151&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-香香发消息,QQ:2880677151"
-							title="点击这里给投资顾问-香香发消息,QQ:2880677151">客服香香</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677168&amp;site=qq&amp;menu=yes"
-							alt="点击这里给分析助理-豆豆发消息,QQ:2880677168"
-							title="点击这里给分析助理-豆豆发消息,QQ:2880677168">客服豆豆</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677152&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-良辰发消息,QQ:2880677152"
-							title="点击这里给投资顾问-良辰发消息,QQ:2880677152">助理良辰</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677171&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-小希发消息,QQ:2880677171"
-							title="点击这里给投资顾问-小希发消息,QQ:2880677171">顾问小希</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677176&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-雪儿发消息,QQ:2880677176"
-							title="点击这里给投资顾问-雪儿发消息,QQ:2880677176">在线客服</a></li>
-
-						<li><a
-							href="tencent://message/?uin=2880677175&amp;site=qq&amp;menu=yes"
-							alt="点击这里给投资顾问-米琦发消息,QQ:2880677175"
-							title="点击这里给投资顾问-米琦发消息,QQ:2880677175">在线客服</a></li>
 					</ul>
 					<div class="p-tip-fn">
 						<a href="javscript://" onclick="createShortcut('铭鑫财富')"
@@ -1600,7 +1553,10 @@ table td, table th {
 		<input type="hidden" name="hfMarketingQQ" id="hfMarketingQQ"
 			value="var qq_chat=true;function PlayJsAdPopWin(){if(qq_chat){try{popwin=window.location.href='{MarketingQQ}'} catch  (e) {}}};setTimeout('PlayJsAdPopWin()',3000);" />
 
-
+		<input type="hidden" id="userAuths" value="${userAuths }" /> <input
+			type="hidden" id="foreignProductUrl" value="${foreignProductUrl }" />
+		<input type="hidden" id="foreignProductEncypt"
+			value="${foreignProductEncypt }" />
 		<script type="text/javascript">
 			function GetSaleManList() {
 				var showQQCount = 0;
@@ -1649,9 +1605,9 @@ table td, table th {
 			}
 			//第一个参数 是权限
 			//'1000001101100100'
-			InitialRoomDetail('1111111111111111', 'YY', '',
-					'http://115.29.249.68/',
-					'0a4df49f380e019b734099ace31c5ea4', '1');
+			InitialRoomDetail($("#userAuths").val(), 'YY', '', $(
+					"#foreignProductUrl").val(), $("#foreignProductEncypt")
+					.val(), '1');
 			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));
 		</script>
 
