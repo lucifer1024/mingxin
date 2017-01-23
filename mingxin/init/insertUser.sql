@@ -7,3 +7,7 @@ INSERT INTO `t_user` (uid,user_name,password,nick_name,mobile,qq,user_order,is_s
 INSERT INTO `t_user` (uid,user_name,password,nick_name,mobile,qq,user_order,is_subscribe,is_qq,role_id,register_ip) VALUES ('250b60d1-00f8-4a73-97da-aa8ba374d125', 'chenyuanwai', '123456', '陈员外', null, '', '15', '0', '0', '4', '127.0.0.1');
 INSERT INTO `t_user` (uid,user_name,password,nick_name,mobile,qq,user_order,is_subscribe,is_qq,role_id,register_ip) VALUES ('260b60d1-00f8-4a73-97da-aa8ba374d126', 'dadizhu', '123456', '大地主', null, '', '20', '0', '0', '5', '127.0.0.1');
 INSERT INTO `t_user` (uid,user_name,password,nick_name,mobile,qq,user_order,is_subscribe,is_qq,role_id,register_ip) VALUES ('270b60d1-00f8-4a73-97da-aa8ba374d127', 'qiyejia', '123456', '企业家', null, '', '25', '0', '0', '6', '127.0.0.1');
+
+ALTER TABLE t_user
+ADD COLUMN skin_id  varchar(10) NULL DEFAULT 'skin0' AFTER create_time;
+

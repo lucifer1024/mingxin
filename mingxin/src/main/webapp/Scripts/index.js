@@ -22,7 +22,7 @@ $(function () {
         
         //$("#myskin a").empty();
         //$(this).append("<span></span>");
-        $("#skinFile").attr("href", "/skin/" + this.id + "/style.css?5");
+        $("#skinFile").attr("href", basePath+"/skin/" + this.id + "/style.css?5");
         $("#hfSkinId").val(this.id);
         //$("#spnArtDialogJs").html('<link rel="stylesheet" href="/Scripts/artDialog/skins/' + this.id + '.css">');
         $.ajax({

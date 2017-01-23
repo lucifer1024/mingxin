@@ -25,6 +25,7 @@ import com.liuzx.mingxin.service.MsgService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.utils.UUIDGenerator;
 
 @Component
 public class TalkHandler extends TextWebSocketHandler {
@@ -33,6 +34,7 @@ public class TalkHandler extends TextWebSocketHandler {
 	private static final String METHOD_MESSAGE = "message";
 	private static final String METHOD_ON_LINE = "online";
 	private static final String METHOD_DOWN_LINE = "downline";
+	private static final String METHOD_NO_TALKING = "noTalking";
 	@Autowired
 	private MsgService msgService;
 	@Autowired
@@ -56,6 +58,7 @@ public class TalkHandler extends TextWebSocketHandler {
 		super.handleTextMessage(session, message);
 		// 接收到客户端消息时调用
 		String receiveMsg = message.getPayload();
+		logger.info("收到信息 "+receiveMsg);
 		dealReceveMsg(receiveMsg, session);
 	}
 
@@ -70,44 +73,48 @@ public class TalkHandler extends TextWebSocketHandler {
 
 		//
 		String currentUserUid = obj.getString("currentUserUid");
-		String roomId = obj.getString("roomId");
-		webSocketMap.put(getKey(roomId, currentUserUid), session);
-		String sessionId = session.getId();
-		User user = userService.findUserByUid(currentUserUid);
-		Room room = roomService.selectById(roomId);
-		room.incr();
-		Role role = null;
-		if (user == null) {
-			user = new User();
-			user.setUid(currentUserUid);
-			role = roleService.createGustRole();
-		} else {
-			sendUserOnline(user, room);
-			role = roleService.selectById(user.getRoleId());
+		if(currentUserUid != null){
+			String roomId = obj.getString("roomId");
+			webSocketMap.put(getKey(roomId, currentUserUid), session);
+			String sessionId = session.getId();
+			User user = userService.findUserByUid(currentUserUid);
+			Room room = roomService.selectById(roomId);
+			room.incr();
+			Role role = null;
+			if (user == null) {
+				user = new User();
+				user.setUid(currentUserUid);
+				role = roleService.createGustRole();
+			} else {
+				sendUserOnline(user, room);
+				role = roleService.selectById(user.getRoleId());
+			}
+			sessionId2RoomMap.put(sessionId, room);
+			sessionId2UserMap.put(sessionId, user);
+			sessionId2RolemMap.put(user.getUid(), role);
 		}
-		sessionId2RoomMap.put(sessionId, room);
-		sessionId2UserMap.put(sessionId, user);
-		sessionId2RolemMap.put(user.getUid(), role);
+		
 	}
 
 	public void sendMessage(Message msg, User fromUser) {
 		String toUserSNNO = msg.getToUserSNNO();
 		Role role = sessionId2RolemMap.get(fromUser.getUid());
 		User toUser = null;
-		if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
-//			sendPublicMessage(returnMsg);
-		} else {
-			 toUser = userService.findUserByUid(msg.getToUserSNNO());
+		if (!"00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
+			toUser = userService.findUserByUid(msg.getToUserSNNO());
 		}
-		String returnMsg = msgService.dealMsg(msg, fromUser,toUser, METHOD_MESSAGE,role);
+		String returnMsg = msgService.dealMsg(msg, fromUser, toUser, METHOD_MESSAGE, role);
 		if ("1".equals(msg.getIsWhisper())) {
-//			String fromMsg = msgService.dealMsg(msg, fromUser, METHOD_MESSAGE);
-//			String toMsg = msgService.dealPrivateToMsg(msg, fromUser, toUser, METHOD_MESSAGE);
+			// String fromMsg = msgService.dealMsg(msg, fromUser,
+			// METHOD_MESSAGE);
+			// String toMsg = msgService.dealPrivateToMsg(msg, fromUser, toUser,
+			// METHOD_MESSAGE);
 			// 私聊
 			sendPirateMssage(toUserSNNO, returnMsg, fromUser.getUid(), returnMsg, msg.getRoomId());
 		} else {
 
-//			String toMsg = msgService.dealPublicToMsg(msg, fromUser, toUser, METHOD_MESSAGE);
+			// String toMsg = msgService.dealPublicToMsg(msg, fromUser, toUser,
+			// METHOD_MESSAGE);
 			// 群聊
 			sendPublicMessage(returnMsg);
 		}
@@ -115,25 +122,44 @@ public class TalkHandler extends TextWebSocketHandler {
 
 	public void sendFlowerMessage(Message msg, User fromUser) {
 		String toUserSNNO = msg.getToUserSNNO();
-		if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
-			String returnMsg = msgService.dealPublicToFlower(msg, fromUser, METHOD_MESSAGE);
-			sendPublicMessage(returnMsg);
-		} else {
-			User toUser = userService.findUserByUid(msg.getToUserSNNO());
-			if ("1".equals(msg.getIsWhisper())) {
-				// String fromMsg = msgService.dealPublicToFlower(msg,
-				// fromUser,METHOD_MESSAGE);
-				String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser, METHOD_MESSAGE);
-				// 私聊 发送和接收人 看到的一样
-				sendPirateMssage(toUserSNNO, toMsg, fromUser.getUid(), toMsg, msg.getRoomId());
-			} else {
-
-				String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser, METHOD_MESSAGE);
-				// 群聊
-				sendPublicMessage(toMsg);
-			}
-
+		Role role = sessionId2RolemMap.get(fromUser.getUid());
+		User toUser = null;
+		if (!"00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
+			toUser = userService.findUserByUid(msg.getToUserSNNO());
 		}
+		if ("1".equals(msg.getIsWhisper())) {
+
+			String toMsg = msgService.dealToFlower(msg, fromUser, toUser, METHOD_MESSAGE, role);
+			// 私聊 发送和接收人 看到的一样
+			sendPirateMssage(toUserSNNO, toMsg, fromUser.getUid(), toMsg, msg.getRoomId());
+		} else {
+			String toMsg = msgService.dealToFlower(msg, fromUser, toUser, METHOD_MESSAGE, role);
+			// // 群聊
+			sendPublicMessage(toMsg);
+		}
+		// if ("00000000-0000-0000-0000-000000000000".equals(toUserSNNO)) {
+		// String returnMsg = msgService.dealPublicToFlower(msg, fromUser,
+		// METHOD_MESSAGE);
+		// sendPublicMessage(returnMsg);
+		// } else {
+		// User toUser = userService.findUserByUid(msg.getToUserSNNO());
+		// if ("1".equals(msg.getIsWhisper())) {
+		// // String fromMsg = msgService.dealPublicToFlower(msg,
+		// // fromUser,METHOD_MESSAGE);
+		// String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser,
+		// METHOD_MESSAGE);
+		// // 私聊 发送和接收人 看到的一样
+		// sendPirateMssage(toUserSNNO, toMsg, fromUser.getUid(), toMsg,
+		// msg.getRoomId());
+		// } else {
+		//
+		// String toMsg = msgService.dealPrivateToFlower(msg, fromUser, toUser,
+		// METHOD_MESSAGE);
+		// // 群聊
+		// sendPublicMessage(toMsg);
+		// }
+		//
+		// }
 	}
 
 	/**
@@ -201,8 +227,8 @@ public class TalkHandler extends TextWebSocketHandler {
 		String sessionId = session.getId();
 		User user = sessionId2UserMap.get(sessionId);
 		Room room = sessionId2RoomMap.get(sessionId);
-		String roomId = room.getRoomId();
 		if (user != null) {
+			String roomId = room.getRoomId();
 			sendUserDownline(user, roomId);
 			room.decr();
 			webSocketMap.remove(getKey(roomId, user.getUid()));
@@ -251,4 +277,26 @@ public class TalkHandler extends TextWebSocketHandler {
 	private void sendUserDownline(User user, String roomId) {
 		// TODO
 	}
+
+	/**
+	 * 禁言/解禁 某用户
+	 */
+	public void noTalking(Message msg) {
+		// TODO
+		String uid = UUIDGenerator.unChUid(msg.getUserControlId());
+		WebSocketSession session = webSocketMap.get(getKey(msg.getRoomId(), uid));
+		if (session != null) {
+			// TODO 更新缓存用户
+			User user = sessionId2UserMap.get(session.getId());
+			user.setIsNoTalking(msg.getTrueOrFalse());
+			// TODO 发送禁言信息
+			if(user != null){
+				String toMsg = msgService.dealToNoTalk(msg, user, METHOD_NO_TALKING);
+				sendPirateMssage(user.getUid(), toMsg, "", "", msg.getRoomId());
+			}
+		}
+		// 更新数据库
+		userService.noTalkUser(uid, msg.getTrueOrFalse());
+	}
+
 }

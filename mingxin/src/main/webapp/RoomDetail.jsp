@@ -22,7 +22,8 @@
 <link rel="stylesheet" type="text/css"
 	href="${rc.getContextPath()}/css/style.css?20161216" />
 <link rel="stylesheet" type="text/css"
-	href="${rc.getContextPath()}/skin/skin0/style.css" id="skinFile">
+	href="${rc.getContextPath()}/skin/${user.skinId }/style.css"
+	id="skinFile">
 <link href="${rc.getContextPath()}/css/add.css?20161216"
 	rel="stylesheet" />
 <link rel="stylesheet" href="${rc.getContextPath()}/css/smartMenu.css" />
@@ -46,7 +47,7 @@
 <script type="text/javascript" charset="utf-8"
 	src="${rc.getContextPath()}/ueditor/ueditor.config.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="${rc.getContextPath()}/ueditor/ueditor.all.min.js?20161216">
+	src="${rc.getContextPath()}/ueditor/ueditor.all.min.js">
 	
 </script>
 <script type="text/javascript" charset="utf-8"
@@ -128,10 +129,9 @@
 <script type="text/javascript">
 	$(function() {
 		$('.list_lcj:even').addClass('lieven');
-		SetCurrentUserSNNOInSignalR($("#uid").val(),
-				$("#registerIp").val(), $("#hfCurrentRoomId").val(),
-				$("#saleManId").val(), '1', 1, 600, 30, 100,
-				1, 1, false);
+		SetCurrentUserSNNOInSignalR($("#uid").val(), $("#registerIp").val(), $(
+				"#hfCurrentRoomId").val(), $("#saleManId").val(), '1', 1, 600,
+				30, 100, 1, 1, false);
 		InitialSignalR();
 		$(document).bind("contextmenu", function(e) {
 			return false;
@@ -172,13 +172,15 @@ table td, table th {
 	<input type="hidden" id="registerIp" value="${user.registerIp}" />
 	<input type="hidden" id="saleManId" value="${user.saleManId}" />
 	<input type="hidden" id="eventTarget" value="${eventTarget}" />
-	<form method="post"
-		action="${rc.getContextPath()}/Room/RoomDetail?RoomId=${room.roomId}"
-		id="mainForm">
+	<input type="hidden" id="filterWord"
+		value="NND|骗子|托|诈骗|他妈的|你妈逼|傻逼|草|操|艹|cao|妈了个逼|MLGB|QQ|Q|qq|q|企鹅|电话|地址|地点|烂|差|坑|蒙|拐|骗|扣扣|麻痹" />
+
+	<form method="post" action="${rc.getContextPath()}/" id="mainForm">
 		<div class="aspNetHidden">
-			<input type="hidden" name="eventTarget" id="eventTarget" value="${eventTarget}" />
-			<input type="hidden" name="eventArgument" id="eventArgument" value="" />
-			<input type="hidden" name="viewstate" id="viewstate" value="" />
+			<input type="hidden" name="eventTarget" id="eventTarget"
+				value="${eventTarget}" /> <input type="hidden" name="eventArgument"
+				id="eventArgument" value="" /> <input type="hidden"
+				name="viewstate" id="viewstate" value="" />
 		</div>
 		<script type="text/javascript">
 			//<![CDATA[
@@ -206,18 +208,31 @@ table td, table th {
 				<a href="javascript://"> <img id="imgRoomImage"
 					src="${rc.getContextPath()}/images/RoomLogo/100001_64c01a42-26da-4ae1-aa5d-9030ad935ee5_logoRoom.png"
 					style="height: 50px;" />
-					<h1>${room.name }</h1> <span id="spnTotalOnlineUserCountInRoom">${room.lineNum }</span><span>人在线</span>
-				</a>
+					<h1>${room.name }</h1> <span id="spnTotalOnlineUserCountInRoom">${room.showLineNum }</span><span>人在线</span>
+				</a>&nbsp;&nbsp;&nbsp;&nbsp; <a class="quick-save" href="javascript://"
+					onclick="createShortcut('铭鑫财富')"> <img
+					src="${rc.getContextPath()}/img/quick-save.png" alt="保存到桌面" />
+				</a> <a class="qq"
+					href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
+					alt="点击这里给客服-小雪发消息,QQ:515898519"
+					title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a> <a class="qq"
+					href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
+					alt="点击这里给客服-小薇发消息,QQ:815898519"
+					title="点击这里给客服-小薇发消息,QQ:815898519">客服小薇</a>
+
 			</div>
 
 			<ul class="t-ul-r">
 				<c:if test="${user.roleId ==7 }">
-					 <li id="liGuestLogin"><a class="btn-o" href="javascript://" onclick="RegistyInRoom(1);return false;">注册</a>
-	        			<a class="btn-w" href="javascript://" onclick="LoginInRoom(1);return false;">登录</a>
-	       		   </li>
-	       		    <iframe id="iframeLoginInRoom" frameborder="0" scrolling="no" style="height: 350px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 100px; margin: 0 auto; top: 100px; left: 50%; margin-left: -160px; border: 0;"></iframe>
-       				 <iframe id="iframeRegisterInRoom" frameborder="0" scrolling="no" style="height: 550px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 50px; margin: 0 auto; top: 50px; left: 50%; margin-left: -160px; border: 0;"></iframe>
-	       		   
+					<li id="liGuestLogin"><a class="btn-o" href="javascript://"
+						onclick="RegistyInRoom(1);return false;">注册</a> <a class="btn-w"
+						href="javascript://" onclick="LoginInRoom(1);return false;">登录</a>
+					</li>
+					<iframe id="iframeLoginInRoom" frameborder="0" scrolling="no"
+						style="height: 350px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 100px; margin: 0 auto; top: 100px; left: 50%; margin-left: -160px; border: 0;"></iframe>
+					<iframe id="iframeRegisterInRoom" frameborder="0" scrolling="no"
+						style="height: 550px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 50px; margin: 0 auto; top: 50px; left: 50%; margin-left: -160px; border: 0;"></iframe>
+
 				</c:if>
 				<li><a href="javascript://"
 					onclick="$('#divbg4Popup').show();$('#divSelectSkin').show();return false;">
@@ -229,49 +244,55 @@ table td, table th {
 				</a></li> -->
 				<li>
 					<div class="dropdown-box" onclick="CancelEventBubble(event);">
-						<a class="dropdown-a" href="javascript://"
-							onclick='$("#divUserDropdown").show();return false;'> <img
-							class="avatar32" src="${rc.getContextPath()}/img/avatar32-n.png"
-							alt="" /> <span class="ar-d">${user.nickName }</span> <i
-							class="ico ico16 ico16-ar-d-d"></i>
-						</a>
-						<div class="dropdown-in dropdown-in-up"
-							style="left: -15px; top: 41px; width: 160px; display: none;"
-							id="divUserDropdown">
-							<i class="ar" style="left: 71px; top: -14px;"> <i></i>
-							</i>
-							<ul>
-								<!-- <li><a href="javascript://"
+
+						<c:if test="${user.roleId ==7 }">
+							<a class="dropdown-a" href="javascript://"> <img
+								class="avatar32" src="${rc.getContextPath()}/img/avatar32-n.png"
+								alt="" /> <span class="ar-d">${user.nickName }</span>
+							</a>
+						</c:if>
+
+						<c:if test="${user.roleId !=7 }">
+							<a class="dropdown-a" href="javascript://"
+								onclick='$("#divUserDropdown").show();return false;'> <img
+								class="avatar32" src="${rc.getContextPath()}/img/avatar32-n.png"
+								alt="" /> <span class="ar-d">${user.nickName }</span> <i
+								class="ico ico16 ico16-ar-d-d"></i>
+							</a>
+							<div class="dropdown-in dropdown-in-up"
+								style="left: -15px; top: 41px; width: 160px; display: none;"
+								id="divUserDropdown">
+								<i class="ar" style="left: 71px; top: -14px;"> <i></i>
+								</i>
+								<ul>
+									<!-- <li><a href="javascript://"
 									onclick="roomChangeMyProfile();$('#divUserDropdown').hide();return false;"><i
 										class="ico24"></i>个性化设置</a></li> -->
 
-								<li id="liChangePasswordInRoom"><a href="javascript://"
-									onclick="roomChangeMyPassword();$('#divUserDropdown').hide();return false;"><i
-										class="ico24"></i>修改密码</a></li>
-								<%-- <li id="liReturnHome"><a
+									<li id="liChangePasswordInRoom"><a href="javascript://"
+										onclick="roomChangeMyPassword();$('#divUserDropdown').hide();return false;"><i
+											class="ico ico24 ico24-set"></i>修改密码</a></li>
+									<%-- <li id="liReturnHome"><a
 									href="${rc.getContextPath()}/Room/CommunityHome"><i
 										class="ico24"></i>返回社区</a></li> --%>
-								<li><a id="lbSignOut"
-									href="javascript:__doPostBack('lbSignOut','')"><i
-										class="ico ico24 ico24-logout"></i>注销</a></li>
-							</ul>
-						</div>
+									<li><a id="lbSignOut"
+										href="javascript:__doPostBack('lbSignOut','')"><i
+											class="ico ico24 ico24-logout"></i>注销</a></li>
+								</ul>
+							</div>
+						</c:if>
+
 					</div>
 				</li>
-				<li><a class="quick-save"
+				<%-- <li><a class="quick-save"
 					href="/ShortCut.aspx?RoomId=${room.roomId }"> <img
 						src="${rc.getContextPath()}/img/quick-save.png" alt="保存到桌面" />
-				</a></li>
+				</a></li> --%>
 			</ul>
 		</div>
 
 		<div class="l-links">
 			<ul>
-				<li><a href="javascript://"
-					onclick="ViewDailyDiscuss(1,'今日评论');"> <i
-						class="ico ico24 ico24-grid"></i>
-						<p>今日评论</p>
-				</a></li>
 				<li id="liFinancialData1"><a href="javascript://"
 					onclick="ShowFinancialCalendar();return false;"> <i
 						class="ico ico24 ico24-grid"></i>
@@ -288,10 +309,15 @@ table td, table th {
 						class="ico ico24 ico24-grid"></i>
 						<p>下载中心</p>
 				</a></li>
+				<li><a href="javascript://"
+					onclick="ViewDailyDiscuss(1,'在线开户');"> <i
+						class="ico ico24 ico24-grid"></i>
+						<p>在线开户</p>
+				</a></li>
 				<li><a href="javascript:void(0);"
-					onclick="ShowRoomSchedule('/File/RoomShedule/100001/7bbb5131-4ed9-4f92-a064-fd35102df726_222222222222222.jpg');return false;">
+					onclick="ShowRoomSchedule('${rc.getContextPath()}/File/RoomShedule/kecheng.jpg');return false;">
 						<i class="ico ico24 ico24-grid"></i>
-						<p>排班表</p>
+						<p>课程安排</p>
 				</a></li>
 
 			</ul>
@@ -307,7 +333,7 @@ table td, table th {
 								style="width: 112px;" /> <a href="javascript://"
 								onclick="$('#divWeChat').hide();return false;">×</a>
 						</div></li>
-					<li class="l-links-b-more" onclick="CancelEventBubble(event);">
+					<%-- <li class="l-links-b-more" onclick="CancelEventBubble(event);">
 						<a href="javascript://"
 						onclick='$("#divMoreFunction").show();return false;'> <i
 							class="ico ico24 ico24-more"></i>
@@ -340,7 +366,7 @@ table td, table th {
 								</ul>
 							</div>
 						</div>
-					</li>
+					</li> --%>
 
 				</ul>
 			</div>
@@ -348,15 +374,265 @@ table td, table th {
 		<div class="l text-width" id="divVideo">
 			<div class="v">
 				<div class="tip">
-					<span id="spnOnMicrophoneUser">赢油天下-阮经理</span>
+					<span id="spnOnMicrophoneUser">铭鑫财富</span>
 				</div>
 				<a href="javascript://"
 					onclick="ChangeVideoType4Room('YY');return false;"
 					class="v-refresh"></a>
 				<div id="VideoDiv" class="vflash"></div>
 			</div>
-
 			<div class="box1 mt10">
+				<div class="tab1">
+					<ul class="tab-change" id="ulMarketTrendMessage">
+						<li id="liMarketTrendCommon"><a style="cursor: pointer;"
+							class="active">行情提醒</a></li>
+						<li id="liMarketTrendSummaryThisMonth"><a
+							href="javascript:void(0);" class="">当月</a></li>
+						<li id="liMarketTrendSummaryAll"><a
+							href="javascript:void(0);" class="">全部</a></li>
+					</ul>
+				</div>
+				<div class="big-change" id="divMarketTrendContent"
+					style="height: 114px;">
+					<div class="sw-change" id="divMarketTrend"
+						style="height: 114px; display: block;">
+						<div class="box1-in " style="overflow: hidden; height: 114px;">
+							<div id="divCannotViewMarketTrend" class="msg-bubble-box content"
+								tabindex="0"
+								style="overflow: hidden; outline: none; height: 104px;">
+								<div class="msg-bubble-user msg-bubble-user-s"
+									id="divMarketTrendGuestNotice">
+									<a class="contact-name">喊单提醒</a> <i
+										class="ico ico24 ico24-bell"></i> <span class="msg-date-s">
+										<marquee onmouseover="this.stop()" onmouseout="this.start()"
+											scrollamount="1" height="20px" scrolldelay="1"
+											class="guestMarquee" direction="left"
+											style="height: 20px; width: 610px;">
+											<span id="spnMarketTrendTip">喊单了!</span>
+										</marquee>
+									</span>
+								</div>
+								<div id="divOtherRoleCannotViewMarketTrend" class="msg-bubble">
+									<div class="bubble-arrow-l"></div>
+									<div class="bubble-cont">
+										只有实盘用户才能查看喊单记录及行情提醒,如有疑问，请咨询以下客服 <br>
+									</div>
+								</div>
+							</div>
+							<div id="divCanViewMarket" class="msg-bubble-box content"
+								tabindex="1"
+								style="overflow: hidden; outline: none; height: 104px;"></div>
+
+						</div>
+
+					</div>
+					<div class="sw-change" style="display: none;"
+						id="divMarketTrendSummary">
+
+						<script lang="javascript" type="text/javascript"
+							style="display: none;">
+							$("#divMarketTrendSummary .content").niceScroll({
+								cursorcolor : "#8d96a4",
+								cursoropacitymax : 1,
+								touchbehavior : false,
+								cursorwidth : "5px",
+								cursorborder : "0",
+								cursorborderradius : "5px"
+							});
+
+							var artMarketTrendDetailWindow;
+							function showMarketTrendDetail(dateType, userSNNO,
+									machineType) {
+								$("#iframeMarketTrendDetail")[0].src = "/MarketTrend/MarketTrendDetail.aspx?RoomId=100002&DateType="
+										+ dateType
+										+ "&UserSNNO="
+										+ userSNNO
+										+ "&MachineType=" + machineType;
+								artMarketTrendDetailWindow = art
+										.dialog({
+											lock : true,
+											background : '#000', // 背景色
+											opacity : 0.77, // 透明度
+											title : '喊单明细',
+											content : document
+													.getElementById('showMarketTrendDetail')
+										})
+							}
+
+							function CloseMarketTrendDetailWindow() {
+								$("#iframeMarketTrendDetail")[0].src = "";
+								artMarketTrendDetailWindow.close();
+							}
+						</script>
+
+						<div id="divHead" class="hq_tip_list" style="display: block;">
+							<table class="table-normal mt10" style="width: 100%;"
+								id="tbMarketTrendSummaryHeader">
+								<tbody>
+									<tr>
+										<th>姓名</th>
+										<th style="width: 10%;">数量</th>
+										<th style="width: 14%;">成功率</th>
+										<th style="width: 14%;">点数总计</th>
+										<th style="width: 20%;"></th>
+									</tr>
+								</tbody>
+							</table>
+							<div class="content marketsummarylist" tabindex="2"
+								style="overflow: hidden; outline: none; height: 49px;">
+								<table class="table-normal mt10" style="width: 100%;">
+
+
+									<tbody>
+										<tr style="height: 20px;">
+											<td>石油帝国-杨老师</td>
+											<td style="width: 10%;">4</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">73.00</td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+
+										<tr style="height: 20px;">
+											<td>石油帝国- 吴老师</td>
+											<td style="width: 10%;">6</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">52.30</td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+
+										<tr style="height: 20px;">
+											<td>石油帝国-大兵老师</td>
+											<td style="width: 10%;">7</td>
+											<td style="width: 14%;">66.67%</td>
+											<td style="width: 14%;">25.40</td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+
+										<tr style="height: 20px;">
+											<td>石油帝国-霍经理</td>
+											<td style="width: 10%;">3</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">16.00</td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+
+										<tr style="height: 20px;">
+											<td>石油帝国-伯通老师</td>
+											<td style="width: 10%;">2</td>
+											<td style="width: 14%;">0</td>
+											<td style="width: 14%;"></td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+							<table class="table-normal mt10" style="width: 100%;"
+								id="tbMarketTrendSummaryFooter">
+								<tfoot>
+									<tr>
+										<td>合计</td>
+										<td style="width: 10%;"><span
+											id="spnTotalMargetTrendCount">22</span></td>
+										<td style="width: 14%;"><span id="spnTotalSuccessRate">92.31%</span></td>
+										<td style="width: 14%;"><span
+											id="spnTotalProfitOrLossAmount">166.70</span></td>
+										<td style="width: 20%;"></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div id="divHead" class="hq_tip_list" style="display: none;">
+							<table class="table-normal mt10" style="width: 100%;"
+								id="tbMarketTrendSummaryHeader">
+								<tbody>
+									<tr>
+										<th>姓名</th>
+										<th style="width: 10%;">数量</th>
+										<th style="width: 14%;">成功率</th>
+										<th style="width: 14%;">点数总计</th>
+										<th style="width: 20%;"></th>
+									</tr>
+								</tbody>
+							</table>
+							<div class="content marketsummarylist" tabindex="3"
+								style="overflow: hidden; outline: none; height: 49px;">
+								<table class="table-normal mt10" style="width: 100%;">
+									<tbody>
+										<tr style="height: 20px;">
+											<td>石油帝国-杨老师</td>
+											<td style="width: 10%;">4</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">73.00</td>
+											<td style="width: 20%;"></td>
+										</tr>
+										<tr style="height: 20px;">
+											<td>石油帝国- 吴老师</td>
+											<td style="width: 10%;">6</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">52.30</td>
+											<td style="width: 20%;"></td>
+										</tr>
+										<tr style="height: 20px;">
+											<td>石油帝国-大兵老师</td>
+											<td style="width: 10%;">7</td>
+											<td style="width: 14%;">66.67%</td>
+											<td style="width: 14%;">25.40</td>
+											<td style="width: 20%;"></td>
+										</tr>
+										<tr style="height: 20px;">
+											<td>石油帝国-霍经理</td>
+											<td style="width: 10%;">3</td>
+											<td style="width: 14%;">100.00%</td>
+											<td style="width: 14%;">16.00</td>
+											<td style="width: 20%;"></td>
+										</tr>
+										<tr style="height: 20px;">
+											<td>石油帝国-伯通老师</td>
+											<td style="width: 10%;">2</td>
+											<td style="width: 14%;">0</td>
+											<td style="width: 14%;"></td>
+											<td style="width: 20%;"></td>
+										</tr>
+
+
+									</tbody>
+								</table>
+							</div>
+							<table class="table-normal mt10" style="width: 100%;"
+								id="tbMarketTrendSummaryFooter">
+								<tfoot>
+									<tr>
+										<td>合计</td>
+										<td style="width: 10%;"><span
+											id="spnTotalMargetTrendCount">22</span></td>
+										<td style="width: 14%;"><span id="spnTotalSuccessRate">92.31%</span></td>
+										<td style="width: 14%;"><span
+											id="spnTotalProfitOrLossAmount">166.70</span></td>
+										<td style="width: 20%;"></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+						<div id="showMarketTrendDetail" style="display: none;">
+							<iframe id="iframeMarketTrendDetail" frameborder="0"
+								style="min-height: 560px; width: 950px; border: 1px #fff solid; border: 0; margin: 0;"></iframe>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+			<!-- <div class="box1 mt10">
 				<div class="tab1">
 					<ul class="tab-change" id="ulMarketTrendMessage">
 
@@ -404,7 +680,8 @@ table td, table th {
 									id="clean_checkbox3" /> <label for="clean_checkbox3"
 									class="ico16 chat-fn-3"></label>
 							</i>
-							</a> <a href="javascript:void(0);"
+							</a>
+							<a href="javascript:void(0);"
 								onclick="SearchMarketTreadMessage(2);return false;">
 								<p>
 									<span>更多</span>
@@ -460,8 +737,9 @@ table td, table th {
 
 					</div>
 				</div>
+			</div> -->
 
-			</div>
+
 		</div>
 
 		<script type="text/javascript">
@@ -580,7 +858,7 @@ table td, table th {
 					type="hidden" name="UserOnline1$hfPageSize4OnlineUser"
 					id="hfPageSize4OnlineUser" value="5" />
 
-			<!-- 	<div class="search1">
+				<!-- 	<div class="search1">
 
 					<input name="UserOnline1$txtSearchCondition4OnlineUser" type="text"
 						id="txtSearchCondition4OnlineUser" placeholder="搜索联系人..." /> <i
@@ -589,7 +867,7 @@ table td, table th {
 				<div class="tab1 chat-contact-tab mt10" id="divUserOnlineHead">
 					<ul class="tab2-change">
 						<li id="liOnlineUser"><a href="javascript://" class="active">在线<span
-								id="spnOnlineUserCount">${room.lineNum }</span></a></li>
+								id="spnOnlineUserCount">${room.showLineNum }</span></a></li>
 						<!-- <li id="liMyRelatedOnlineUser"><a href="javascript://"><span
 								id="UserOnline1_spnMyRelatedUser">我的客服</span></a></li> -->
 					</ul>
@@ -607,8 +885,7 @@ table td, table th {
 										<a href="javascript://" id="lnkSubscribeTeacher"
 											class="subscribe-y"
 											onclick="SubscribeTeacher('${item.SUserSNNO }',this);">订阅老师</a>
-									</c:if> --%> 
-									<c:if test="${item.IsQQ ==1 }">
+									</c:if> --%> <c:if test="${item.IsQQ ==1 }">
 										<a target="_blank"
 											href="tencent://message/?uin=${item.QQ}&site=qq&menu=yes"><i
 											class="ico ico16 ico16-qq" alt="点击这里给我发消息" title="点击这里给我发消息"></i></a>
@@ -658,19 +935,25 @@ table td, table th {
 					<div class="chat-box-marbox" id="Marbox">
 						<div class="chat-box-marquee">
 							<div class="chat-box-tip-i" id="Marbox-i">
-
-
-								<ul>
-
-								</ul>
-
+								<!-- <marquee onmouseover="this.stop()" onmouseout="this.start()"
+									scrollamount="10" height="26px" scrolldelay="1"
+									direction="left" behavior="scroll"
+									>
+									<ul id="Marbox-ul">
+										<li style="display:inline">第一次是顶顶顶顶顶的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶</li>
+										<li style="display:inline">第二次是省份分付付付付付付付付付付付付付付</li>
+									</ul>
+								</marquee> -->
+								
+								<ul id="Marbox-ul">
+										<li style="display:inline">系统公告：喊单时间...</li>
+									</ul>
 							</div>
 						</div>
 					</div>
 
 					<script>
 						$(document).ready(BeginMarquee);
-
 						function BeginMarquee() {
 							var $iMar = $("#Marbox-i");
 							var $Marbox = $("#Marbox");
@@ -692,6 +975,27 @@ table td, table th {
 								clearInterval(myvar);
 							})
 						}
+						/* function BeginMarquee() {
+							var $iMar = $("#Marbox-i");
+							var $Marbox = $("#Marbox");
+							var $clone = $iMar.clone().insertAfter($iMar);
+							function Marquee() {
+								if ($Marbox[0].scrollLeft
+										- $clone[0].offsetWidth >= 0) {
+									$Marbox[0].scrollLeft -= $iMar[0].offsetWidth;
+								} else {
+									$Marbox[0].scrollLeft++;
+								}
+							}
+							var speed = 50;
+							var myvar = setInterval(Marquee, speed);
+							$Marbox.mouseout(function() {
+								myvar = setInterval(Marquee, speed);
+							})
+							$Marbox.mouseover(function() {
+								clearInterval(myvar);
+							})
+						} */
 					</script>
 
 				</div>
@@ -717,12 +1021,13 @@ table td, table th {
 								<p>
 									<span>清屏</span>
 								</p> <i class="ico ico16 chat-fn-3"></i>
-							</a> <a class="the-checkbox" href="javascript://"
+							</a>
+							<!--  <a class="the-checkbox" href="javascript://"
 								onclick="SearchChatMessage(1);return false;">
 								<p>
 									<span>更多</span>
 								</p> <i class="ico ico16 chat-fn-4"></i>
-							</a>
+							</a> -->
 						</div>
 
 					</div>
@@ -743,12 +1048,13 @@ table td, table th {
 								<p>
 									<span>清屏</span>
 								</p> <i class="ico ico16 chat-fn-3"></i>
-							</a> <a class="the-checkbox" href="javascript://"
+							</a>
+							<!-- <a class="the-checkbox" href="javascript://"
 								onclick="SearchChatMessage(2);return false;">
 								<p>
 									<span>更多</span>
 								</p> <i class="ico ico16 chat-fn-4"></i>
-							</a>
+							</a> -->
 						</div>
 					</div>
 				</div>
@@ -845,97 +1151,10 @@ table td, table th {
 									}
 								}
 							</script>
-
-
-							<div class="giftBox" onclick="CancelEventBubble(event)">
-
-								<ul>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_hand.png'
-										onmouseover="ViewGift('5')" class="thumb"
-										onclick="SendGift('0000001','5')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftHand.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_beer.png'
-										onmouseover="ViewGift('10')" class="thumb"
-										onclick="SendGift('0000002','10')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftBeer.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_cafe.png'
-										onmouseover="ViewGift('15')" class="thumb"
-										onclick="SendGift('0000003','15')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftCafe.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_flower.png'
-										onmouseover="ViewGift('100')" class="thumb"
-										onclick="SendGift('0000004','100')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftRose.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_gold.png'
-										onmouseover="ViewGift('1000')" class="thumb"
-										onclick="SendGift('0000005','1000')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftGold.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_meat.png'
-										onmouseover="ViewGift('20')" class="thumb"
-										onclick="SendGift('0000006','20')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftMeat.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_silver.png'
-										onmouseover="ViewGift('500')" class="thumb"
-										onclick="SendGift('0000007','500')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftSilver.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_smoke.png'
-										onmouseover="ViewGift('50')" class="thumb"
-										onclick="SendGift('0000008','50')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftSmoke.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_thank.png'
-										onmouseover="ViewGift('5')" class="thumb"
-										onclick="SendGift('0000009','5')" /> <img
-										src='${rc.getContextPath()}/images/gift/GiftThank.gif'
-										class="datu" /></li>
-
-									<li><img
-										src='${rc.getContextPath()}/images/gift/btn_zan.png'
-										onmouseover="ViewGift('8')" class="thumb"
-										onclick="SendGift('0000011','8')" /> <img
-										src='${rc.getContextPath()}/images/gift/giftzan.gif'
-										class="datu" /></li>
-
-								</ul>
-
-								<div class="clear giftInfo pl10 pt5">
-									<span>赠与</span> <input type="text"
-										id="txtAnalyster_UserNickName" style="width: 80px"
-										readonly="readonly" /> <span>价格</span> <input type="text"
-										id="txtIntegral" class="jiage" readonly="readonly" /> <span>赠送数</span>
-									<input type="text" id="txtQuantity" class="jiage" value="1" />
-								</div>
-							</div>
-
 							<span class="at-user"> @ <select id="ddlMsgToUser"
 								name="ddlMsgToUser" style="width: 100px; white-space: nowrap;">
-									<option value="00000000-0000-0000-0000-000000000000" selected="selected">
-										大家</option>
+									<option value="00000000-0000-0000-0000-000000000000"
+										selected="selected">大家</option>
 							</select>
 							</span> <label id="MessageInput1_lblWhisper" class="at-user-s" for="">
 								<input name="MessageInput1$ckMsgIsWhisper" type="checkbox"
@@ -969,23 +1188,22 @@ table td, table th {
 			</div>
 			<ul id="ulForignProduct"></ul>
 		</div>
-		<input type="hidden" name="hfCurrentRoomId" id="hfCurrentRoomId" value="${room.roomId }" />
-		 <input type="hidden" name="hfUseSignalR"	id="hfUseSignalR" value="1" /> 
-		 <input type="hidden"
-			name="hfIsUserOnline" id="hfIsUserOnline" /> 
-			<input type="hidden"
-			name="hfVideoNO" id="hfVideoNO" value="13965258" /> 
-			<input
-			type="hidden" name="hfSubVideoNO" id="hfSubVideoNO" value="13965258" />
-		<input type="hidden" name="hfPlayWaveSetting" id="hfPlayWaveSetting"
+		<input type="hidden" name="hfCurrentRoomId" id="hfCurrentRoomId"
+			value="${room.roomId }" /> <input type="hidden" name="hfUseSignalR"
+			id="hfUseSignalR" value="1" /> <input type="hidden"
+			name="hfIsUserOnline" id="hfIsUserOnline" /> <input type="hidden"
+			name="hfVideoNO" id="hfVideoNO" value="${video.hfVideoNO }" /> <input
+			type="hidden" name="hfSubVideoNO" id="hfSubVideoNO"
+			value="${video.hfSubVideoNO }" /> <input type="hidden"
+			name="hfPlayWaveSetting" id="hfPlayWaveSetting"
 			value="[{&quot;Type&quot;:1,&quot;IsPlay&quot;:1,&quot;Times&quot;:1,&quot;WavFile&quot;:&quot;/File/Wav/&quot;},{&quot;Type&quot;:2,&quot;IsPlay&quot;:1,&quot;Times&quot;:3,&quot;WavFile&quot;:&quot;/File/Wav/&quot;},{&quot;Type&quot;:3,&quot;IsPlay&quot;:1,&quot;Times&quot;:1,&quot;WavFile&quot;:&quot;/File/Wav/&quot;}]" />
 		<input type="hidden" name="hfIsDiffPubliAndPrivateChatArea"
 			id="hfIsDiffPubliAndPrivateChatArea" value="True" /> <input
 			type="hidden" name="hfIsClient" id="hfIsClient" value="1" /> <input
 			type="hidden" name="hfShowAddQuestion" id="hfShowAddQuestion"
 			value="1" /> <input type="hidden" name="hfSkinId" id="hfSkinId"
-			value="skin0" /> <input type="hidden" name="hfVideoRoomType"
-			id="hfVideoRoomType" /> <input type="hidden"
+			value="${user.skinId }" /> <input type="hidden"
+			name="hfVideoRoomType" id="hfVideoRoomType" /> <input type="hidden"
 			name="hfProductCategoryId4Vote" id="hfProductCategoryId4Vote"
 			value="0" /> <input type="hidden"
 			name="hfProductCategoryId4HoldingMarketTrend"
@@ -1130,6 +1348,95 @@ table td, table th {
 			</div>
 			<div class="cs_cont"></div>
 		</div>
+		<div id="divPop4NoticeGuestRegistration" class="popup-layer"
+			style="display: none; width: 600px; margin: 0px auto 0px -300px; top: 120px; left: 50%;">
+			<div class="popup-layer-in">
+				<div class="p-tip">
+					<img src="${rc.getContextPath()}/img/p-tip-msg.png" alt=""
+						class="p-tip-ico" style="border: none;">
+
+					<div class="p-tip-info red">您已在本直播室收听超过10分钟了，请联系下方QQ领取马甲，让您在直播室畅所欲言与老师零距离交流。</div>
+
+					<ul class="qq">
+						<li><a
+							href="tencent://message/?uin=2880677165&amp;site=qq&amp;menu=yes"
+							alt="点击这里给分析助理-土豆发消息,QQ:2880677165"
+							title="点击这里给分析助理-土豆发消息,QQ:2880677165">助理土豆</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677161&amp;site=qq&amp;menu=yes"
+							alt="点击这里给分析助理-小雨发消息,QQ:2880677161"
+							title="点击这里给分析助理-小雨发消息,QQ:2880677161">顾问小雨</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677172&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-小萌发消息,QQ:2880677172"
+							title="点击这里给投资顾问-小萌发消息,QQ:2880677172">顾问小萌</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677170&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-红豆发消息,QQ:2880677170"
+							title="点击这里给投资顾问-红豆发消息,QQ:2880677170">客服红豆</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677162&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-温娅发消息,QQ:2880677162"
+							title="点击这里给投资顾问-温娅发消息,QQ:2880677162">顾问温娅</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677160&amp;site=qq&amp;menu=yes"
+							alt="点击这里给分析助理-小周发消息,QQ:2880677160"
+							title="点击这里给分析助理-小周发消息,QQ:2880677160">顾问小周</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677173&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-小超发消息,QQ:2880677173"
+							title="点击这里给投资顾问-小超发消息,QQ:2880677173">顾问小超</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677151&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-香香发消息,QQ:2880677151"
+							title="点击这里给投资顾问-香香发消息,QQ:2880677151">客服香香</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677168&amp;site=qq&amp;menu=yes"
+							alt="点击这里给分析助理-豆豆发消息,QQ:2880677168"
+							title="点击这里给分析助理-豆豆发消息,QQ:2880677168">客服豆豆</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677152&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-良辰发消息,QQ:2880677152"
+							title="点击这里给投资顾问-良辰发消息,QQ:2880677152">助理良辰</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677171&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-小希发消息,QQ:2880677171"
+							title="点击这里给投资顾问-小希发消息,QQ:2880677171">顾问小希</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677176&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-雪儿发消息,QQ:2880677176"
+							title="点击这里给投资顾问-雪儿发消息,QQ:2880677176">在线客服</a></li>
+
+						<li><a
+							href="tencent://message/?uin=2880677175&amp;site=qq&amp;menu=yes"
+							alt="点击这里给投资顾问-米琦发消息,QQ:2880677175"
+							title="点击这里给投资顾问-米琦发消息,QQ:2880677175">在线客服</a></li>
+					</ul>
+					<div class="p-tip-fn">
+						<a href="javscript://" onclick="createShortcut('铭鑫财富')"
+							class="btn-m">保存直播室到桌面</a>
+					</div>
+					<!-- <div class="p-tip-tips">
+						<a href="/ShortCutHelp.html" class="blue" target="_blank">如何保存直播室到桌面？</a>
+					</div> -->
+				</div>
+				<div class="close">
+					<a href="javscript://"
+						onclick="$('#divPop4NoticeGuestRegistration').hide();return false;"></a>
+				</div>
+			</div>
+		</div>
 
 
 
@@ -1139,8 +1446,7 @@ table td, table th {
 
 
 
-
-		<div class="popup-layer"
+		<%-- <div class="popup-layer"
 			style="margin-top: 20px; width: 800px; height: 600px; display: none; margin: 0 auto; top: 20px; left: 50%; margin-left: -400px;"
 			id="divRoomIntroduce">
 			<div class="popup-layer-in article content" style="height: 550px;">
@@ -1168,7 +1474,7 @@ table td, table th {
 				<a href="javscript://"
 					onclick="$('#divRoomIntroduce').hide();$('#divbg4Popup').hide();return false;"></a>
 			</div>
-		</div>
+		</div> --%>
 
 		<div class="popup-layer"
 			style="margin-top: 100px; width: 600px; display: none; margin: 0 auto; top: 100px; left: 50%; margin-left: -300px;"
@@ -1178,29 +1484,50 @@ table td, table th {
 			</div>
 			<div class="popup-layer-in s-skin">
 				<ul id="myskin">
+
 					<li id="liSkin"><img
 						src="${rc.getContextPath()}/img/skin0-view.jpg" alt="">
 						<div>
 							<p>默认皮肤</p>
-							<a class="s-skin-btn-y" href="javascript://" id="skin0">使用中</a>
+							<c:if test="${user.skinId=='skin0' }">
+								<a class="s-skin-btn-y" href="javascript://" id="skin0">使用中</a>
+							</c:if>
+							<c:if test="${user.skinId !='skin0' }">
+								<a class="s-skin-btn-n" href="javascript://" id="skin0">使用</a>
+							</c:if>
 						</div></li>
 					<li><img src="${rc.getContextPath()}/img/skin1-view.jpg"
 						alt="">
 						<div>
 							<p>山水</p>
-							<a class="s-skin-btn-n" href="javascript://" id="skin1">使用</a>
+							<c:if test="${user.skinId=='skin1' }">
+								<a class="s-skin-btn-y" href="javascript://" id="skin1">使用中</a>
+							</c:if>
+							<c:if test="${user.skinId !='skin1' }">
+								<a class="s-skin-btn-n" href="javascript://" id="skin1">使用</a>
+							</c:if>
 						</div></li>
 					<li><img src="${rc.getContextPath()}/img/skin2-view.jpg"
 						alt="">
 						<div>
 							<p>夕阳</p>
-							<a class="s-skin-btn-n" href="javascript://" id="skin2">使用</a>
+							<c:if test="${user.skinId=='skin2' }">
+								<a class="s-skin-btn-y" href="javascript://" id="skin2">使用中</a>
+							</c:if>
+							<c:if test="${user.skinId !='skin2' }">
+								<a class="s-skin-btn-n" href="javascript://" id="skin2">使用</a>
+							</c:if>
 						</div></li>
 					<li><img src="${rc.getContextPath()}/img/skin3-view.jpg"
 						alt="">
 						<div>
 							<p>木纹</p>
-							<a class="s-skin-btn-n" href="javascript://" id="skin3">使用</a>
+							<c:if test="${user.skinId=='skin3' }">
+								<a class="s-skin-btn-y" href="javascript://" id="skin3">使用中</a>
+							</c:if>
+							<c:if test="${user.skinId !='skin3' }">
+								<a class="s-skin-btn-n" href="javascript://" id="skin3">使用</a>
+							</c:if>
 						</div></li>
 				</ul>
 			</div>
@@ -1320,8 +1647,9 @@ table td, table th {
 							}
 						});
 			}
-//第一个参数 是权限
-			InitialRoomDetail('1000001101100100', 'YY', '',
+			//第一个参数 是权限
+			//'1000001101100100'
+			InitialRoomDetail('1111111111111111', 'YY', '',
 					'http://115.29.249.68/',
 					'0a4df49f380e019b734099ace31c5ea4', '1');
 			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));
@@ -1370,6 +1698,10 @@ table td, table th {
 			if (eventTarget == null) {
 				ShowRiskRemind($("#hfCurrentRoomId").val());
 			}
+			//展示提示信息
+			//SetUserExperience('6eec9256-7951-4a35-8d11-713b617dc3a7',7200);
+			//ShowNoticeGuestRegistration(10);
+			//ShowRiskRemind(100001);//]]>
 		</script>
 	</form>
 </body>

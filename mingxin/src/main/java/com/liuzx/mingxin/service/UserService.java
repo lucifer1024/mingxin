@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.liuzx.mingxin.dao.UserMapper;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.utils.MessageUtils;
 import com.liuzx.mingxin.utils.UUIDGenerator;
 
 @Service
@@ -22,7 +23,7 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 	
-	public static int guestNum = 1000;
+	public static int guestNum = 600;
 	
 	public JSONArray findOnlineUser() {
 		List<HashMap<String,Object>> userList = getAllUserByOrder();
@@ -144,6 +145,7 @@ public class UserService {
 		logger.info(" insert result="+result);
 		return true;
 	}
+	
 	/**
 	 * 检验用户登录信息
 	 * @param userName
@@ -162,6 +164,52 @@ public class UserService {
 		}
 		return user;
 	}
+	public String checkUserName(String userName){
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("userName", userName);
+		//TODO 用户密码 做MD5 加密
+		List<User> list = userMapper.selectSelective(map);
+		User user = null;
+		String returnMsg = null;
+		if(list != null&&list.size()>0){
+			for(int i=0;i<list.size();i++){
+				user = list.get(i);
+				if(user.getRoleId()==7){
+					//游客信息 不校验
+					continue;
+				}
+				if(userName.equals(user.getUserName())){
+					returnMsg = "用户名已存在)";
+				}
+			}
+		}
+		return returnMsg;
+	}
+	public String checkUserNameAndIp(String userName,String registerIp){
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("userName", userName);
+		//TODO 用户密码 做MD5 加密
+		map.put("registerIp", registerIp);
+		List<User> list = userMapper.selectSelective(map);
+		User user = null;
+		String returnMsg = null;
+		if(list != null&&list.size()>0){
+			for(int i=0;i<list.size();i++){
+				user = list.get(i);
+				if(user.getRoleId()==7){
+					//游客信息 不校验
+					continue;
+				}
+				if(registerIp.equals(user.getRegisterIp())){
+					returnMsg = "同一个IP只能注册一个账号(您的IP:"+registerIp+")";
+				}
+				if(userName.equals(user.getUserName())){
+					returnMsg = "用户名已存在)";
+				}
+			}
+		}
+		return returnMsg;
+	}
 	
 	public User checkGuestUser(String registerIp){
 		//根据ip 查询游客信息
@@ -170,8 +218,8 @@ public class UserService {
 		map.put("roleId", 7);
 		map.put("userOrder", 999);
 		
-//		List<User> list = userMapper.selectSelective(map);
-		List<User> list = null; //test
+		List<User> list = userMapper.selectSelective(map);
+//		List<User> list = null; //test
 		User user = null;
 		if(list != null&&list.size()>0){
 			user = list.get(0);
@@ -185,10 +233,11 @@ public class UserService {
 	
 	private User createGuestUser(String registerIp){
 		guestNum++;
+		int index = guestNum+MessageUtils.getRandomIndex(20, 40);
 		User user = new User();
 		user.setUid(UUIDGenerator.getUUID());
-		user.setNickName("游客 "+guestNum);
-		user.setUserName("游客 "+guestNum);
+		user.setNickName("游客 "+index);
+		user.setUserName("游客 "+index);
 		user.setPassword("");
 		user.setRoleId(7);
 		user.setUserOrder(999);
@@ -204,6 +253,14 @@ public class UserService {
 	
 	public User findUserByUid(String uid){
 		return userMapper.selectByUid(uid);
+	}
+	public int updateUser(User user){
+		return userMapper.updateByUidSelective(user);
+	}
+	public int noTalkUser(String uid,int isNoTalk){
+//		User user = new User();
+//		return userMapper.updateByUidSelective(user);
+		return 0;
 	}
 	
 }

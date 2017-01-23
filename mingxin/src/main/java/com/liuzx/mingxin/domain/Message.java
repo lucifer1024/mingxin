@@ -4,11 +4,14 @@ public class Message {
 	
 	private String messageId;
 	private String Method;
-	private String RoomId;
+	private String RoomId = "100001";
 	private String Content;
 	private String ToUserSNNO;
 	private String ToUserName;
 	private String IsWhisper; // 是否悄悄的   是  1 否 0 
+	
+	private String userControlId;
+	private int TrueOrFalse;
 	public String getMessageId() {
 		return messageId;
 	}
@@ -53,5 +56,17 @@ public class Message {
 	}
 	public String  toString(){
 		return RoomId +" ToUserSNNO "+ToUserSNNO+" to "+Content;
+	}
+	public String getUserControlId() {
+		return userControlId;
+	}
+	public void setUserControlId(String userControlId) {
+		this.userControlId = userControlId;
+	}
+	public int getTrueOrFalse() {
+		return TrueOrFalse;
+	}
+	public void setTrueOrFalse(int trueOrFalse) {
+		TrueOrFalse = trueOrFalse;
 	}
 }

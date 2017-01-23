@@ -16,10 +16,11 @@
 		<result column="register_ip" property="registerIp" jdbcType="VARCHAR" />
 		<result property="create_time" column="createTime" javaType="java.util.Date"
 			jdbcType="TIMESTAMP" />
+			<result column="skin_id" property="skinId" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		id,uid, user_name, password,nick_name,mobile
-		qq,user_order,is_subscribe,is_qq,role_id,register_ip,create_time
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip,create_time,skin_id
 	</sql>
 	<select id="selectByUid" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -65,6 +66,9 @@
 			<if test="registerIp != null">
 				and register_ip = #{registerIp,jdbcType=VARCHAR}
 			</if>
+			<if test="skinId != null">
+				and skin_id = #{skinId,jdbcType=VARCHAR}
+			</if>
     </select>
 	<delete id="deleteByUid" parameterType="java.lang.String">
 		delete from t_user
@@ -73,11 +77,11 @@
 	<insert id="insert" parameterType="com.liuzx.mingxin.domain.User">
 		insert into t_user 
 		(uid, user_name,password, nick_name,mobile,
-		qq,user_order,is_subscribe,is_qq,role_id,register_ip)
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip,skin_id)
 		values (#{uid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
 		#{nickName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},#{qq,jdbcType=VARCHAR},#{userOrder,jdbcType=INTEGER},
 		#{isSubscribe,jdbcType=INTEGER}, #{isQQ,jdbcType=INTEGER},
-		#{roleId,jdbcType=INTEGER} ),#{registerIp,jdbcType=VARCHAR},
+		#{roleId,jdbcType=INTEGER} ),#{registerIp,jdbcType=VARCHAR},#{skinId,jdbcType=VARCHAR}
 	</insert>
 	<insert id="insertSelective" parameterType="com.liuzx.mingxin.domain.User">
 		insert into t_user
@@ -115,6 +119,9 @@
 			<if test="registerIp != null">
 				register_ip,
 			</if>
+			<if test="skinId != null">
+				skin_id,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="uid != null">
@@ -149,6 +156,9 @@
 			</if>
 			<if test="registerIp != null">
 				#{registerIp,jdbcType=VARCHAR},
+			</if>
+			<if test="skinId != null">
+				#{skinId,jdbcType=VARCHAR},
 			</if>
 		</trim>
 	</insert>
@@ -185,6 +195,10 @@
 			<if test="registerIp != null">
 				register_ip = #{registerIp,jdbcType=VARCHAR},
 			</if>
+			<if test="skinId != null">
+				skin_id = #{skinId,jdbcType=VARCHAR},
+			</if>
+			
 		</set>
 		where uid = #{uid,jdbcType=VARCHAR}
 	</update>
@@ -199,7 +213,8 @@
 		is_subscribe = #{isSubscribe,jdbcType=INTEGER},
 		is_qq = #{isQQ,jdbcType=INTEGER},
 		role_id = #{roleId,jdbcType=INTEGER},
-		register_ip = #{registerIp,jdbcType=INTEGER}
+		register_ip = #{registerIp,jdbcType=VARCHAR},
+		skin_id = #{skinId,jdbcType=VARCHAR}
 		where uid = #{uid,jdbcType=VARCHAR}
 	</update>
 </mapper>

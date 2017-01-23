@@ -21,8 +21,9 @@ public class User {
 	private String loginIp; //登录ip
 	private String mobile; //手机号
 	private String saleManId; //对应的销售人员
-	private int isOnline; //是否在线
-	
+	private int isOnline; //是否在线 0 不在线 1 在线
+	private String skinId; // 默认皮肤id 0 
+	private int isNoTalking; //是否禁言  1 是  0 否 
 	
 //	private int userType;//用户类型    1 游客、2 注册未激活、3 观摩用户.
 //	private String userTypeName;//用户类型    1 游客、2 注册未激活、3 观摩用户
@@ -176,5 +177,29 @@ public class User {
 	}
 	public void setSaleManId(String saleManId) {
 		this.saleManId = saleManId;
+	}
+
+	public int getIsOnline() {
+		return isOnline;
+	}
+
+	public void setIsOnline(int isOnline) {
+		this.isOnline = isOnline;
+	}
+
+	public String getSkinId() {
+		return skinId;
+	}
+
+	public void setSkinId(String skinId) {
+		this.skinId = skinId;
+	}
+
+	public int getIsNoTalking() {
+		return isNoTalking;
+	}
+
+	public void setIsNoTalking(int isNoTalking) {
+		this.isNoTalking = isNoTalking;
 	}
 }

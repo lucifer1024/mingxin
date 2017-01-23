@@ -12,13 +12,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Controller
-@RequestMapping("/UEditor")
+@RequestMapping("/ueditor")
 public class UEditorController {
 	private static Log logger = LogFactory.getLog(UEditorController.class);
 
 	@RequestMapping(value = "/netController", produces = "text/html;charset=UTF-8")
 	@ResponseBody
 	String netController(ModelMap model,@RequestParam String action) {
+		logger.info(" action "+action);
 		JSONObject resultObj = new JSONObject();
 		resultObj.put("imageActionName", "uploadimage");
 		resultObj.put("imageFieldName", "upfile");

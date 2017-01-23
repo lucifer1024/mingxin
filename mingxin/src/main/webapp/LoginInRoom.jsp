@@ -177,11 +177,11 @@
 							autocomplete="off" />
 
 					</div>
-					<div class="form-in2">
+					<!-- <div class="form-in2">
 						<label for=""> <input name="chkRememberMe" type="checkbox"
 							id="MainContent_LoginInRoom_chkRememberMe" class="checkbox" />下次自动登录
 						</label>
-					</div>
+					</div> -->
 				</div>
 				<a id="lnkLogin" class="btn-m btn-block"
 					href="javascript:__doPostBack('lnkLogin','')">登录</a>

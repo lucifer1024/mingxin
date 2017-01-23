@@ -19,6 +19,16 @@ public class UUIDGenerator {
 	public static String chUid(String uid){
 		return "ch"+uid+getStringRandom(3);
 	}
+	/**
+	 * 
+	 * @param chuid  lnkUser_chab45bfe3-af07-4ad8-9215-0a4c84ab3e37vo5
+	 * @return ab45bfe3-af07-4ad8-9215-0a4c84ab3e37
+	 */
+	public static String unChUid(String chuid){
+		chuid = chuid.replace("lnkUser_ch", "");
+		chuid = chuid.substring(0,chuid.length()-3);
+		return chuid;
+	}
 	public static String getStringRandom(int length) {  
         
         String val = "";  

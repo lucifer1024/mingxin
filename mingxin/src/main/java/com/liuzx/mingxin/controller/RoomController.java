@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
 import com.liuzx.mingxin.domain.Role;
@@ -19,6 +20,7 @@ import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.service.VideoService;
 import com.liuzx.mingxin.utils.HttpRequestUtils;
 
 @Controller
@@ -31,6 +33,9 @@ public class RoomController {
 	private RoomService roomService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private VideoService videoService;
+	
 
 	@RequestMapping("/RiskRemind")
 	String RiskRemind(ModelMap model, @RequestParam String RoomId, @RequestParam(required = false) String eventTarget) {
@@ -42,31 +47,30 @@ public class RoomController {
 			return "/RoomDetail.jsp";
 		}
 	}
-	/**
-	 * 首页
-	 * @param model
-	 * @param RoomId
-	 * @param eventTarget
-	 * @return
-	 */
-	@RequestMapping("/CommunityHome")
-	String CommunityHome(ModelMap model, HttpSession session, @RequestParam(required = false) String eventTarget) {
-		User loginUser = (User)session.getAttribute(User.SESSION_ID);
-		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
-		
-		//TODO 此处不再做是否登录判断  使用统一方法验证
-		if(loginUser!=null){
-			model.put("user", loginUser); //用户名称  游客是 游客的自动生成的名称
-			model.put("role", loginRole); //用户名称  游客是 游客的自动生成的名称
-			return "/CommunityHome.jsp";
-		}else{
-			return "redirect:/Account/Login";
-		}
-	}
+//	/**
+//	 * 首页
+//	 * @param model
+//	 * @param RoomId
+//	 * @param eventTarget
+//	 * @return
+//	 */
+//	@RequestMapping("/CommunityHome")
+//	String CommunityHome(ModelMap model, HttpSession session, @RequestParam(required = false) String eventTarget) {
+//		User loginUser = (User)session.getAttribute(User.SESSION_ID);
+//		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
+//		
+//		//TODO 此处不再做是否登录判断  使用统一方法验证
+//		if(loginUser!=null){
+//			model.put("user", loginUser); //用户名称  游客是 游客的自动生成的名称
+//			model.put("role", loginRole); //用户名称  游客是 游客的自动生成的名称
+//			return "/CommunityHome.jsp";
+//		}else{
+//			return "redirect:/Account/Login";
+//		}
+//	}
 	
 	@RequestMapping("/RoomDetail")
 	String RoomDetail(ModelMap model,HttpSession session, HttpServletRequest request,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String eventTarget) {
-		logger.info("RoomId  " + RoomId);
 		User loginUser = (User)session.getAttribute(User.SESSION_ID);
 		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
 		if("lbSignOut".equals(eventTarget)){
@@ -94,9 +98,27 @@ public class RoomController {
 		model.put("user", loginUser);
 		model.put("role", loginRole); 
 		model.put("userArray", userArray);
+		model.put("video", videoService.getVideo());
 //		model.put("eventTarget", eventTarget);
 		return "/RoomDetail.jsp";
 	}
 	
+	/**
+	 * 首页
+	 * @param model
+	 * @param RoomId
+	 * @param eventTarget
+	 * @return
+	 */
+	@RequestMapping("/RoomManager")
+	@ResponseBody
+	String RoomManager(ModelMap model, HttpSession session, @RequestParam(required = false) String Method,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String SkinId) {
+		if("ChangeSkin".equals(Method)){
+			User loginUser = (User)session.getAttribute(User.SESSION_ID);
+			loginUser.setSkinId(SkinId);
+			userService.updateUser(loginUser);
+		}
+		return "Ok";
+	}
 //TopVisitRooms  人气榜单
 }

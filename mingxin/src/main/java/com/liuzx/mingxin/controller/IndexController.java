@@ -5,25 +5,70 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.alibaba.fastjson.JSONArray;
+import com.liuzx.mingxin.domain.Role;
+import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.service.RoleService;
+import com.liuzx.mingxin.service.RoomService;
+import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.service.VideoService;
+import com.liuzx.mingxin.utils.HttpRequestUtils;
 
 @Controller
 public class IndexController {
 	private static Log logger = LogFactory.getLog(IndexController.class);
-
-	@RequestMapping("/index")
-	String indexjsp(ModelMap model,HttpServletRequest request, HttpSession session) {
-//		//TODO  拦截器 判断是否登录 
-//		User loginUser = (User)session.getAttribute(User.SESSION_ID);
-//		if(loginUser!=null){
-//			return "redirect:/Room/CommunityHome";
-//		}else{
-//			return "redirect:/Account/Login";
-//		}
-		return "redirect:/Room/RoomDetail";
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private RoomService roomService;
+	@Autowired
+	private RoleService roleService;
+	@Autowired
+	private VideoService videoService;
+//	@RequestMapping(value="/")
+//	String index(ModelMap model,HttpServletRequest request, HttpSession session) {
+//		logger.info("入口");
+//		return "redirect:/Room/RoomDetail";
+//	}
+	@RequestMapping("/")
+	String RoomDetail(ModelMap model,HttpSession session, HttpServletRequest request,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String eventTarget) {
+		logger.info("RoomId  " + RoomId);
+		User loginUser = (User)session.getAttribute(User.SESSION_ID);
+		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
+		if("lbSignOut".equals(eventTarget)){
+			//注销
+			logger.info("注销");
+			loginUser = null;
+			loginRole = null;
+			model.put("eventTarget", "");
+			
+		}
+		if(loginUser==null){
+			// 生成游客信息
+			//注册用户
+			String registerIp = HttpRequestUtils.getRemortIP(request);
+			// 保存到session
+			loginUser = userService.checkGuestUser(registerIp);
+			session.setAttribute(User.SESSION_ID, loginUser);
+			loginRole = roleService.selectById(loginUser.getRoleId());
+			session.setAttribute(Role.SESSION_ID, loginRole);
+		}
+		//根据roomId 查询room信息
+		Room room = roomService.selectById(RoomId);
+		JSONArray userArray = userService.findOnlineUser(); //用户列表
+		model.put("room", room);
+		model.put("user", loginUser);
+		model.put("role", loginRole); 
+		model.put("userArray", userArray);
+		model.put("video", videoService.getVideo());
+//		model.put("eventTarget", eventTarget);
+		return "/RoomDetail.jsp";
 	}
 }

@@ -19,7 +19,7 @@ body{min-width: 1230px; _width:expression(document.body.clientWidth > 1230 ? "12
 .ico24{background: url(../img/sprite.png) no-repeat; height: 24px; width: 24px; overflow: hidden; display: inline-block;  *display: inline; *zoom: 1; text-indent: 999em; background-position: 50px 50px;}
 .ico16{background: url(../img/sprite.png) no-repeat; height: 16px; width: 16px; overflow: hidden; display: inline-block;  *display: inline; *zoom: 1; text-indent: 999em; background-position: 50px 50px;}
 .ico24-menu{background-position: 0px 0px;}
-.ico24-set{background-position: -60px 0px;}
+.ico24-set{background-position: -60px 0px;background-color: slategrey;}
 .ico24-skin{background-position: -30px 0px;}
 .ico24-grid{background-position: -90px 0px;}
 .ico24-wechat{background-position: -120px 0px;}
@@ -62,10 +62,24 @@ body{min-width: 1230px; _width:expression(document.body.clientWidth > 1230 ? "12
 .t .logo{float: left; margin: 5px 0px 0px 0px; text-align: left; white-space:nowrap;}
 .t .logo h1{display: inline; font-size: 18px; line-height: 48px; font-weight: bold; color: #fff; margin: 0px 10px 0px 5px;}
 .t .logo span{color: #fff; line-height: 48px; color: #fff; font-size: 18px; font-weight: 200; opacity: 0.5; filter: alpha(opacity=50);}
+.t .logo .qq{
+	display: inline-block;
+	background: url(../images/Pop4Startup/qq.png) no-repeat;
+	width: 54px;
+	height: 28px;
+	line-height: 25px;
+	padding-left: 20px;
+	text-decoration: none;
+	font-size: 12px;
+	color: #063c66;
+	font-family: "microsoft yahei";
+	text-shadow: 0px 1px 0px #fff;
+}
+
 
 .t .t-links{color: #fff; font-size: 18px; opacity: 0.7; filter: alpha(opacity=70); vertical-align: middle; padding-top: 17px;}
 
-.t .quick-save img{margin-top: 12px; margin-right: 28px;}
+.t .quick-save img{margin-top: 6px; margin-right: 28px;}
 
 .t .dropdown-box{margin-top: 17px;}
 .t .dropdown-box .dropdown-a{color: #fff; font-size: 18px; white-space:nowrap\0; margin-right:24px\0;}
@@ -207,7 +221,7 @@ body{min-width: 1230px; _width:expression(document.body.clientWidth > 1230 ? "12
 
 /* chat-fn-box ---------------------------------- */
 /*.chat-fn-box{position: absolute; left: 0; bottom: 0; height: 48px; width: 98%; background: url(../img/bg3.png) repeat-x; text-align: right;}*/
-.chat-fn-box{position: absolute;right: 20px;bottom: 0; height: 48px;width: 200px; background: url(../img/bg3.png) repeat-x; text-align: right;}
+.chat-fn-box{position: absolute;right: 20px;bottom: 0; height: 48px;width: 150px; background: url(../img/bg3.png) repeat-x; text-align: right;}
 .chat-fn-box a{display: inline-block; text-align: center; position: relative; opacity: 0.7; filter: alpha(opacity=70); margin-right: 20px; margin-top: 20px;}
 .chat-fn-box a:hover{opacity: 1; filter: alpha(opacity=100); transition:all .5s ease 0s;}
 .chat-fn-box a p{position: absolute; display: none; left: -26px; top: -28px; width: 68px; text-align: center;}

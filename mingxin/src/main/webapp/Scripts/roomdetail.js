@@ -22,8 +22,14 @@ var voteKind_Vote = 1;
 var voteKind_HoldingMarketTrendVote = 2;
 var toolBarStr = "";
 var zhiniuUID = "";
-
+var hostUrl = "localhost:8080";
 function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignProductUrl1, foreignProductEncypt1, showMarketTrendByCategory) {
+	var strUrl = window.location.href;
+	var arrUrl = strUrl.split("/");
+	if(arrUrl.length>2){
+		hostUrl = arrUrl[2];
+	}
+	
 	GetSaleManList();
 	var videoNO = $("#hfVideoNO").val();
 	var subVideoNO = $("#hfSubVideoNO").val();
@@ -45,6 +51,9 @@ function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignP
 		if (userAuths.substr(8, 1) == "1") {
 			toolBarStr += "'snapscreen',"
 		}
+			toolBarStr += "'simpleupload',"
+			toolBarStr += "'insertimage',"
+				
 		toolBarStr += "'handwrite']]";
 		ue = UE.getEditor("editor", {
 			autoFloatEnabled: false,
@@ -810,7 +819,8 @@ function GetMoreOnlineUsers() {
 			$.each(jsonOnlineUsers, function(onlineUserIndex, onlineUser) {
 				userCount++;
 				var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0, onlineUser.SUserSNNO.length - 3) + '"]');
-//				var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0, onlineUser.SUserSNNO.length) + '"]');
+// var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0,
+// onlineUser.SUserSNNO.length) + '"]');
 				if (userlinks.length > 0) {
 					return true
 				}
@@ -1261,15 +1271,20 @@ function AddChatMessage() {
 		return
 	}
 	if (lastSpeakToUserSNNO == $("#ddlMsgToUser").val() && c == lastInputChatMessage) {
-		UserAlert("请勿重复发言");
+		UserAlert("请勿重复发言！");
+		ue.focus();
+		return
+	}
+	if(checkSendConent(c)){
+		UserAlert("请文明发言！");
 		ue.focus();
 		return
 	}
 	var a = "Method=AddChatMessage&RoomId=" + $("#hfCurrentRoomId").val();
 	a += "&Content=" + encodeURI(c);
-//	a += "&Content=" + c;
+// a += "&Content=" + c;
 	a += "&ToUserSNNO=" + $("#ddlMsgToUser").val();
-	//a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
+	// a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
 	a += "&ToUserName=" + encodeURI($("#ddlMsgToUser option:selected").text());
 	var b = 0;
 	if (document.getElementById("ckMsgIsWhisper") == null) {
@@ -1304,7 +1319,7 @@ function AddChatMessage4Mobile() {
 		return
 	}
 	var a = "Method=AddChatMessage&RoomId=" + $("#hfCurrentRoomId").val();
-	//a += "&Content=" + escape(c);
+	// a += "&Content=" + escape(c);
 	a += "&Content=" + c;
 	a += "&ToUserSNNO=00000000-0000-0000-0000-000000000000";
 	a += "&ToUserName=大家";
@@ -1991,7 +2006,8 @@ function ConfirmUserLogin(a, b) {
 var downloadFileWindow;
 
 function ShowDownloadFileWindow() {
-	$("#iframeDownloadFile")[0].src = basePath+"/Content/DownloadFilePage.aspx?roomId=" + roomIdInSignalR;
+	 $("#iframeDownloadFile")[0].src =
+	 basePath+"/Content/DownloadFilePage?RoomId=" + roomIdInSignalR;
 	downloadFileWindow = art.dialog({
 		background: "#000",
 		opacity: 0.98,
@@ -2008,7 +2024,7 @@ function CloseDownloadFileWindow() {
 var artDownloadFileDetailWindow;
 
 function OpenDownloadFileDetail(a) {
-	$("#iframeDownloadFileDetail")[0].src = basePath+"/Content/DownloadFileDetail.aspx?FileSNNO=" + a + "&RoomId=" + roomIdInSignalR;
+	$("#iframeDownloadFileDetail")[0].src = basePath+"/Content/DownloadFileDetail?FileSNNO=" + a + "&RoomId=" + roomIdInSignalR;
 	artDownloadFileDetailWindow = art.dialog({
 		lock: true,
 		background: "#000",
@@ -2396,7 +2412,7 @@ function ShowProductPrice() {
 		dataType: "jsonp",
 		jsonp: "callbackparam",
 		jsonpCallback: "success_jsonpCallback",
-		url: foreignProductUrl + "WebService/ForeignProductPriceService",
+		url: foreignProductUrl + "WebService/ForeignProductPriceService.ashx",
 		data: "Method=GetForeignProductPrice&Encypt=" + foreignProductEncypt,
 		beforeSend: function(g) {},
 		success: function(i) {
@@ -2752,3 +2768,47 @@ function CloseMyPrizeList() {
 	artMyPrizeList.close();
 	$("#iframeMyPrizeList")[0].src = ""
 };
+function createShortcut(sName) {  
+    try{
+    	var projectUrl = "http://"+hostUrl+basePath;
+    	var sUrl =projectUrl+"/index";
+    	var name = sName+'.html';
+    	 var urlObject = window.URL || window.webkitURL || window;
+    	    var content = '<script language="javascript">location.href="'+sUrl+'";</script>';
+    	    var export_blob = new Blob([content]);
+    	    var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+    	    save_link.href = urlObject.createObjectURL(export_blob);
+    	    save_link.download = name;
+    	    fake_click(save_link);
+    }catch(ex){  
+        alert("快捷方式创建失败，可能浏览器不支持！"+ex);  
+    }  
+} 
+function fake_click(obj) {
+    var ev = document.createEvent("MouseEvents");
+    ev.initMouseEvent(
+        "click", true, false, window, 0, 0, 0, 0, 0
+        , false, false, false, false, 0, null
+        );
+    obj.dispatchEvent(ev);
+}
+var fileterWordArray = null;
+function checkSendConent(content){
+	if(fileterWordArray == null){
+		var filterWord = $("#filterWord").val();
+		fileterWordArray = filterWord.split('|');
+	}
+   if (fileterWordArray.length) {
+       for (var i = 0; i < fileterWordArray.length; i++) {
+    	   if(fileterWordArray[i].length==0){
+    		   continue;
+    	   }
+    	   var index = content.indexOf(fileterWordArray[i]);
+           if(index != -1){
+        	   return true;
+           }
+       }
+   }
+   return false;
+}
+

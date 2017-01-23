@@ -921,7 +921,7 @@ function ScrollMarketTrendMessage4Mobile() {
 	}
 };
 
-
+var minute = 0;
 $(function () {
 	var strUrl = window.location.href;
 	var arrUrl = strUrl.split("/");
@@ -929,9 +929,12 @@ $(function () {
 	if(arrUrl.length>2){
 		 webUrl = arrUrl[2];
 	}
-	var webSocketUrl = "ws://"+ webUrl+"/"+basePath+"/talk";
-// var webSocketUrl = "ws://localhost:8080/mingxin/talk";
-	// 判断当前浏览器是否支持WebSocket
+	var webSocketUrl = "";
+	if(basePath&basePath.length>0){
+		webSocketUrl = "ws://"+ webUrl+"/"+basePath+"/talk";
+	}else{
+		webSocketUrl = "ws://"+ webUrl+"/talk";
+	}
 	try{
 	if ('WebSocket' in window) {
 		websocket = new WebSocket(webSocketUrl);
@@ -959,14 +962,33 @@ $(function () {
 		 websocket.send(message);
 		// 获取在线人数
 	};
-
+	window.setTimeout(checkSocket,60000); 
+	function checkSocket() 
+	{ 
+		if(websocket != null){
+			if(websocket.readyState !== 1){
+				//断了  重新连接
+				websocket.close();
+				 websocket = new WebSocket(webSocketUrl);
+			}else{
+				minute += 1;
+				if(minute>10){
+					var message = '{"testMsg":"msg"}';
+					console.log("testMessage : "+message);
+					websocket.send(message);
+				}
+				
+			}
+		}
+		
+	}
 	// 接收到消息的回调方法
 	websocket.onmessage = function(event) {
 		// 接收到信息 进行分类处理
 		var data = event.data
-		
+		 minute = 0;
 		try{
-		console.log(data);
+//		console.log(data);
 		var jsonData = JSON.parse(data);
 		var method = jsonData.method; // 根据method不同 调用不同的处理方法
 		
@@ -975,12 +997,17 @@ $(function () {
 			// 接收消息var messageContent = jsonData.messageContent;
 			var isShield = jsonData.isShield;
 			var isDiffPubliAndPrivateChatAre =jsonData.isDiffPubliAndPrivateChatAre;
+			//addMssageMar(jsonData.messageContent);
 // isDiffPubliAndPrivateChatAre = true;
 			chatMessageReceived(jsonData.messageContent, jsonData.messageId, jsonData.toUserSNNO, jsonData.toUserSaleMan, isShield, jsonData.fromUserSNNO, jsonData.fromUserSaleMan, isDiffPubliAndPrivateChatAre,jsonData.isWhisper);
 		}else if(method == "online"){
 			// 用户上线
+			
+			//onNewUserConnected2Mar(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
 			onNewUserConnected(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
-			onConnected (id, userSNNO, sRoomId, chatMessages, myChatMessages, marketTrendMessages, onlineUser) ;
+			onConnected (jsonData.userSNNO, jsonData.sRoomId, jsonData.chatMessages, jsonData.myChatMessages, jsonData.marketTrendMessages, jsonData.onlineUser) ;
+		}else if(method == "noTalking"){
+			
 		}
 		}catch(e){
 			console.log(e.message);
@@ -1089,7 +1116,54 @@ $(function () {
 			}
 		}
 	};
+	onNewUserConnected2Mar = function(enterRoomMessage, onlineUser, enterRoomMessageId, relatedSaleManSNNO) {
+		if ((enterRoomMessage.length > 0) && (showEnterRoomMessage)) {
+			addSingleChatMessage2Mar(enterRoomMessage, enterRoomMessageId)
+		}
+		if (false == isMobile) {
+			var isClient = $("#hfIsClient").val();
+			var onlineUserSNNO = onlineUser.SUserSNNO.substr(2, onlineUser.SUserSNNO.length - 5);
+			if (isClient == "1") {
+				if ((relatedSaleManSNNOInSignalR == onlineUserSNNO) && (relatedSaleManSNNOInSignalR.length > 0)) {
+					AddUser(onlineUser, true)
+				} else {
+					AddUser(onlineUser, false)
+				}
+			} else {
+				if ((currentUserSNNOInSignalR == relatedSaleManSNNO) && (relatedSaleManSNNO.length > 0)) {
+					AddUser(onlineUser, true)
+				} else {
+					AddUser(onlineUser, false)
+				}
+			}
+		}
+	};
 });
+function addMssageMar(message){
+	var iMar=document.getElementById('Marbox-ul');
+	var li= document.createElement("li");
+	li.innerHTML=message;
+	iMar.appendChild(li);
+	//最多留三条久了 多了 就删除
+	var marLen =iMar.childNodes.length;
+	if(marLen>=4){
+		iMar.removeChild(iMar.childNodes[0]);
+	}
+	//BeginMarquee();
+}
+function addSingleChatMessage2Mar(d, b) {
+	if (d.length <= 0) {
+		return
+	}
+	addMssageMar(d);
+	if (false == isMobile) {
+		if (b != 0) {
+			var a = $("#Marbox-ul >li >div[id^='li" + AddBeforeZero(b, 8) + "']");
+			SetRightMenu4Message(a);
+			SetRightMenu4OnlineUser(a.find("[id^='lnkUser_ch']"))
+		}
+	}
+}
 // 关闭WebSocket连接
 function closeWebSocket() {
     websocket.close();
