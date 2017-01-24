@@ -47,6 +47,8 @@
 		<!-- 开启sockjs，去掉则关闭sockjs -->
 		<!-- <websocket:sockjs /> -->
 	</websocket:handlers>
+	 <!-- 支持上传文件 -->
+	 <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/> 
 	<bean
 		class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
 		<property name="maxTextMessageBufferSize" value="8192" />

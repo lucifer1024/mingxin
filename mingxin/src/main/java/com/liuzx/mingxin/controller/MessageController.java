@@ -37,6 +37,9 @@ public class MessageController {
 		logger.info("接受到的信息 " + msg.toString());
 		logger.info("talkHandler " + talkHandler);
 		User loginUser = (User) session.getAttribute(User.SESSION_ID);
+		if(loginUser == null){
+			return "timeout";
+		}
 		if (loginUser.getUid().equals(msg.getToUserSNNO())) {
 			return "您不能给自己发送消息";
 		}

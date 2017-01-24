@@ -7,6 +7,7 @@ public class Role {
 	private int roleOrder;
 	private String imgUrl = "images/newrole/admin.png"; // admin vip   shipan  NoMoney guanmo guest
 	private String note;
+	private String auths = "0000001101100100";
 	public int getId() {
 		return id;
 	}
@@ -36,6 +37,12 @@ public class Role {
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+	public String getAuths() {
+		return auths;
+	}
+	public void setAuths(String auths) {
+		this.auths = auths;
 	}
 	
 }

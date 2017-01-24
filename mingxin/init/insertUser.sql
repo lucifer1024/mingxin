@@ -14,3 +14,8 @@ ADD COLUMN skin_id  varchar(10) NULL DEFAULT 'skin0' AFTER create_time;
 ALTER TABLE t_user
 ADD COLUMN is_no_talking  int(1) NULL DEFAULT 0 COMMENT '是否被禁言 0 否 1 是' AFTER skin_id;
 
+
+ALTER TABLE t_role
+ADD COLUMN auths  varchar(16) NULL COMMENT '权限' AFTER note;
+
+

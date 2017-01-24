@@ -99,11 +99,9 @@ public class RoomController {
 		model.put("role", loginRole); 
 		model.put("userArray", userArray);
 		model.put("video", videoService.getVideo());
-		String userAuths = "1000001101100100";
-		userAuths = "1111111111111111";
 		String foreignProductUrl = "http://115.29.249.68/";
 		String foreignProductEncypt = "0a4df49f380e019b734099ace31c5ea4";
-		model.put("userAuths", userAuths);
+		model.put("userAuths", loginRole.getAuths());
 		model.put("foreignProductUrl", foreignProductUrl);
 		model.put("foreignProductEncypt", foreignProductEncypt);
 //		model.put("eventTarget", eventTarget);

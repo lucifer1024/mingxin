@@ -7,9 +7,11 @@
 		<result column="role_order" property="roleOrder" jdbcType="INTEGER" />
 		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
 		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="auths" property="auths" jdbcType="VARCHAR" />
+		
 	</resultMap>
 	<sql id="Base_Column_List">
-		id,name,role_order,img_url,note
+		id,name,role_order,img_url,note,auths
 	</sql>
 	<select id="selectById" resultMap="BaseResultMap"
 		parameterType="int">
@@ -34,9 +36,9 @@
 	</delete>
 	<insert id="insert" parameterType="com.liuzx.mingxin.domain.Role">
 		insert into t_user 
-		(name,role_order,img_url,note)
+		(name,role_order,img_url,note,auths)
 		values (#{name,jdbcType=VARCHAR},#{roleOrder,jdbcType=INTEGER},
-		#{imgUrl,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR})
+		#{imgUrl,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{auths,jdbcType=VARCHAR})
 	</insert>
 	<insert id="insertSelective" parameterType="com.liuzx.mingxin.domain.Role">
 		insert into t_role
@@ -53,6 +55,9 @@
 			<if test="note != null">
 				note,
 			</if>
+			<if test="note != null">
+				auths,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="name != null">
@@ -67,6 +72,10 @@
 			<if test="note != null">
 				#{note,jdbcType=VARCHAR},
 			</if>
+			<if test="auths != null">
+				#{auths,jdbcType=VARCHAR},
+			</if>
+			
 		</trim>
 	</insert>
 	<update id="updateByIdSelective" parameterType="com.liuzx.mingxin.domain.Role">
@@ -84,6 +93,10 @@
 			<if test="note != null">
 				note=#{note,jdbcType=VARCHAR},
 			</if>
+			<if test="auths != null">
+				auths=#{auths,jdbcType=VARCHAR},
+			</if>
+			
 		</set>
 		where id = #{id,jdbcType=INTEGER}
 	</update>
@@ -93,6 +106,8 @@
 		role_order=#{roleOrder,jdbcType=INTEGER},
 		img_url = #{imgUrl,jdbcType=VARCHAR},
 		note=#{note,jdbcType=VARCHAR},
+		auths=#{auths,jdbcType=VARCHAR},
 		where id = #{id,jdbcType=INTEGER}
+		
 	</update>
 </mapper>
