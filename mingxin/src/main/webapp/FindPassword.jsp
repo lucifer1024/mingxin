@@ -19,7 +19,7 @@
 </script>
 <link rel="stylesheet"
 	href="${rc.getContextPath()}/css/jquery.mCustomScroll.css" />
-<title>铭鑫财富</title>
+<title>铭鑫财富社区</title>
 <link rel='shortcut icon'
 	href='${rc.getContextPath()}/images/favicon.ico?2017/1/19 21:35:56' />
 <link rel='stylesheet'
@@ -59,7 +59,7 @@
 	src="${rc.getContextPath()}/Scripts/jquery.placeholder.min.js"></script>
 </head>
 <body>
-	<form method="post" action="${rc.getContextPath()}/Account/LoginInRoom"
+	<form method="post" action="${rc.getContextPath()}/Account/FindPassword"
 		id="mainForm">
 		<div class="aspNetHidden">
 			<input type="hidden" name="eventTarget" id="eventTarget" value="" />
@@ -100,7 +100,8 @@
 				//linkbutton需要处理下，否则，不会校验
 				var isClose = $("#isClose").val();
 				if ("1" == isClose) {
-					parent.CloseLoginInRoom();
+					UserAlert("重置密码已发送到你的邮箱，请查收并修改密码！");
+					parent.CloseFindPasswordInRoom();
 					parent.__doPostBack('','');
 				}
 				var CanClose = $("#CanClose").val();
@@ -130,8 +131,9 @@
 						userName : {
 							required : true
 						},
-						password : {
-							required : true
+						email : {
+							required : true,
+							email : true
 						},
 
 					},
@@ -139,8 +141,8 @@
 						userName : {
 							required : '用户名不能为空'
 						},
-						password : {
-							required : '密码不能为空'
+						email : {
+							required : '邮箱不能为空'
 						},
 
 					},
@@ -164,7 +166,7 @@
 			}
 		</script>
 		<div class="popup-layer login">
-			<div class="login-t">登&nbsp;&nbsp;&nbsp;&nbsp;录</div>
+			<div class="login-t">找回密码</div>
 			<c:if test=""></c:if>
 			<c:if test="${not empty divLoginError}">
 				<div id="divLoginError" class="ValidateErrorInServer">${divLoginError }</div>
@@ -177,8 +179,8 @@
 							autocomplete="off" />
 					</div>
 					<div class="form-in1">
-						<input name="password" type="password"
-							id="MainContent_LoginInRoom_txtPassword" placeholder="密码"
+						<input name="email" type="text"
+							id="MainContent_LoginInRoom_txtEmail" placeholder="注册邮箱"
 							autocomplete="off" />
 
 					</div>
@@ -189,16 +191,15 @@
 					</div> -->
 				</div>
 				<a id="lnkLogin" class="btn-m btn-block"
-					href="javascript:__doPostBack('lnkLogin','')">登录</a>
+					href="javascript:__doPostBack('lnkFindPassword','')">发送重置密码到邮箱</a>
 				<div style="height: 30px;"><a class="blue" href="javascript://" style="float:left"
-							onclick="parent.CloseLoginInRoom();parent.RegistyInRoom(${CanClose});">点此注册</a>
-							<a class="blue" href="javascript://" style="float:right"
-							onclick="parent.CloseLoginInRoom();parent.FindPasswordInRoom(${CanClose});">忘记密码？</a></div>
+							onclick="parent.CloseFindPasswordInRoom();parent.LoginInRoom(${CanClose});">返回登录</a>
+							</div>
 
 			</div>
 			<div class="close" id="divClose4LoginInRoom">
 				<a href="javscript://"
-					onclick="parent.CloseLoginInRoom();return false;"></a>
+					onclick="parent.CloseFindPasswordInRoom();return false;"></a>
 			</div>
 		</div>
 

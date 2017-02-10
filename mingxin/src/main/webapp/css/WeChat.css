@@ -1,7 +1,7 @@
 .wxtip{
 				position: absolute;
 				left: 70px;
-				top: 20px;
+				top: -20px;
 				width: 120px;
 				height: 116px;
 				background:url(basePath+"/images/WeChat/wx_bg.png") no-repeat;
@@ -12,7 +12,7 @@
 				display: block;
 				position: absolute;
 				right: 0;
-				top:-5px;
+				top:1px;
 				width: 14px;
 				height: 18px;
 				font-size: 14px;

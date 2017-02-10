@@ -21,4 +21,6 @@ public interface RoleMapper {
 	    int updateBySelective(Role role);
 
 	    int updateById(Role role);
+	    
+	    Role selectByUid(String uid);
 }

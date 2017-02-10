@@ -115,7 +115,8 @@
 .popup-layer .qq{
 	width: 500px;
 	top:260px;
-	margin-left: 20px;
+	margin-left: 160px;
+	margin-bottom: 20px;
 }
 .popup-layer .qq:after{
 	clear: both;

@@ -145,7 +145,7 @@ function parseDate(a) {
 	return new Date(parseInt($.trim(b[0]), 10), parseInt($.trim(b[1]), 10), parseInt($.trim(b[2]), 10))
 }
 function GetHtml4QQ(a) {
-	if (a.length <= 0) {
+	if (!a&a.length <= 0) {
 		return ""
 	}
 	var b = ' <a target="_blank" href="tencent://message/?uin=' + a + '&site=qq&menu=yes"><i class="ico ico16 ico16-qq" alt="点击这里给我发消息" title="点击这里给我发消息"></i></a>';

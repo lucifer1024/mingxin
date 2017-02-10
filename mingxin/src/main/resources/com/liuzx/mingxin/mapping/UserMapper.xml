@@ -18,11 +18,12 @@
 			jdbcType="TIMESTAMP" />
 			<result column="skin_id" property="skinId" jdbcType="VARCHAR" />
 			<result column="is_no_talking" property="isNoTalking" jdbcType="INTEGER" />
+			<result column="email" property="email" jdbcType="VARCHAR" />
 			
 	</resultMap>
 	<sql id="Base_Column_List">
-		id,uid, user_name, password,nick_name,mobile
-		qq,user_order,is_subscribe,is_qq,role_id,register_ip,create_time,skin_id,is_no_talking
+		id,uid, user_name, password,nick_name,mobile,
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip,create_time,skin_id,is_no_talking,email
 	</sql>
 	<select id="selectByUid" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -33,7 +34,19 @@
 	</select>
 	<select id="selectByOrder" resultType="java.util.HashMap"
 		parameterType="java.util.Map">
-		select u.*,r.name roleName,r.role_order roleOrder,r.img_url roleImgUrl from t_user u INNER JOIN t_role r on u.role_id=r.id ORDER BY r.role_order,u.user_order,u.id 
+		select u.*,r.name roleName,r.role_order roleOrder,r.img_url roleImgUrl from t_user u INNER JOIN t_role r on u.role_id=r.id 
+		 where 1=1 
+		 <if test="nickName != null">
+		 and nick_name like CONCAT('%','${nickName}','%' )
+		</if>
+		ORDER BY r.role_order,u.user_order,u.id 
+	</select>
+	<select id="selectByOrderLimit" resultType="java.util.HashMap"
+		parameterType="java.util.Map">
+		select u.*,r.name roleName,r.role_order roleOrder,r.img_url roleImgUrl from t_user u INNER JOIN t_role r on u.role_id=r.id ORDER BY r.role_order,u.user_order,u.id
+		 <if test="start != null">
+				 limit ${start},${pageSize} 
+		</if>
 	</select>
 	<select id="selectSelective" resultMap="BaseResultMap" parameterType="java.util.Map">
         select <include refid="Base_Column_List" /> from t_user 
@@ -74,6 +87,9 @@
 			<if test="isNoTalking != null">
 				and is_no_talking = #{isNoTalking,jdbcType=INTEGER}
 			</if>
+				<if test="email != null">
+				and email = #{email,jdbcType=VARCHAR}
+			</if>
 			
     </select>
 	<delete id="deleteByUid" parameterType="java.lang.String">
@@ -83,11 +99,11 @@
 	<insert id="insert" parameterType="com.liuzx.mingxin.domain.User">
 		insert into t_user 
 		(uid, user_name,password, nick_name,mobile,
-		qq,user_order,is_subscribe,is_qq,role_id,register_ip,skin_id,is_no_talking)
+		qq,user_order,is_subscribe,is_qq,role_id,register_ip,skin_id,is_no_talking,email)
 		values (#{uid,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},
 		#{nickName,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR},#{qq,jdbcType=VARCHAR},#{userOrder,jdbcType=INTEGER},
 		#{isSubscribe,jdbcType=INTEGER}, #{isQQ,jdbcType=INTEGER},
-		#{roleId,jdbcType=INTEGER} ),#{registerIp,jdbcType=VARCHAR},#{skinId,jdbcType=VARCHAR},#{isNoTalking,jdbcType=INTEGER}
+		#{roleId,jdbcType=INTEGER} ),#{registerIp,jdbcType=VARCHAR},#{skinId,jdbcType=VARCHAR},#{isNoTalking,jdbcType=INTEGER},#{email,jdbcType=VARCHAR}
 	</insert>
 	<insert id="insertSelective" parameterType="com.liuzx.mingxin.domain.User">
 		insert into t_user
@@ -131,6 +147,9 @@
 			<if test="isNoTalking != null">
 				is_no_talking,
 			</if>
+			<if test="email != null">
+				email,
+			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="uid != null">
@@ -170,7 +189,10 @@
 				#{skinId,jdbcType=VARCHAR},
 			</if>
 			<if test="isNoTalking != null">
-				#{isNoTalking,jdbcType=INTEGER}
+				#{isNoTalking,jdbcType=INTEGER},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR}
 			</if>
 		</trim>
 	</insert>
@@ -212,6 +234,9 @@
 			</if>
 			<if test="isNoTalking != null">
 				 is_no_talking = #{isNoTalking,jdbcType=INTEGER},
+			</if>
+			<if test="email != null">
+				 email = #{email,jdbcType=VARCHAR},
 			</if>
 		</set>
 		where uid = #{uid,jdbcType=VARCHAR}
@@ -255,6 +280,9 @@
 			<if test="isNoTalking != null">
 				 is_no_talking = #{isNoTalking,jdbcType=INTEGER},
 			</if>
+			<if test="email != null">
+				 email = #{email,jdbcType=VARCHAR},
+			</if>
 		</set>
 		where uid = #{uid,jdbcType=VARCHAR}
 	</update>
@@ -272,6 +300,7 @@
 		register_ip = #{registerIp,jdbcType=VARCHAR},
 		skin_id = #{skinId,jdbcType=VARCHAR},
 		is_no_talking = #{isNoTalking,jdbcType=INTEGER},
+		email = #{email,jdbcType=VARCHAR},
 		where uid = #{uid,jdbcType=VARCHAR}
 	</update>
 </mapper>

@@ -25,7 +25,9 @@ public class UUIDGenerator {
 	 * @return ab45bfe3-af07-4ad8-9215-0a4c84ab3e37
 	 */
 	public static String unChUid(String chuid){
+//		lnkUser_ouaf804f68-9ccb-438d-afed-c7679d6304ca
 		chuid = chuid.replace("lnkUser_ch", "");
+		chuid = chuid.replace("lnkUser_ou", "");
 		chuid = chuid.substring(0,chuid.length()-3);
 		return chuid;
 	}

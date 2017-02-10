@@ -22,4 +22,7 @@ public class RoleService {
 		role.setImgUrl("/images/newrole/guest.png");
 		return role;
 	}
+	public Role selectByUid(String uid){
+		return roleMapper.selectByUid(uid);
+	}
 }

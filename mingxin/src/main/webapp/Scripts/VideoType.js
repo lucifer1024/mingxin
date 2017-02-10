@@ -2,6 +2,10 @@ var videoType4YY = "YY";
 var videoType4Gensee = "Gensee";
 var videoType4Owner = "Owner";
 var noVideoTip = "<span style='font-size:2rem;color:white;'><br/><br/><br/><br/>当前无直播</span>";
+function closeVideo(){
+//	 $("#VideoDiv").html(noVideoTip);
+	LoadYYVideo("", "");
+}
 function ChangeVideoType4Room(d) {
     if (d == videoType4YY) {
         var e = $("#hfVideoNO").val();

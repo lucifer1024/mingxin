@@ -976,8 +976,9 @@ $(function () {
 					var message = '{"testMsg":"msg"}';
 					console.log("testMessage : "+message);
 					websocket.send(message);
+					minute = 0;
 				}
-				
+				setTimeout(checkSocket,60000); 
 			}
 		}
 		

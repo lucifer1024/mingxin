@@ -82,7 +82,7 @@
 	src="${rc.getContextPath()}/ueditor/lang/zh-cn/zh-cn.js"></script>
 <script src="${rc.getContextPath()}/Scripts/json2.min.js"
 	type="text/javascript"></script>
-<script src="${rc.getContextPath()}/Scripts/VideoType.js?20161216"
+<script src="${rc.getContextPath()}/Scripts/VideoType.js"
 	type="text/javascript"></script>
 <!--注册SignalR的JS文件-->
 <script src="${rc.getContextPath()}/Scripts/jquery.signalR-2.2.0.min.js"
@@ -93,7 +93,7 @@
 <script type="text/javascript" charset="utf-8"
 	src="${rc.getContextPath()}/Scripts/talk.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="${rc.getContextPath()}/Scripts/roomdetail.js?20170106"></script>
+	src="${rc.getContextPath()}/Scripts/roomdetail.js?20170108"></script>
 
 <span id="spnArtDialogJs"> <script lang="ja"
 		type="text/javascript"
@@ -172,10 +172,11 @@ table td, table th {
 	<input type="hidden" id="registerIp" value="${user.registerIp}" />
 	<input type="hidden" id="saleManId" value="${user.saleManId}" />
 	<input type="hidden" id="eventTarget" value="${eventTarget}" />
+	<input type="hidden" id="courseTime" value="${courseTime}" />
 	<input type="hidden" id="filterWord"
 		value="NND|骗子|托|诈骗|他妈的|你妈逼|傻逼|草|操|艹|cao|妈了个逼|MLGB|QQ|Q|qq|q|企鹅|电话|地址|地点|烂|差|坑|蒙|拐|骗|扣扣|麻痹" />
 
-	<form method="post" action="${rc.getContextPath()}/" id="mainForm">
+	<form method="post" action="${rc.getContextPath()}/" id="mainForm" >
 		<div class="aspNetHidden">
 			<input type="hidden" name="eventTarget" id="eventTarget"
 				value="${eventTarget}" /> <input type="hidden" name="eventArgument"
@@ -216,8 +217,11 @@ table td, table th {
 					href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
 					alt="点击这里给客服-小雪发消息,QQ:515898519" title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a>
 				<a class="qq"
+					href="tencent://message/?uin=315898519&amp;site=qq&amp;menu=yes"
+					alt="点击这里给客服-小薇发消息,QQ:315898519" title="点击这里给客服-小薇发消息,QQ:315898519">客服小薇</a>
+				<a class="qq"
 					href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
-					alt="点击这里给客服-小薇发消息,QQ:815898519" title="点击这里给客服-小薇发消息,QQ:815898519">客服小薇</a>
+					alt="点击这里给客服-夏夏发消息,QQ:815898519" title="点击这里给客服-夏夏发消息,QQ:815898519">客服夏夏</a>
 
 			</div>
 
@@ -231,7 +235,9 @@ table td, table th {
 						style="height: 350px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 100px; margin: 0 auto; top: 100px; left: 50%; margin-left: -160px; border: 0;"></iframe>
 					<iframe id="iframeRegisterInRoom" frameborder="0" scrolling="no"
 						style="height: 550px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 50px; margin: 0 auto; top: 50px; left: 50%; margin-left: -160px; border: 0;"></iframe>
-
+					<iframe id="iframeFindPasswordInRoom" frameborder="0"
+						scrolling="no"
+						style="height: 350px; width: 320px; display: none; position: absolute; z-index: 1999989; margin-top: 100px; margin: 0 auto; top: 100px; left: 50%; margin-left: -160px; border: 0;"></iframe>
 				</c:if>
 				<li><a href="javascript://"
 					onclick="$('#divbg4Popup').show();$('#divSelectSkin').show();return false;">
@@ -246,7 +252,7 @@ table td, table th {
 
 						<c:if test="${user.roleId ==7 }">
 							<a class="dropdown-a" href="javascript://"> <img
-								class="avatar32" src="${rc.getContextPath()}/img/avatar32-n.png"
+								class="avatar32" src="${rc.getContextPath()}${role.imgUrl }"
 								alt="" /> <span class="ar-d">${user.nickName }</span>
 							</a>
 						</c:if>
@@ -254,7 +260,7 @@ table td, table th {
 						<c:if test="${user.roleId !=7 }">
 							<a class="dropdown-a" href="javascript://"
 								onclick='$("#divUserDropdown").show();return false;'> <img
-								class="avatar32" src="${rc.getContextPath()}/img/avatar32-n.png"
+								class="avatar32" src="${rc.getContextPath()}${role.imgUrl }"
 								alt="" /> <span class="ar-d">${user.nickName }</span> <i
 								class="ico ico16 ico16-ar-d-d"></i>
 							</a>
@@ -309,7 +315,7 @@ table td, table th {
 						<p>下载中心</p>
 				</a></li>
 				<li><a href="javascript://"
-					onclick="ViewDailyDiscuss(1,'在线开户');"> <i
+						<!-- onclick="ViewDailyDiscuss(1,'在线开户');" -->> <i
 						class="ico ico24 ico24-grid"></i>
 						<p>在线开户</p>
 				</a></li>
@@ -330,7 +336,7 @@ table td, table th {
 						<div class="wxtip" id="divWeChat" style="display: none;">
 							<img src="${rc.getContextPath()}/images/WeChat/yytxQRCode.jpg"
 								style="width: 112px;" /> <a href="javascript://"
-								onclick="$('#divWeChat').hide();return false;">×</a>
+								onclick="$('#divWeChat').hide();return false;">x</a>
 						</div></li>
 					<%-- <li class="l-links-b-more" onclick="CancelEventBubble(event);">
 						<a href="javascript://"
@@ -375,6 +381,14 @@ table td, table th {
 				<div class="tip">
 					<span id="spnOnMicrophoneUser">铭鑫财富</span>
 				</div>
+				<div id="videoTime" style="display: none;" class="videoTime">
+					<div class="videoTimeTxt">您可以观看时长</div>
+					<div id="colockbox">
+						<!-- <span class="day">00</span> -->
+						<span class="hour">00</span><span class="minute">00</span><span
+							class="second">00</span>
+					</div>
+				</div>
 				<a href="javascript://"
 					onclick="ChangeVideoType4Room('YY');return false;"
 					class="v-refresh"></a>
@@ -385,10 +399,10 @@ table td, table th {
 					<ul class="tab-change" id="ulMarketTrendMessage">
 						<li id="liMarketTrendCommon"><a style="cursor: pointer;"
 							class="active">行情提醒</a></li>
-						<li id="liMarketTrendSummaryThisMonth"><a
+						<!-- <li id="liMarketTrendSummaryThisMonth"><a
 							href="javascript:void(0);" class="">当月</a></li>
 						<li id="liMarketTrendSummaryAll"><a
-							href="javascript:void(0);" class="">全部</a></li>
+							href="javascript:void(0);" class="">全部</a></li> -->
 					</ul>
 				</div>
 				<div class="big-change" id="divMarketTrendContent"
@@ -401,7 +415,7 @@ table td, table th {
 								style="overflow: hidden; outline: none; height: 104px;">
 								<div class="msg-bubble-user msg-bubble-user-s"
 									id="divMarketTrendGuestNotice">
-									<a class="contact-name">喊单提醒</a> <i
+									<!-- <a class="contact-name">喊单提醒</a> <i
 										class="ico ico24 ico24-bell"></i> <span class="msg-date-s">
 										<marquee onmouseover="this.stop()" onmouseout="this.start()"
 											scrollamount="1" height="20px" scrolldelay="1"
@@ -409,7 +423,7 @@ table td, table th {
 											style="height: 20px; width: 610px;">
 											<span id="spnMarketTrendTip">喊单了!</span>
 										</marquee>
-									</span>
+									</span> -->
 								</div>
 								<div id="divOtherRoleCannotViewMarketTrend" class="msg-bubble">
 									<div class="bubble-arrow-l"></div>
@@ -442,7 +456,7 @@ table td, table th {
 							var artMarketTrendDetailWindow;
 							function showMarketTrendDetail(dateType, userSNNO,
 									machineType) {
-								$("#iframeMarketTrendDetail")[0].src = "/MarketTrend/MarketTrendDetail.aspx?RoomId=100002&DateType="
+								$("#iframeMarketTrendDetail")[0].src = "/MarketTrend/MarketTrendDetail?RoomId=100002&DateType="
 										+ dateType
 										+ "&UserSNNO="
 										+ userSNNO
@@ -852,17 +866,17 @@ table td, table th {
 					});
 				</script>
 				<input type="hidden"
-					name="UserOnline1$hfCurrentPageIndex4OnlineUser"
-					id="hfCurrentPageIndex4OnlineUser" value="1" /> <input
-					type="hidden" name="UserOnline1$hfPageSize4OnlineUser"
-					id="hfPageSize4OnlineUser" value="5" />
+					name="pageIndex"
+					id="hfCurrentPageIndex4OnlineUser" value="${page.pageIndex }" /> <input
+					type="hidden" name="pageSize"
+					id="hfPageSize4OnlineUser" value="${page.pageSize }" />
 
-				<!-- 	<div class="search1">
-
+				<div class="search1">
+				<input type="text" style="display:none" />
 					<input name="UserOnline1$txtSearchCondition4OnlineUser" type="text"
 						id="txtSearchCondition4OnlineUser" placeholder="搜索联系人..." /> <i
 						class="ico ico16 ico16-search"></i>
-				</div> -->
+				</div>
 				<div class="tab1 chat-contact-tab mt10" id="divUserOnlineHead">
 					<ul class="tab2-change">
 						<li id="liOnlineUser"><a href="javascript://" class="active">在线<span
@@ -1174,7 +1188,7 @@ table td, table th {
 						</div>
 						<c:if test="${user.isNoTalking==0 }">
 							<div id="editorNoTalk"
-								style="display: none;position: absolute; bottom: 0; left: 0; z-index: 10000; width: 100%; height: 100px; background: rgba(255, 245, 212, 0.8); color: #F00; text-align: center; font-size: 28px">
+								style="display: none; position: absolute; bottom: 0; left: 0; z-index: 10000; width: 100%; height: 100px; background: rgba(255, 245, 212, 0.8); color: #F00; text-align: center; font-size: 28px">
 								你已被禁言,请联系QQ客服解禁！</div>
 						</c:if>
 						<c:if test="${user.isNoTalking!=0 }">
@@ -1280,7 +1294,7 @@ table td, table th {
 		<div id="DivRoomSchedule" style="display: none; height: 320px;">
 
 			<iframe id="iframeRoomSchedule" src="" frameborder="0"
-				style="min-height: 320px; width: 720px; border: 1px #fff solid; border: 0; margin: 0;"></iframe>
+				style="min-height: 460px; width: 720px; border: 1px #fff solid; border: 0; margin: 0;"></iframe>
 		</div>
 		<div id="showSwitchRoom" style="display: none;"></div>
 		<div id="DivRoomPassword" style="display: none; height: 300px;">
@@ -1361,7 +1375,7 @@ table td, table th {
 					<img src="${rc.getContextPath()}/img/p-tip-msg.png" alt=""
 						class="p-tip-ico" style="border: none;">
 
-					<div class="p-tip-info red">您已在本直播室收听超过10分钟了，请联系下方QQ领取马甲，让您在直播室畅所欲言与老师零距离交流。</div>
+					<div class="p-tip-info red">您已在本直播室收听超过${totalCourseTime}分钟了，请联系下方QQ领取马甲，让您在直播室畅所欲言与老师零距离交流。</div>
 
 					<ul class="qq">
 						<li><a
@@ -1370,13 +1384,22 @@ table td, table th {
 							title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a></li>
 
 						<li><a
+							href="tencent://message/?uin=315898519&amp;site=qq&amp;menu=yes"
+							alt="点击这里给 客服-小薇发消息,QQ:315898519"
+							title="点击这里给 客服-小薇发消息,QQ:315898519"> 客服小薇</a></li>
+
+						<li><a
 							href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
-							alt="点击这里给 客服-小薇发消息,QQ:815898519"
-							title="点击这里给 客服-小薇发消息,QQ:815898519">顾问小雨</a></li>
+							alt="点击这里给 客服-夏夏发消息,QQ:815898519"
+							title="点击这里给 客服-夏夏发消息,QQ:815898519"> 客服夏夏</a></li>
 
 
 					</ul>
 					<div class="p-tip-fn">
+						<a class="btn-m" href="javascript://"
+							onclick="$('#divPop4NoticeGuestRegistration').hide();RegistyInRoom(0);return false;">注册</a>
+						<a class="btn-m" href="javascript://"
+							onclick="$('#divPop4NoticeGuestRegistration').hide();LoginInRoom(0);return false;">登录</a>
 						<a href="javscript://" onclick="createShortcut('铭鑫财富')"
 							class="btn-m">保存直播室到桌面</a>
 					</div>
@@ -1384,10 +1407,10 @@ table td, table th {
 						<a href="/ShortCutHelp.html" class="blue" target="_blank">如何保存直播室到桌面？</a>
 					</div> -->
 				</div>
-				<div class="close">
+				<!-- <div class="close">
 					<a href="javscript://"
 						onclick="$('#divPop4NoticeGuestRegistration').hide();return false;"></a>
-				</div>
+				</div> -->
 			</div>
 		</div>
 
@@ -1654,10 +1677,44 @@ table td, table th {
 			if (eventTarget == null) {
 				ShowRiskRemind($("#hfCurrentRoomId").val());
 			}
+			var courseTime = $("#courseTime").val();
+			if (courseTime) {
+				ShowNoticeGuestRegistration(courseTime);
+				$("#videoTime").show();
+				countDown(courseTime, "#colockbox .day", "#colockbox .hour",
+						"#colockbox .minute", "#colockbox .second");
+			}
 			//展示提示信息
 			//SetUserExperience('6eec9256-7951-4a35-8d11-713b617dc3a7',7200);
 			//ShowNoticeGuestRegistration(10);
 			//ShowRiskRemind(100001);//]]>
+			// 倒计时
+			function countDown(time, day_elem, hour_elem, minute_elem,
+					second_elem) {
+				sys_second = time * 60;
+				var timer = setInterval(function() {
+
+					if (sys_second > 0) {
+						sys_second -= 1;
+						$('#howLong').val(sys_second);
+						var day = Math.floor((sys_second / 3600) / 24);
+						var hour = Math.floor((sys_second / 3600) % 24);
+						var minute = Math.floor((sys_second / 60) % 60);
+						var second = Math.floor(sys_second % 60);
+						if (day > 99) {
+							day = 99;
+						}
+						//day_elem && $(day_elem).text(day < 10 ? "0" + day : day);// 计算天
+						$(hour_elem).text(hour < 10 ? "0" + hour : hour);// 计算小时
+						$(minute_elem)
+								.text(minute < 10 ? "0" + minute : minute);// 计算分
+						$(second_elem)
+								.text(second < 10 ? "0" + second : second);// 计算秒
+					} else {
+						clearInterval(timer);
+					}
+				}, 1000);
+			}
 		</script>
 	</form>
 </body>

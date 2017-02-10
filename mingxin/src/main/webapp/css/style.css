@@ -140,6 +140,44 @@ body{min-width: 1230px; _width:expression(document.body.clientWidth > 1230 ? "12
 .tip{background: url(../img/bg-d-2.png); display: inline-block; color: #fff; font-size: 12px; border-radius:100px; padding: 0px 16px;}
 .v .v-refresh{width: 150px; height: 32px; position: absolute; left: 10px; bottom: 10px; background: url(../img/refresh.png) no-repeat; z-index: 99;}
 
+.v .videoTime {
+    position: absolute;
+    right: 2%;
+    top: 10px;
+    z-index: 989;
+    color: #fff;
+    font-size: 14px;
+    background:url(../img/bg-d-2.png);
+}
+ /*倒计时*/
+.v .videoTime .videoTimeTxt {
+        float: left;
+        line-height: 25px;
+}
+#colockbox {
+    width: 120px;
+    height: 25px;
+    background: url("../images/colockbox.png") no-repeat;
+    float: right;
+    margin-left: 8px;
+    padding: 2px 0px 0px 5px;
+}
+
+    #colockbox span {
+        letter-spacing: 11px;
+    }
+
+        #colockbox span.hour {
+            margin-left: 0px;
+        }
+
+        #colockbox span.minute {
+            margin-left: 1px;
+        }
+
+        #colockbox span.second {
+            margin-left: 2px;
+        }
 .box1-in{overflow-y: auto;}
 
 .r{/*margin-left: 652px;*/ padding: 18px 0px;}

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.liuzx.mingxin.dao.Page;
 import com.liuzx.mingxin.domain.Message;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.service.CacheService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.UserService;
 import com.liuzx.mingxin.talk.TalkHandler;
@@ -32,13 +34,15 @@ public class AccountController {
 	private RoleService roleService;
 	@Autowired
 	private TalkHandler talkHandler;
+	@Autowired
+	private CacheService cacheService;
 
 	@RequestMapping("/UserManager")
 	@ResponseBody
 	String UserManager(ModelMap model, HttpSession session, @RequestParam String Method,
 			@RequestParam(required = false) String RoomId, @RequestParam(required = false) String QQCount,
 			@RequestParam(required = false) String SubLink, @RequestParam(required = false) String userName,
-			@RequestParam(required = false) String Password,Message msg) {
+			@RequestParam(required = false) String Password, Message msg) {
 		logger.info(" UserManager " + Method);
 		// return WRONG_ROOM_ID 房间号不正确
 		// return LOGIN_EXPIRED 登录过期 重新登录
@@ -57,15 +61,15 @@ public class AccountController {
 			if (!loginUser.getPassword().equals(Password)) {
 				return "密码错误";
 			}
-		}else if("NoTalking".equals(Method)){
-			//禁言
+		} else if ("NoTalking".equals(Method)) {
+			// 禁言
 			talkHandler.noTalking(msg);
-		}else if("CheckUserStatus".equals(Method)){
-			//建议 用户是否 被禁言 \ 屏蔽消息 封ip 封账号 一键清除
+		} else if ("CheckUserStatus".equals(Method)) {
+			// 建议 用户是否 被禁言 \ 屏蔽消息 封ip 封账号 一键清除
 			User user = userService.findUserByUserControlId(msg.getUserControlId());
-			if(user != null){
+			if (user != null) {
 				return user.getUserStatus();
-			}else{
+			} else {
 				return "00001";
 			}
 		}
@@ -122,14 +126,27 @@ public class AccountController {
 
 	@RequestMapping(value = "/UserOnline", produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	String UserOnline(ModelMap model, String RoomId, String SearchCondition, String Method, Integer CurrentPageIndex,
-			Integer PageSize) {
-		JSONArray userArray = userService.findOnlineUser();
+	String UserOnline(ModelMap model, @RequestParam(required = false) String RoomId, @RequestParam(required = false) String SearchCondition, String Method, @RequestParam(required = false) Integer CurrentPageIndex,
+			@RequestParam(required = false) Integer PageSize) {
+		JSONArray userArray = new JSONArray();
 		/**
 		 * return WRONG_ROOM_ID 房间号不正确 LOGIN_EXPIRED 登录过期 CANNOT_ENTER_ROOM 当前房间
 		 * 只允许 实盘用户 WRONG_PARAMETER 分页参数不正确
 		 */
-
+		if ("GetMoreOnlineUsers".equals(Method)) {
+			//查询更多用户
+			Page page = new Page();
+			page.setPageIndex(CurrentPageIndex);
+			page.setPageSize(PageSize);
+			userArray = userService.findUserLimit(page); // 用户列表
+		} else if ("SearchOnlineUser".equals(Method)) {
+			if(SearchCondition == null||"".equals(SearchCondition.trim())){
+				//没有查询条件 查询全部
+				userArray = userService.findUserLimit(new Page()); // 用户列表
+			}else{
+				userArray = userService.findUserByNickName(SearchCondition); // 用户列表
+			}
+		}
 		return userArray.toJSONString();
 	}
 
@@ -179,9 +196,10 @@ public class AccountController {
 
 	@RequestMapping("/RegistyInRoom")
 	String RegistyInRoom(ModelMap model, HttpSession session, HttpServletRequest request, User user,
-			@RequestParam(required = false) String eventTarget) {
+			@RequestParam(required = false) String eventTarget, @RequestParam(required = false) String CanClose) {
 		logger.info("UserRegister action  eventTarget=" + eventTarget);
 		model.put("isClose", "0");
+		model.put("CanClose", CanClose);
 		// 同一个IP只能注册一个账号(您的IP:60.194.65.154)
 		if ("lnkRegister".equals(eventTarget)) {
 			// 注册用户
@@ -210,9 +228,10 @@ public class AccountController {
 	@RequestMapping("/LoginInRoom")
 	String LoginInRoom(ModelMap model, HttpSession session, HttpServletRequest request,
 			@RequestParam(required = false) String eventTarget, @RequestParam(required = false) String userName,
-			@RequestParam(required = false) String password) {
+			@RequestParam(required = false) String password, @RequestParam(required = false) String CanClose) {
 		logger.info("UserRegister action eventTarget=" + eventTarget);
 		model.put("isClose", "0");
+		model.put("CanClose", CanClose);
 		if ("lnkLogin".equals(eventTarget)) {
 			logger.info("用户名 密码登录");
 			if (userName == null || password == null) {
@@ -234,6 +253,40 @@ public class AccountController {
 		}
 
 		return "/LoginInRoom.jsp";
+	}
+
+	@RequestMapping("/FindPassword")
+	String FindPassword(ModelMap model, HttpSession session, HttpServletRequest request,
+			@RequestParam(required = false) String eventTarget, @RequestParam(required = false) String userName,
+			@RequestParam(required = false) String email, @RequestParam(required = false) String CanClose) {
+		model.put("isClose", "0");
+		model.put("CanClose", CanClose);
+		if ("lnkFindPassword".equals(eventTarget)) {
+			logger.info("找回用户密码");
+			if (userName == null || email == null) {
+				model.put("divLoginError", "用户或邮箱不能为空！");
+			} else {
+				// 验证用户名和密码
+				String resultMsg = userService.checkUserNameAndEmail(userName, email);
+				if (resultMsg == null) {
+					// 发送重置密码 到邮箱
+					String resultPw = userService.findPassword(userName, email);
+					if (resultPw == null) {
+						model.put("isClose", "1");
+					} else {
+						// 发送邮件失败
+						model.put("userName", userName);
+						model.put("divLoginError", resultPw);
+					}
+
+				} else {
+					// 验证失败
+					model.put("userName", userName);
+					model.put("divLoginError", resultMsg);
+				}
+			}
+		}
+		return "/FindPassword.jsp";
 	}
 
 	@RequestMapping("/ChangeMyPasswordInRoom")

@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.liuzx.mingxin.dao.Page;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.service.CacheService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
 import com.liuzx.mingxin.service.VideoService;
+import com.liuzx.mingxin.utils.CourseTimeUtils;
 import com.liuzx.mingxin.utils.HttpRequestUtils;
 
 @Controller
@@ -35,7 +38,8 @@ public class RoomController {
 	private RoleService roleService;
 	@Autowired
 	private VideoService videoService;
-	
+	@Autowired
+	private CacheService  cacheService;
 
 	@RequestMapping("/RiskRemind")
 	String RiskRemind(ModelMap model, @RequestParam String RoomId, @RequestParam(required = false) String eventTarget) {
@@ -73,6 +77,7 @@ public class RoomController {
 	String RoomDetail(ModelMap model,HttpSession session, HttpServletRequest request,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String eventTarget) {
 		User loginUser = (User)session.getAttribute(User.SESSION_ID);
 		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
+		cacheService.putString("eventTarget", "test");
 		if("lbSignOut".equals(eventTarget)){
 			//注销
 			logger.info("注销");
@@ -91,12 +96,15 @@ public class RoomController {
 			loginRole = roleService.selectById(loginUser.getRoleId());
 			session.setAttribute(Role.SESSION_ID, loginRole);
 		}
+		Page page = new Page();
 		//根据roomId 查询room信息
 		Room room = roomService.selectById(RoomId);
-		JSONArray userArray = userService.findOnlineUser(); //用户列表
+//		JSONArray userArray = userService.findOnlineUser(); //用户列表
+		JSONArray userArray = userService.findUserLimit(page); //用户列表
 		model.put("room", room);
 		model.put("user", loginUser);
 		model.put("role", loginRole); 
+		model.put("page", page); 
 		model.put("userArray", userArray);
 		model.put("video", videoService.getVideo());
 		String foreignProductUrl = "http://115.29.249.68/";
@@ -104,6 +112,10 @@ public class RoomController {
 		model.put("userAuths", loginRole.getAuths());
 		model.put("foreignProductUrl", foreignProductUrl);
 		model.put("foreignProductEncypt", foreignProductEncypt);
+		if(loginRole.getId() == 7){
+			model.put("courseTime", CourseTimeUtils.getCourseTime(loginUser.getUid()));
+			model.put("totalCourseTime", CourseTimeUtils.initTime);
+		}
 //		model.put("eventTarget", eventTarget);
 		return "/RoomDetail.jsp";
 	}

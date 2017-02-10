@@ -25,6 +25,8 @@ import com.liuzx.mingxin.service.MsgService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
+import com.liuzx.mingxin.utils.CourseTimeUtils;
+import com.liuzx.mingxin.utils.MessageUtils;
 import com.liuzx.mingxin.utils.UUIDGenerator;
 
 @Component
@@ -56,10 +58,14 @@ public class TalkHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		super.handleTextMessage(session, message);
-		// 接收到客户端消息时调用
-		String receiveMsg = message.getPayload();
-		logger.info("收到信息 "+receiveMsg);
-		dealReceveMsg(receiveMsg, session);
+		try {
+			// 接收到客户端消息时调用
+			String receiveMsg = message.getPayload();
+			logger.info("收到信息 "+receiveMsg);
+			dealReceveMsg(receiveMsg, session);
+		} catch (Exception e) {
+			logger.error(e);;
+		}
 	}
 
 	/**
@@ -208,26 +214,31 @@ public class TalkHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		System.out.println("初始化连接  getId=" + session.getId());
-		webSocketSet.add(session);
-		addOnlineCount();
-		System.out.println("连接数量 onlineCount=" + getOnlineCount() + "  webSocketSet.size=" + webSocketSet.size());
+		try {
+			logger.info("初始化连接  getId=" + session.getId());
+			webSocketSet.add(session);
+			addOnlineCount();
+			logger.info("连接数量 onlineCount=" + getOnlineCount() + "  webSocketSet.size=" + webSocketSet.size());
+		} catch (Exception e) {
+			logger.error(e);
+		}
 	}
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		// 消息传输出错时调用
-		System.out.println("消息传输出错 " + exception.getMessage());
+		logger.error("消息传输出错 " ,exception);
 	}
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
 		// 一个客户端连接断开时关闭
-		System.out.println("连接断开 session.id=" + session.getId());
+		logger.info("连接断开 session.id=" + session.getId());
 		String sessionId = session.getId();
 		User user = sessionId2UserMap.get(sessionId);
 		Room room = sessionId2RoomMap.get(sessionId);
 		if (user != null) {
+			CourseTimeUtils.stopCalculateCourserTime(user.getUid());
 			String roomId = room.getRoomId();
 			sendUserDownline(user, roomId);
 			room.decr();
@@ -238,12 +249,12 @@ public class TalkHandler extends TextWebSocketHandler {
 		}
 		webSocketSet.remove(session);
 		subOnlineCount();
-		System.out.println("连接数量 onlineCount=" + getOnlineCount() + "  webSocketSet.size=" + webSocketSet.size());
+		logger.info("连接数量 onlineCount=" + getOnlineCount() + "  webSocketSet.size=" + webSocketSet.size());
 	}
 
 	@Override
 	public boolean supportsPartialMessages() {
-		System.out.println("supportsPartialMessages");
+		logger.info("supportsPartialMessages");
 		return false;
 	}
 
@@ -263,20 +274,41 @@ public class TalkHandler extends TextWebSocketHandler {
 	 * 通知用户上线
 	 */
 	private void sendUserOnline(User user, Room room) {
-		// 获取上线提醒信息
-		Role role = roleService.selectById(user.getRoleId());
-		String onlineMsg = msgService.dealLineMsg(user, role, METHOD_ON_LINE, room);
-		// 私聊
-		sendPublicMessage(onlineMsg);
-//		sendPirateMssage(user.getUid(), onlineMsg, "", "", room.getRoomId());
-		System.out.println("用户 " + user.getNickName() + "上线啦");
+		try {
+			Role role = roleService.selectById(user.getRoleId());
+			// 获取上线提醒信息
+			String onlineMsg = msgService.dealLineMsg(user, role, METHOD_ON_LINE, room);
+			// 私聊
+			sendPublicMessage(onlineMsg);
+			if(role.getId()==7){
+				//游客开始计时
+				CourseTimeUtils.startCalculateCourserTime(user.getUid());
+				//游客发送欢迎信息
+				User fromUser = user.getSaleMan();
+				Role fromRole = roleService.selectById(fromUser.getRoleId());
+				String welcomeMsg = msgService.dealWelcomeMsg(welcomMsg( fromUser, user), fromUser, user, METHOD_MESSAGE, fromRole);
+				sendPirateMssage(user.getUid(), welcomeMsg, "", "", room.getRoomId());
+			}
+			
+			logger.info("用户 " + user.getNickName() + "上线啦");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-
+	private Message welcomMsg(User fromUser,User toUser){
+		Message msg = new Message();
+		msg.setMessageId(MessageUtils.getMessageId());
+		msg.setToUserSNNO(toUser.getUid());
+		msg.setContent("<img src=\"http://img.baidu.com/hi/jx2/j_0051.gif\" />&nbsp;&nbsp;添加客服-"+fromUser.getNickName()+"QQ: "+fromUser.getQq()+"，免费领取听课马甲");
+		msg.setIsWhisper("1"); //是私聊
+		return msg;
+	}
 	/**
 	 * 通知用户下线
 	 */
 	private void sendUserDownline(User user, String roomId) {
 		// TODO
+		
 	}
 
 	/**

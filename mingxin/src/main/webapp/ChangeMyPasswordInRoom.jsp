@@ -11,13 +11,13 @@
 <meta name="renderer" content="webkit" />
 <meta property="qc:admins" content="64542271216301164756375" />
 <meta property="wb:webmaster" content="ee600f35c5ff2cdc" />
-<meta name='keywords' content='银蚂蚁在线喊单社区,银蚂蚁社区,银油天下,石油帝国' />
+<meta name='keywords' content='铭鑫财富在线喊单社区,铭鑫财富社区,银油天下,石油帝国' />
 <meta name='description'
-	content='银蚂蚁喊单社区是喊单直播室中的领导品牌,最有影响力直播喊单网、最受欢迎直播室,深受广大投资者信任的直播领导品牌,与投资者共赢天下,直播室实施互动24小时直播视频讲堂,直室提供图形化金十数据解读,为投资者提供一个清静的投资环境.' />
+	content='铭鑫财富喊单社区是喊单直播室中的领导品牌,最有影响力直播喊单网、最受欢迎直播室,深受广大投资者信任的直播领导品牌,与投资者共赢天下,直播室实施互动24小时直播视频讲堂,直室提供图形化金十数据解读,为投资者提供一个清静的投资环境.' />
 <link id="skin" rel="stylesheet" type="text/css" />
 <link rel="stylesheet"
 	href="${rc.getContextPath()}/css/jquery.mCustomScroll.css" />
-<title>银蚂蚁社区</title>
+<title>铭鑫财富</title>
 <link rel='shortcut icon'
 	href='${rc.getContextPath()}/images/favicon.ico?2017/1/20 12:00:07' />
 <link rel='stylesheet'

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.liuzx.mingxin.dao.Page;
 import com.liuzx.mingxin.dao.UserMapper;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.utils.MessageUtils;
@@ -22,10 +23,11 @@ public class UserService {
 	private static Log logger = LogFactory.getLog(UserService.class);
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private CacheService cacheService;
 	
-	public static int guestNum = 1200;
 	
-	public JSONArray findOnlineUser() {
+	/*public JSONArray findOnlineUser() {
 		List<HashMap<String,Object>> userList = getAllUserByOrder();
 		JSONArray array = new JSONArray();
 		for(int i=0;i<userList.size();i++){
@@ -46,7 +48,7 @@ public class UserService {
 			array.add(obj);
 		}
 		return array;
-	}
+	}*/
 	
 //	public JSONArray findOnlineUser() {
 //		List<User> userList = findOnlineUser1(); 
@@ -141,6 +143,9 @@ public class UserService {
 		if(user.getUid() == null){
 			user.setUid(UUIDGenerator.getUUID());
 		}
+		//注册用户 
+		user.setUserOrder(25);
+		user.setRoleId(6);
 		int result = userMapper.insertSelective(user);
 		logger.info(" insert result="+result);
 		return true;
@@ -161,6 +166,7 @@ public class UserService {
 		User user = null;
 		if(list != null&&list.size()>0){
 			user = list.get(0);
+			user.setSaleMan(selectSaleMan());
 		}
 		return user;
 	}
@@ -187,7 +193,7 @@ public class UserService {
 	}
 	public String checkUserNameAndIp(String userName,String registerIp){
 		Map<String,Object> map =new HashMap<String,Object>();
-		map.put("userName", userName);
+//		map.put("userName", userName);
 		//TODO 用户密码 做MD5 加密
 		map.put("registerIp", registerIp);
 		List<User> list = userMapper.selectSelective(map);
@@ -208,9 +214,20 @@ public class UserService {
 				}
 			}
 		}
+//		return returnMsg;
+		return null;
+	}
+	public String checkUserNameAndEmail(String userName,String email){
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("userName", userName);
+		map.put("email", email);
+		List<User> list = userMapper.selectSelective(map);
+		String returnMsg = null;
+		if(list == null||list.size()==0){
+			returnMsg = "用户名或邮箱输入错误！";
+		}
 		return returnMsg;
 	}
-	
 	public User checkGuestUser(String registerIp){
 		//根据ip 查询游客信息
 		Map<String,Object> map =new HashMap<String,Object>();
@@ -227,13 +244,14 @@ public class UserService {
 			user =createGuestUser( registerIp);
 			userMapper.insertSelective(user);
 		}
+		user.setSaleMan(selectSaleMan());
 		return user;
 	}
 	
 	
 	private User createGuestUser(String registerIp){
-		guestNum++;
-		int index = guestNum+MessageUtils.getRandomIndex(20, 40);
+		int index = cacheService.getGuestNum()+MessageUtils.getRandomIndex(10, 20);
+		cacheService.putGuestNum(index);
 		User user = new User();
 		user.setUid(UUIDGenerator.getUUID());
 		user.setNickName("游客 "+index);
@@ -246,10 +264,25 @@ public class UserService {
 		return user;
 	}
 	
-	public List<HashMap<String,Object>> getAllUserByOrder(){
+	/*public List<HashMap<String,Object>> getAllUserByOrder(){
 		Map<String,Object> map =new HashMap<String,Object>();
 		List<HashMap<String,Object>> list = userMapper.selectByOrder(map);
 		return list;
+	}*/
+	public JSONArray findUserByNickName(String nickName){
+		Map<String,Object> map =new HashMap<String,Object>();
+		if(nickName != null){
+			map.put("nickName",  nickName);
+		}
+		List<HashMap<String,Object>> list = userMapper.selectByOrder(map);
+		return chang2JSON(list);
+	}
+	public JSONArray findUserLimit(Page page){
+		Map<String,Object> map =new HashMap<String,Object>();
+		map.put("start", page.getStart());
+		map.put("pageSize", page.getPageSize());
+		List<HashMap<String,Object>> list = userMapper.selectByOrderLimit(map);
+		return chang2JSON(list);
 	}
 	
 	public User findUserByUserControlId(String userControlId){
@@ -257,7 +290,9 @@ public class UserService {
 		return userMapper.selectByUid(uid);
 	}
 	public User findUserByUid(String uid){
-		return userMapper.selectByUid(uid);
+		User user = userMapper.selectByUid(uid);
+		user.setSaleMan(selectSaleMan());
+		return user;
 	}
 	public int updateUser(User user){
 		return userMapper.updateByUidSelective(user);
@@ -267,6 +302,49 @@ public class UserService {
 		map.put("uid", uid);
 		map.put("isNoTalking", isNoTalking);
 		return userMapper.updateByMap(map);
+	}
+	/**
+	 *  随机一个获取助理
+	 */
+	public User selectSaleMan(){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("roleId", 3); //
+		List<User> userList =  userMapper.selectSelective(map);
+		if(userList != null && userList.size()>0){
+			int index = MessageUtils.getRandomIndex(0, userList.size());
+			return userList.get(index);
+		}
+		return null;
+	}
+	
+	public String findPassword(String userName,String email){
+		//随机生成密码 tmpPw
+		//保存到 redis  key tmp_pw_userName:tmpPw
+		//发送邮件
+		//TODO 重置数据库密码
+		return null;
+	}
+	
+	private JSONArray chang2JSON(List<HashMap<String,Object>> userList) {
+		JSONArray array = new JSONArray();
+		for(int i=0;i<userList.size();i++){
+			HashMap<String,Object> userMap = userList.get(i);
+			JSONObject obj = new JSONObject();
+			obj.put("SUserSNNO", UUIDGenerator.ouUid((String)userMap.get("uid")));
+			obj.put("NickName", (String)userMap.get("nick_name"));
+			obj.put("QQ", (String)userMap.get("qq"));
+			obj.put("IsQQ", (Integer)userMap.get("is_qq"));
+			obj.put("RoleShowOrder", (Integer)userMap.get("roleOrder"));
+			obj.put("ShowOrder", (Integer)userMap.get("user_order"));
+			obj.put("RoleIconPath", (String)userMap.get("roleImgUrl"));
+			obj.put("UserIconPath", "system/userDefault.jpg");
+			obj.put("SubscribeType", (Integer)userMap.get("is_subscribe"));
+			obj.put("RoleColor", "#ffaf60");
+			obj.put("IsHidden", 0);
+			obj.put("SubscribeTeacherExpireDate", "0001-01-01T00:00:00");
+			array.add(obj);
+		}
+		return array;
 	}
 	
 }

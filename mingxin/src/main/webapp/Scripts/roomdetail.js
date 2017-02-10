@@ -49,11 +49,9 @@ function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignP
 			toolBarStr += "'emotion',"
 		}
 		if (userAuths.substr(8, 1) == "1") {
-			toolBarStr += "'snapscreen',"
+//			toolBarStr += "'snapscreen',";
+				toolBarStr += "'simpleupload',";
 		}
-			toolBarStr += "'simpleupload',"
-			toolBarStr += "'insertimage',"
-				
 		toolBarStr += "'handwrite']]";
 		ue = UE.getEditor("editor", {
 			autoFloatEnabled: false,
@@ -738,9 +736,11 @@ function SearchOnlineUser(a) {
 	if (b == "找人") {
 		b = ""
 	}
-	if (b.length > 0) {
-		b = escape(b)
-	}
+	var currentPageIndex = parseInt($("#hfCurrentPageIndex4OnlineUser").val(), 10) + 1;
+	var pageSize = parseInt($("#hfPageSize4OnlineUser").val(), 10);
+//	if (b.length > 0) {
+//		b = escape(b)
+//	}
 	$.ajax({
 		type: "post",
 		url: basePath+"/Account/UserOnline",
@@ -761,9 +761,96 @@ function SearchOnlineUser(a) {
 					}
 				}
 			}
-			$("#divUserOnlineOuter > div").remove();
-			$("#divUserOnlineOuter > span").remove();
-			$("#divUserOnlineOuter").html(c);
+		//	$("#divUserOnlineOuter > div").remove();
+		//	$("#divUserOnlineOuter > span").remove();
+//			$("#divUserOnlineOuter").html(c);
+			//*****修改填充方式 start*****
+			//$("#dlUserList").html("");
+			$("#dlUserList").find("li").remove(); 
+			var jsonOnlineUsers = eval(c);
+			var userCount = 0;
+			$.each(jsonOnlineUsers, function(onlineUserIndex, onlineUser) {
+				userCount++;
+				var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0, onlineUser.SUserSNNO.length - 3) + '"]');
+// var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0,
+// onlineUser.SUserSNNO.length) + '"]');
+				if (userlinks.length > 0) {
+					return true
+				}
+				var roleDisplayOrders = $('span[name="spnUserRoleOrder"]');
+				var userDisplayOrders = $('span[name="spnUserOrder"]');
+				var roleShowOrder = 99;
+				var userShowOrder = 999;
+				var onlineUserHtml = "";
+				onlineUserHtml += '<li><span name="spnUserRoleOrder" style="display:none">' + onlineUser.RoleShowOrder.toString() + "</span>";
+				onlineUserHtml += '<span name="spnUserOrder" style="display:none">' + onlineUser.ShowOrder.toString() + "</span>";
+				onlineUserHtml += ' <a class="contact-name" href="javascript://" id="lnkUser_' + onlineUser.SUserSNNO + '"><span>' + onlineUser.NickName + "</span></a>";
+				onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
+				onlineUserHtml += '<img src="' + basePath+onlineUser.RoleIconPath + '" width="16" alt="" border="0" class="r_icon"/>';
+				onlineUserHtml += ' <a href="#" style="cursor:pointer" id="lnkUser_' + onlineUser.SUserSNNO + '">';
+				onlineUserHtml += "</li>";
+//				var isInserted = false;
+//				$.each(roleDisplayOrders, function(i, roleOrderCtl) {
+//					roleShowOrder = parseInt($(roleOrderCtl).html());
+//					if (onlineUser.RoleShowOrder < roleShowOrder) {
+//						$(onlineUserHtml).insertBefore($(roleOrderCtl).parent());
+//						isInserted = true;
+//						return false
+//					} else {
+//						if (onlineUser.RoleShowOrder == roleShowOrder) {
+//							userShowOrder = parseInt($(userDisplayOrders[i]).html());
+//							if (onlineUser.ShowOrder < userShowOrder) {
+//								$(onlineUserHtml).insertBefore($(roleOrderCtl).parent());
+//								isInserted = true;
+//								return false
+//							} else {
+//								if (onlineUser.ShowOrder == userShowOrder) {
+//									if (i == roleDisplayOrders.length - 1) {
+//										$(onlineUserHtml).insertAfter($(roleOrderCtl).parent());
+//										isInserted = true;
+//										return false
+//									} else {
+//										if ((onlineUser.RoleShowOrder != parseInt($(roleDisplayOrders[i + 1]).html())) || (onlineUser.ShowOrder != parseInt($(userDisplayOrders[i + 1]).html()))) {
+//											$(onlineUserHtml).insertAfter($(roleOrderCtl).parent());
+//											isInserted = true;
+//											return false
+//										}
+//									}
+//								} else {
+//									if (i == roleDisplayOrders.length - 1) {
+//										$(onlineUserHtml).insertAfter($(roleOrderCtl).parent());
+//										isInserted = true;
+//										return false
+//									} else {
+//										if ((onlineUser.RoleShowOrder != parseInt($(roleDisplayOrders[i + 1]).html()))) {
+//											$(onlineUserHtml).insertAfter($(roleOrderCtl).parent());
+//											isInserted = true;
+//											return false
+//										}
+//									}
+//								}
+//							}
+//						}
+//					}
+//				});
+				$(onlineUserHtml).appendTo($("#dlUserList"))
+//				if (false == isInserted) {
+//					if ($("#liMoreOnlineUser").length > 0) {
+//						$(onlineUserHtml).insertBefore($("#liMoreOnlineUser"))
+//					} else {
+//						$(onlineUserHtml).appendTo($("#dlUserList"))
+//					}
+//				}
+			});
+			if(userCount==0){
+				var moreHtml = '<div style="color: #f00; font-size: 14px;">无查询结果！</div>';
+				$("#dlUserList").html(moreHtml);
+			}
+			if(userCount>=pageSize){
+				var moreHtml = '<li id="liMoreOnlineUser" style="cursor: pointer;"								onclick="GetMoreOnlineUsers();return false;"><a href="javascript://"								style="margin-left: 70px; color: #f00; font-size: 14px;">&nbsp;更多...</a></li>';
+				$(moreHtml).appendTo($("#dlUserList"))
+			}
+			//*****修改填充方式 end *****
 			resize(false);
 			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));
 			$(".chat-contact-list").niceScroll({
@@ -1302,6 +1389,9 @@ function AddChatMessage() {
 			if (d == "Ok") {
 				lastSpeakToUserSNNO = $("#ddlMsgToUser").val();
 				lastInputChatMessage = c
+			}else if (d == "timeout") {
+				UserAlert("登录超时，重新登录！");
+				__doPostBack("","");
 			} else {
 				UserAlert(d);
 				ue.focus()
@@ -1568,6 +1658,18 @@ function CloseLoginInRoom() {
 	$("#iframeLoginInRoom").hide();
 	$("#divbg4Popup").hide()
 }
+function FindPasswordInRoom(a) {
+	$("#iframeFindPasswordInRoom")[0].src = basePath+"/Account/FindPassword?RegisterRoomId=" + $("#hfCurrentRoomId").val() + "&CanClose=" + a;
+	$("#divbg4Popup").show();
+	$("#iframeFindPasswordInRoom").show()
+}
+function CloseFindPasswordInRoom() {
+	$("#iframeFindPasswordInRoom")[0].src = "";
+	$("#iframeFindPasswordInRoom").hide();
+	$("#divbg4Popup").hide()
+}
+
+
 function SearchMarketTreadMessage() {
 	var d = 0;
 	if (isShowMarketTrendByCategory) {
@@ -1813,7 +1915,7 @@ function ShowRoomSchedule(a) {
 		lock: true,
 		background: "#000",
 		opacity: 0.77,
-		title: "排班表",
+		title: "课程表",
 		content: document.getElementById("DivRoomSchedule")
 	})
 }
@@ -2291,13 +2393,16 @@ function HideStartUpImage() {
 }
 function ShowNoticeGuestRegistration(a) {
 	interval4NoticeGuestRegistration = a;
-	setTimeout(ShowNoticeGuestRegistrationImage, interval4NoticeGuestRegistration * 60 * 1000)
+	setTimeout(ShowNoticeGuestRegistrationImage, interval4NoticeGuestRegistration * 60 * 1000);
 }
 function ShowNoticeGuestRegistrationImage() {
-	$("#divPop4NoticeGuestRegistration").show()
+	closeVideo();
+	$("#divPop4NoticeGuestRegistration").show();
+	$("#divbg4Popup").show();
 }
 function HideNoticeGuestRegistrationImage() {
 	$("#divPop4NoticeGuestRegistration").hide();
+	$("#divbg4Popup").hide();
 	setTimeout(ShowNoticeGuestRegistrationImage, interval4NoticeGuestRegistration * 60 * 1000)
 }
 function AutoClearChatMessage() {
@@ -2770,8 +2875,8 @@ function CloseMyPrizeList() {
 };
 function createShortcut(sName) {  
     try{
-    	var projectUrl = "http://"+hostUrl+basePath;
-    	var sUrl =projectUrl+"/index";
+    	var sUrl = "http://"+hostUrl+basePath;
+    	//var sUrl =projectUrl+"/index";
     	var name = sName+'.html';
     	 var urlObject = window.URL || window.webkitURL || window;
     	    var content = '<script language="javascript">location.href="'+sUrl+'";</script>';

@@ -28,6 +28,9 @@ public interface UserMapper {
 
 	    
 	    List<HashMap<String,Object>> selectByOrder(Map<String,Object> map);
+	    
+	    List<HashMap<String,Object>> selectByOrderLimit(Map<String,Object> map);
+	    
 
 	    
 }

@@ -20,6 +20,10 @@
 		from t_role
 		where id = #{id,jdbcType=INTEGER}
 	</select>
+	<select id="selectByUid" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT r.* from t_user u,t_role r where u.role_id=r.id and u.uid=#{uid,jdbcType=VARCHAR};
+	</select>
 	<select id="selectSelective" resultMap="BaseResultMap" parameterType="java.util.Map">
         select <include refid="Base_Column_List" /> from t_role 
         where 1=1

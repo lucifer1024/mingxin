@@ -11,7 +11,7 @@ public class User {
 	private String userName;
 	private String password;
 	private String nickName;
-	private String qq="";
+	private String qq;
 	private int userOrder; //  用户排序  默认999 
 	private int isSubscribe = 0; //是否可以订阅 0 否  1 是
 	private int isQQ = 0; // 是否qq 咨询
@@ -24,6 +24,8 @@ public class User {
 	private int isOnline; //是否在线 0 不在线 1 在线
 	private String skinId = "skin0"; // 默认皮肤id 0 
 	private int isNoTalking; //是否禁言  1 是  0 否 
+	private User saleMan;
+	private String email;
 	
 //	private int userType;//用户类型    1 游客、2 注册未激活、3 观摩用户.
 //	private String userTypeName;//用户类型    1 游客、2 注册未激活、3 观摩用户
@@ -209,5 +211,21 @@ public class User {
 //		第四位 是否封闭账号
 //		第五位  1 上麦 2 下麦
 		return isNoTalking+"0001";
+	}
+
+	public User getSaleMan() {
+		return saleMan;
+	}
+
+	public void setSaleMan(User saleMan) {
+		this.saleMan = saleMan;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

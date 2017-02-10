@@ -18,4 +18,12 @@ ADD COLUMN is_no_talking  int(1) NULL DEFAULT 0 COMMENT '是否被禁言 0 否 1
 ALTER TABLE t_role
 ADD COLUMN auths  varchar(16) NULL COMMENT '权限' AFTER note;
 
+ALTER TABLE `t_user`
+ADD INDEX `uid` (`uid`) ,
+ADD INDEX `username` (`user_name`) ;
+
+ALTER TABLE `t_user`
+ADD COLUMN `email`  varchar(100) NULL DEFAULT NULL COMMENT '邮箱' AFTER `is_no_talking`;
+
+
 

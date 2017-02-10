@@ -8,10 +8,9 @@
 
 					<div class="fl">
 						<p class="cfff">投资有风险，入市须谨慎</p>
-						<p>
+						<!-- <p>
 							<span> Copyright ©2014 上海融捷信息科技有限公司版权所有 复制必究 </span>
-							沪ICP备14034806号
-						</p>
+						</p> -->
 						<p></p>
 					</div>
 

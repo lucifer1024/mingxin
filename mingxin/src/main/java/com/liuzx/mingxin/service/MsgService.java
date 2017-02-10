@@ -100,6 +100,33 @@ public class MsgService {
 		return retunObj.toJSONString();
 	}
 
+	/**
+	 * 发送欢迎信息
+	 * 
+	 * @param msg
+	 * @param fromUser
+	 * @param methodType
+	 * @return
+	 */
+	public String dealWelcomeMsg(Message msg, User fromUser, User toUser, String methodType, Role role) {
+		JSONObject retunObj = new JSONObject();
+		String messageContent = generateAllMsg(msg, fromUser, toUser, role);
+		retunObj.put("method", methodType);
+		retunObj.put("messageContent", messageContent);
+		retunObj.put("messageId", msg.getMessageId());
+		retunObj.put("toUserSNNO", msg.getToUserSNNO());
+		retunObj.put("toUserType", role.getName());
+		retunObj.put("toUserSaleMan", fromUser.getUid()); // 销售人员
+																				
+		retunObj.put("isShield", false); // 是否遮蔽
+		retunObj.put("isWhisper", msg.getIsWhisper()); // 是否悄悄话
+		retunObj.put("fromUserSNNO", fromUser.getUid());
+		retunObj.put("fromUserType", role.getName());
+		retunObj.put("fromUserSaleMan", "");// 销售人员
+																				
+		retunObj.put("isDiffPubliAndPrivateChatAre", true); // 区分 公聊和私聊
+		return retunObj.toJSONString();
+	}
 	// /**
 	// * 私聊发给别人的样式
 	// * @param msg
@@ -257,6 +284,7 @@ public class MsgService {
 		retunObj.put("relatedSaleManSNNO", "210b60d1-00f8-4a73-97da-aa8ba374d121");
 		return retunObj.toJSONString();
 	}
+	
 
 	// private String generateMsg(Message msg, User fromUser, Role role) {
 	// StringBuffer sb = new StringBuffer();
@@ -337,7 +365,6 @@ public class MsgService {
 		sb.append("</div>");
 		sb.append("</div>");
 		return sb.toString();
-
 	}
 	// public String dealMsg(String msg) {
 	// JSONObject retunObj = new JSONObject();
