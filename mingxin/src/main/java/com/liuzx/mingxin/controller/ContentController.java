@@ -34,4 +34,9 @@ public class ContentController {
 		return "/DownloadFilePage.jsp";
 	}
 	
+	@RequestMapping("/openUserWindow")
+	String openUserWindow(ModelMap model) {
+		logger.info("info  index");
+		return "/openUser.jsp";
+	}
 }

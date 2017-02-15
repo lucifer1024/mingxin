@@ -51,4 +51,11 @@ public class UUIDGenerator {
         }  
         return val;  
     }  
+	/**
+	 * 获取用户随机临时密码 用于重置密码 有效时间 30分钟
+	 * @return
+	 */
+	public static String getTmpPw(){
+		return getStringRandom(6);
+	}
 }

@@ -1,6 +1,5 @@
 package com.liuzx.mingxin.service;
 
-import java.io.UnsupportedEncodingException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -65,7 +64,13 @@ public class CacheService {
 		return jedis.set(key, String.valueOf(value));
 
 	}
-	
+	public String setStringEx(String key, Integer seconds, String value) {
+		if (key == null || "".equals(key)) {
+			return null;
+		}
+		return jedis.setex(key, seconds, String.valueOf(value));
+
+	}
 	
 	public int getGuestNum(){
 		String key = CacheKeys.guestNumKey;
@@ -82,5 +87,8 @@ public class CacheService {
 		}
 		putInteger(key, num);
 	} 
+	public void del(String key){
+		jedis.del(key);
+	}
 
 }

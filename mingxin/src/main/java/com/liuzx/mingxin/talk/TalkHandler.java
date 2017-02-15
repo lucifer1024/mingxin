@@ -92,8 +92,11 @@ public class TalkHandler extends TextWebSocketHandler {
 				user.setUid(currentUserUid);
 				role = roleService.createGustRole();
 			} else {
-				sendUserOnline(user, room);
 				role = roleService.selectById(user.getRoleId());
+				if(role.getId()>3){
+					//非管理人员才进行提醒
+					sendUserOnline(user, room);
+				}
 			}
 			sessionId2RoomMap.put(sessionId, room);
 			sessionId2UserMap.put(sessionId, user);

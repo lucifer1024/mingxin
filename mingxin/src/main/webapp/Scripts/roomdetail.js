@@ -919,7 +919,9 @@ function GetMoreOnlineUsers() {
 				onlineUserHtml += '<li><span name="spnUserRoleOrder" style="display:none">' + onlineUser.RoleShowOrder.toString() + "</span>";
 				onlineUserHtml += '<span name="spnUserOrder" style="display:none">' + onlineUser.ShowOrder.toString() + "</span>";
 				onlineUserHtml += ' <a class="contact-name" href="javascript://" id="lnkUser_' + onlineUser.SUserSNNO + '"><span>' + onlineUser.NickName + "</span></a>";
-				onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
+				if(onlineUser.IsQQ){
+					onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
+				}
 				onlineUserHtml += '<img src="' + basePath+onlineUser.RoleIconPath + '" width="16" alt="" border="0" class="r_icon"/>';
 				onlineUserHtml += ' <a href="#" style="cursor:pointer" id="lnkUser_' + onlineUser.SUserSNNO + '">';
 				onlineUserHtml += "</li>";
@@ -1368,7 +1370,8 @@ function AddChatMessage() {
 		return
 	}
 	var a = "Method=AddChatMessage&RoomId=" + $("#hfCurrentRoomId").val();
-	a += "&Content=" + encodeURI(c);
+	a += "&Content=" + encodeURIComponent(c);
+	//a += "&Content=" + encodeURI(c);
 // a += "&Content=" + c;
 	a += "&ToUserSNNO=" + $("#ddlMsgToUser").val();
 	// a += "&ToUserName=" + $("#ddlMsgToUser option:selected").text();
@@ -2122,6 +2125,23 @@ function ShowDownloadFileWindow() {
 function CloseDownloadFileWindow() {
 	downloadFileWindow.close();
 	$("#iframeDownloadFile")[0].src = ""
+}
+var openUserWindow;
+function ShowOpenUsereWindow() {
+	 $("#iframeOpenUserDiv")[0].src =
+	 basePath+"/Content/openUserWindow";
+	 openUserWindow = art.dialog({
+		background: "#000",
+		opacity: 0.98,
+		title: "在线开户",
+		lock: true,
+		resize: false,
+		content: document.getElementById("divOpenUser")
+	})
+}
+function CloseOpenUserWindow() {
+	openUserWindow.close();
+	$("#iframeOpenUserDiv")[0].src = ""
 }
 var artDownloadFileDetailWindow;
 

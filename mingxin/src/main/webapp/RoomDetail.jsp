@@ -207,7 +207,7 @@ table td, table th {
 			</a>
 			<div class="logo">
 				<a href="javascript://"> <img id="imgRoomImage"
-					src="${rc.getContextPath()}/images/RoomLogo/100001_64c01a42-26da-4ae1-aa5d-9030ad935ee5_logoRoom.png"
+					src="${rc.getContextPath()}/images/RoomLogo/logoRoom.png"
 					style="height: 50px;" />
 					<h1>${room.name }</h1> <span id="spnTotalOnlineUserCountInRoom">${room.showLineNum }</span><span>人在线</span>
 				</a>&nbsp;&nbsp;&nbsp;&nbsp; <a class="quick-save" href="javascript://"
@@ -315,7 +315,7 @@ table td, table th {
 						<p>下载中心</p>
 				</a></li>
 				<li><a href="javascript://"
-						<!-- onclick="ViewDailyDiscuss(1,'在线开户');" -->> <i
+						onclick="ShowOpenUsereWindow();return false;"> <i
 						class="ico ico24 ico24-grid"></i>
 						<p>在线开户</p>
 				</a></li>
@@ -1342,6 +1342,11 @@ table td, table th {
 		<div id="divDownloadFile"
 			style="display: none; height: 500px; z-index: 99999999999">
 			<iframe id="iframeDownloadFile" src="" frameborder="0"
+				style="min-height: 500px; width: 800px; border: 1px #fff solid; border: 0; margin: 0;"></iframe>
+		</div>
+		<div id=divOpenUser
+			style="display: none; height: 500px; z-index: 99999999999">
+			<iframe id="iframeOpenUserDiv" src="" frameborder="0"
 				style="min-height: 500px; width: 800px; border: 1px #fff solid; border: 0; margin: 0;"></iframe>
 		</div>
 		<div id="divDownloadFileDetail" style="display: none; height: 310px;">

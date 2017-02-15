@@ -1,0 +1,12 @@
+body {
+}
+#bigtext{min-width: 1440px;}
+.text-width{width:750px;height:452px;}
+.v,.vflash{width:100%; height:452px; }
+.r{}
+.chat-box-l {margin-left: 843px;}
+
+.QuickMessageInput{width:150px;}
+.send-white-div {
+    width:85%;
+}
