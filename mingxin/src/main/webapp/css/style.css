@@ -316,7 +316,7 @@ body{min-width: 1230px; _width:expression(document.body.clientWidth > 1230 ? "12
 .price{height: 32px; line-height: 32px; margin-top: 1px; overflow: hidden;}
 .price-t{width: 70px; float: left; text-align: center; color: #ff4949;}
 .price-t .ico{vertical-align: middle;}
-.price ul li{float: left; height: 14px; line-height: 14px; margin: 9px 0px; padding: 0px 20px; border-left: solid 1px #333;}
+.price ul li{float: left; height: 14px; line-height: 14px; margin: 9px 0px; padding: 0px 10px; border-left: solid 1px #333;}
 .price ul li span{margin: 0px 5px;}
 .price ul li span:first-child{color: #aaa;}
 .price ul li .ico{vertical-align: middle;}

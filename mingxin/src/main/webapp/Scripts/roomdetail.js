@@ -23,6 +23,7 @@ var voteKind_HoldingMarketTrendVote = 2;
 var toolBarStr = "";
 var zhiniuUID = "";
 var hostUrl = "localhost:8080";
+var roleId = 7;
 function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignProductUrl1, foreignProductEncypt1, showMarketTrendByCategory) {
 	var strUrl = window.location.href;
 	var arrUrl = strUrl.split("/");
@@ -33,6 +34,7 @@ function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignP
 	GetSaleManList();
 	var videoNO = $("#hfVideoNO").val();
 	var subVideoNO = $("#hfSubVideoNO").val();
+	roleId = $("#roleId").val();
 	m_UserAuths = userAuths;
 	videoTypeInRoom = videoType;
 	productJson = productRateJSonString;
@@ -51,6 +53,13 @@ function InitialRoomDetail(userAuths, videoType, productRateJSonString, foreignP
 		if (userAuths.substr(8, 1) == "1") {
 //			toolBarStr += "'snapscreen',";
 				toolBarStr += "'simpleupload',";
+				toolBarStr += "'bold',";
+				toolBarStr += "'italic',";
+				toolBarStr += "'underline',";
+//				toolBarStr += "'fontfamily',";
+				toolBarStr += "'fontsize',";
+				toolBarStr += "'forecolor',";
+//				toolBarStr += "'backcolor',";
 		}
 		toolBarStr += "'handwrite']]";
 		ue = UE.getEditor("editor", {
@@ -769,6 +778,7 @@ function SearchOnlineUser(a) {
 			$("#dlUserList").find("li").remove(); 
 			var jsonOnlineUsers = eval(c);
 			var userCount = 0;
+			$("#dlUserList").html("");
 			$.each(jsonOnlineUsers, function(onlineUserIndex, onlineUser) {
 				userCount++;
 				var userlinks = $('[id^="lnkUser_' + onlineUser.SUserSNNO.substr(0, onlineUser.SUserSNNO.length - 3) + '"]');
@@ -785,7 +795,9 @@ function SearchOnlineUser(a) {
 				onlineUserHtml += '<li><span name="spnUserRoleOrder" style="display:none">' + onlineUser.RoleShowOrder.toString() + "</span>";
 				onlineUserHtml += '<span name="spnUserOrder" style="display:none">' + onlineUser.ShowOrder.toString() + "</span>";
 				onlineUserHtml += ' <a class="contact-name" href="javascript://" id="lnkUser_' + onlineUser.SUserSNNO + '"><span>' + onlineUser.NickName + "</span></a>";
-				onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
+				if(onlineUser.IsQQ == 1){
+					onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
+				}
 				onlineUserHtml += '<img src="' + basePath+onlineUser.RoleIconPath + '" width="16" alt="" border="0" class="r_icon"/>';
 				onlineUserHtml += ' <a href="#" style="cursor:pointer" id="lnkUser_' + onlineUser.SUserSNNO + '">';
 				onlineUserHtml += "</li>";
@@ -919,7 +931,7 @@ function GetMoreOnlineUsers() {
 				onlineUserHtml += '<li><span name="spnUserRoleOrder" style="display:none">' + onlineUser.RoleShowOrder.toString() + "</span>";
 				onlineUserHtml += '<span name="spnUserOrder" style="display:none">' + onlineUser.ShowOrder.toString() + "</span>";
 				onlineUserHtml += ' <a class="contact-name" href="javascript://" id="lnkUser_' + onlineUser.SUserSNNO + '"><span>' + onlineUser.NickName + "</span></a>";
-				if(onlineUser.IsQQ){
+				if(onlineUser.IsQQ == 1){
 					onlineUserHtml += GetHtml4QQ(onlineUser.QQ);
 				}
 				onlineUserHtml += '<img src="' + basePath+onlineUser.RoleIconPath + '" width="16" alt="" border="0" class="r_icon"/>';
@@ -981,7 +993,8 @@ function GetMoreOnlineUsers() {
 			resize(false);
 			SetRightMenu4OnlineUser($("[Id^='lnkUser_']"));
 			if ($("#liMoreOnlineUser").length > 0) {
-				if (userCount < pageSize) {
+				if (userCount < 10) {
+				//if (userCount < pageSize) {
 					$("#liMoreOnlineUser").hide()
 				}
 			}
@@ -1364,7 +1377,7 @@ function AddChatMessage() {
 		ue.focus();
 		return
 	}
-	if(checkSendConent(c)){
+	if(roleId>3&&checkSendConent(c)){
 		UserAlert("请文明发言！");
 		ue.focus();
 		return

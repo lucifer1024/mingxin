@@ -11,13 +11,13 @@
 <meta name="renderer" content="webkit" />
 <meta property="qc:admins" content="64542271216301164756375" />
 <meta property="wb:webmaster" content="ee600f35c5ff2cdc" />
-<meta name='keywords' content='铭鑫财富在线喊单社区,铭鑫财富社区,银油天下,石油帝国' />
-<meta name='description'
-	content='铭鑫财富喊单社区是喊单直播室中的领导品牌,最有影响力直播喊单网、最受欢迎直播室,深受广大投资者信任的直播领导品牌,与投资者共赢天下,直播室实施互动24小时直播视频讲堂,直室提供图形化金十数据解读,为投资者提供一个清静的投资环境.' />
 <link id="skin" rel="stylesheet" type="text/css" />
 <link rel="stylesheet"
 	href="${rc.getContextPath()}/css/jquery.mCustomScroll.css" />
-<title>铭鑫财富</title>
+<meta name="keywords" content="铭鑫财富-原油直播室,原油喊单,EIA原油直播" />
+<meta name='description'
+	content='铭鑫财富-原油直播室,原油喊单,EIA原油直播' />
+<title>原油直播室,原油喊单,EIA原油直播</title>
 <link rel='shortcut icon'
 	href='${rc.getContextPath()}/images/favicon.ico?2017/1/23 11:02:32' />
 <link rel='stylesheet'
@@ -108,7 +108,8 @@
 #Content-Left {
 	height: 400px;
 	width: 100px;
-	margin: 20px; /*设置元素跟其他元素的距离为20像素*/
+	/* margin: 20px; */ /*设置元素跟其他元素的距离为20像素*/
+	margin-top: 50px;
 	float: left; /*设置浮动，实现多列效果，div+Css布局中很重要的*/
 	/* background: #90C; */
 }
@@ -181,22 +182,22 @@
 			<div id="Content">
 				<div id="Content-Left">
 					<ul>
-						<li><a class="qq"
+						<li style="margin-top:50px;"><a class="qq"
 							href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
 							alt="点击这里给客服-小雪发消息,QQ:515898519"
 							title="点击这里给客服-小雪发消息,QQ:515898519">客服小雪</a></li>
 
-						<li><a class="qq"
+						<li style="margin-top:50px;"><a class="qq"
 							href="tencent://message/?uin=315898519&amp;site=qq&amp;menu=yes"
 							alt="点击这里给 客服-小薇发消息,QQ:315898519"
 							title="点击这里给 客服-小薇发消息,QQ:315898519"> 客服小薇</a></li>
 
-						<li><a class="qq"
+						<li style="margin-top:50px;"><a class="qq"
 							href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
 							alt="点击这里给 客服-夏夏发消息,QQ:815898519"
 							title="点击这里给 客服-夏夏发消息,QQ:815898519"> 客服夏夏</a></li>
 					</ul>
-					<a class="btn-m" href="http://kh.dlpmec.cn/SelfOpenAccount/toAssessment.action?memberNo=619" target="_blank" style="float:right;">点击开户</a>
+					<!-- <a class="btn-m" href="http://kh.dlpmec.cn/SelfOpenAccount/toAssessment.action?memberNo=619"  style="float:right;">点击开户</a> -->
 				</div>
 				<div id="Content-Main">
 					<span style="font-size: 26px;">开户流程：</span>

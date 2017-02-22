@@ -38,11 +38,13 @@ public class Room {
 	}
 	public void incr(){
 		lineNum++;
-		showLineNum += MessageUtils.getRandomIndex(50,100);
+//		showLineNum += MessageUtils.getRandomIndex(20,50);
+		showLineNum += 4;
 	}
 	public void decr(){
 		lineNum--;
-		showLineNum -= MessageUtils.getRandomIndex(20,70);
+		showLineNum -= 4;
+//		showLineNum -= MessageUtils.getRandomIndex(20,50);
 	}
 	public int getShowLineNum() {
 		return showLineNum;

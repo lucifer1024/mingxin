@@ -25,5 +25,12 @@ ADD INDEX `username` (`user_name`) ;
 ALTER TABLE `t_user`
 ADD COLUMN `email`  varchar(100) NULL DEFAULT NULL COMMENT '邮箱' AFTER `is_no_talking`;
 
-
+CREATE TABLE `t_notice` (
+`id`  int NOT NULL ,
+`content`  varchar(256) NULL ,
+`is_publish`  int NULL DEFAULT 0 COMMENT '是否发布 0 否 1 是' ,
+`create_time`  timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间' ,
+PRIMARY KEY (`id`)
+)
+;
 

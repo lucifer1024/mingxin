@@ -13,7 +13,7 @@ public class CourseTimeUtils {
 	private static Map<String, Integer> courserTime = new HashMap<String, Integer>();
 	private static Map<String, Long> calculateCourserTime = new HashMap<String, Long>();
 	private static int currentDay = -1;
-	public static int initTime = 30;
+	public static int initTime = 120;
 
 	public static int getCourseTime(String uid) {
 		Calendar c = Calendar.getInstance();

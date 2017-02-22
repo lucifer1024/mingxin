@@ -10,15 +10,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
 <meta name="renderer" content="webkit" />
-<meta property="qc:admins" content="64542271216301164756375" />
-<meta property="wb:webmaster" content="ee600f35c5ff2cdc" />
-<meta name='keywords' content='铭鑫财富在线喊单社区,铭鑫财富社区,银油天下,石油帝国' />
-<meta name='description'
-	content='铭鑫财富喊单社区是喊单直播室中的领导品牌,最有影响力直播喊单网、最受欢迎直播室,深受广大投资者信任的直播领导品牌,与投资者共赢天下,直播室实施互动24小时直播视频讲堂,直室提供图形化金十数据解读,为投资者提供一个清静的投资环境.' />
+<!-- <meta property="qc:admins" content="64542271216301164756375" />
+<meta property="wb:webmaster" content="ee600f35c5ff2cdc" /> -->
 <link id="skin" rel="stylesheet" type="text/css" />
 <link rel="stylesheet"
 	href="${rc.getContextPath()}/css/jquery.mCustomScroll.css" />
-<title>铭鑫财富社区</title>
+<meta name="keywords" content="铭鑫财富-原油直播室,原油喊单,EIA原油直播" />
+<meta name='description'
+	content='铭鑫财富-原油直播室,原油喊单,EIA原油直播' />
+<title>原油直播室,原油喊单,EIA原油直播</title>
 <link rel='shortcut icon'
 	href='${rc.getContextPath()}/images/favicon.ico?2017/1/18 10:39:10' />
 <link rel='stylesheet'
@@ -117,7 +117,7 @@
 													rules : {
 														userName : {
 															required : true,
-															minlength : 6,
+															minlength : 2,
 															maxlength : 30,
 															remote : {
 																url : basePath+'/Account/UserManager',
@@ -134,11 +134,11 @@
 															},
 														},
 														nickName : {
-															required : true,
+															required : false,
 															maxlength : 50
 														},
 														qq : {
-															required : true,
+															required : false,
 															qq : true
 														},
 														email : {
@@ -167,14 +167,14 @@
 																	.format("用户名不能多于{0}个字 符"),
 															remote : "用户名已存在"
 														},
-														nickName : {
+														/* nickName : {
 															required : '昵称不能为空',
 															maxlength : jQuery
 																	.format("昵称不能多于{0}个字 符"),
 														},
 														qq : {
 															required : 'QQ号码不能为空'
-														},
+														}, */
 														email : {
 															required : '邮箱不能为空'
 														},
@@ -267,14 +267,14 @@
 					<div class="form-in1">
 						<input name="userName"
 							type="text" maxlength="30" id="txtUserId"
-							placeholder="用户名,6-30位字符" /> <a class="red" href="javascript://">*</a>
+							placeholder="用户名,2-30位字符" /> <a class="red" href="javascript://">*</a>
 					</div>
-					<div class="form-in1">
+					<!-- <div class="form-in1">
 						<input name="nickName"
 							type="text" maxlength="50"
 							id="MainContent_RegistyInRoom_txtNickName" placeholder="昵称" /> <a
 							class="red" href="javascript://">*</a>
-					</div>
+					</div> -->
 					<div class="form-in1">
 						<input name="email"
 							type="text" id="MainContent_RegistyInRoom_txtEmail"
@@ -282,12 +282,12 @@
 							class="red" href="javascript://">*</a>
 
 					</div>
-					<div id="MainContent_RegistyInRoom_divMobile" class="form-in1">
+					<!-- <div id="MainContent_RegistyInRoom_divMobile" class="form-in1">
 
 						<input name="mobile"
 							type="text" id="MainContent_RegistyInRoom_txtMobile"
 							placeholder="手机" />
-							<!-- <a class="red" href="javascript://">*</a> -->
+							<a class="red" href="javascript://">*</a>
 
 					</div>
 					<div id="MainContent_RegistyInRoom_divQQ" class="form-in1">
@@ -295,7 +295,7 @@
 							id="MainContent_RegistyInRoom_txtQQ" placeholder="QQ" value="" />
 						<a href="javascript://" id="MainContent_RegistyInRoom_lnkStart4QQ"
 							class="red">*</a>
-					</div>
+					</div> -->
 					<div class="form-in1">
 						<input name="password"
 							type="password" id="txtPassword4Register" placeholder="密码,6-15位"

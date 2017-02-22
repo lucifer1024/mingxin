@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.liuzx.mingxin.dao.Page;
 import com.liuzx.mingxin.dao.UserMapper;
+import com.liuzx.mingxin.domain.Page;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.email.SendMail;
+import com.liuzx.mingxin.talk.TalkHandler;
 import com.liuzx.mingxin.utils.CacheKeys;
 import com.liuzx.mingxin.utils.MessageUtils;
 import com.liuzx.mingxin.utils.UUIDGenerator;
@@ -32,6 +33,8 @@ public class UserService {
 	private CacheService cacheService;
 	@Autowired
 	private SendMail sendMail;
+	@Autowired
+	private TalkHandler talkHandler;
 
 	/*
 	 * public JSONArray findOnlineUser() { List<HashMap<String,Object>> userList
@@ -176,9 +179,9 @@ public class UserService {
 				// 判断是否 重置密码
 				String tmpPw = cacheService.getString(CacheKeys.TMP_PW_KEY + userName);
 				if (tmpPw != null && password.equals(tmpPw)) {
-					//删除缓存的临时密码
+					// 删除缓存的临时密码
 					cacheService.del(CacheKeys.TMP_PW_KEY + userName);
-					// 重置密码验证成功 直接查询用户信息	
+					// 重置密码验证成功 直接查询用户信息
 					map = new HashMap<String, Object>();
 					map.put("userName", userName);
 					list = userMapper.selectSelective(map);
@@ -241,8 +244,8 @@ public class UserService {
 				}
 			}
 		}
-		// return returnMsg;
-		return null;
+		return returnMsg;
+		// return null;
 	}
 
 	public String checkUserNameAndEmail(String userName, String email) {
@@ -278,7 +281,7 @@ public class UserService {
 	}
 
 	private User createGuestUser(String registerIp) {
-		int index = cacheService.getGuestNum() + MessageUtils.getRandomIndex(10, 20);
+		int index = cacheService.getGuestNum() + 1;
 		cacheService.putGuestNum(index);
 		User user = new User();
 		user.setUid(UUIDGenerator.getUUID());
@@ -370,8 +373,16 @@ public class UserService {
 		JSONArray array = new JSONArray();
 		for (int i = 0; i < userList.size(); i++) {
 			HashMap<String, Object> userMap = userList.get(i);
+			Integer id = (Integer) userMap.get("id");
+			String uid = (String) userMap.get("uid");
+			if (id != null && id > 104) {
+				if (!talkHandler.containsUid(uid)) {
+					// 用户不在线
+					continue;
+				}
+			}
 			JSONObject obj = new JSONObject();
-			obj.put("SUserSNNO", UUIDGenerator.ouUid((String) userMap.get("uid")));
+			obj.put("SUserSNNO", UUIDGenerator.ouUid(uid));
 			obj.put("NickName", (String) userMap.get("nick_name"));
 			obj.put("QQ", (String) userMap.get("qq"));
 			obj.put("IsQQ", (Integer) userMap.get("is_qq"));

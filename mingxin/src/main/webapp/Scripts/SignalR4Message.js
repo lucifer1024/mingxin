@@ -573,9 +573,13 @@ function AddUser(c, l) {
 	var d = 0;
 	var g = $('[id^="lnkUser_' + c.SUserSNNO.substr(0, c.SUserSNNO.length - 3) + '"]');
 	if (g.length > 0) {
+		if(c.id<105){
+			$("#spnOnlineUserCount").html(parseInt($("#spnOnlineUserCount").html()) + 4);
+			$("#spnTotalOnlineUserCountInRoom").html(parseInt($("#spnOnlineUserCount").html()));
+		}
 		return
 	}
-	$("#spnOnlineUserCount").html(parseInt($("#spnOnlineUserCount").html()) + 1);
+	$("#spnOnlineUserCount").html(parseInt($("#spnOnlineUserCount").html()) + 4);
 	$("#spnTotalOnlineUserCountInRoom").html(parseInt($("#spnOnlineUserCount").html()));
 	if (c.IsHidden == 1) {
 		return
@@ -593,7 +597,9 @@ function AddUser(c, l) {
 		h += "<span id='" + k + "'></span>";
 		d = 1
 	}
-	h += GetHtml4QQ(c.QQ);
+	if(c.IsQQ == 1){
+		h += GetHtml4QQ(c.QQ);
+	}
 	h += ' <img src="' + c.RoleIconPath + '" width="16" alt="" border="0" class="r_icon"/>';
 	h += "</li>";
 	var i = false;
@@ -740,7 +746,7 @@ function RemoveUser(b) {
 	var d = $('[id^="lnkUser_ou' + b + '"]');
 	if (d.length > 0) {
 		d.parent().remove();
-		var c = parseInt($("#spnOnlineUserCount").html()) - 1;
+		var c = parseInt($("#spnOnlineUserCount").html()) - 4;
 		if (c < 0) {
 			c = 0
 		}
@@ -1003,14 +1009,22 @@ $(function () {
 			chatMessageReceived(jsonData.messageContent, jsonData.messageId, jsonData.toUserSNNO, jsonData.toUserSaleMan, isShield, jsonData.fromUserSNNO, jsonData.fromUserSaleMan, isDiffPubliAndPrivateChatAre,jsonData.isWhisper);
 		}else if(method == "online"){
 			// 用户上线
-			
+//			console.log("用户上线  ");
 			//onNewUserConnected2Mar(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
-			onNewUserConnected(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO)
+			onNewUserConnected(jsonData.enterRoomMessage, jsonData.onlineUser, jsonData.enterRoomMessageId, jsonData.relatedSaleManSNNO,jsonData.roleId);
 			onConnected (jsonData.userSNNO, jsonData.sRoomId, jsonData.chatMessages, jsonData.myChatMessages, jsonData.marketTrendMessages, jsonData.onlineUser) ;
+		}else if(method == "downline"){
+			//用户下线
+//			console.log("用户下线 "+jsonData.SUserSNNO);
+			onUserDisconnected(jsonData.SUserSNNO,jsonData.id);
 		}else if(method == "noTalking"){
 			 //禁言
 			noTalkFunc(jsonData.toUserSNNO,jsonData.noTalking);
+		}else if(method == "noticeChange"){
+			//公告变化
+			changeMarquee(jsonData.contents);
 		}
+		
 		}catch(e){
 			console.log(e.message);
 		}
@@ -1067,7 +1081,24 @@ $(function () {
 			} else {}
 		}
 	};
-	
+	onUserDisconnected = function(UserSNNO,userId) {
+		if (false == isMobile) {
+			if(userId<105){
+				var c = parseInt($("#spnOnlineUserCount").html()) - 4;
+				if (c < 0) {
+					c = 0
+				}
+				$("#spnOnlineUserCount").html(c);
+				$("#spnTotalOnlineUserCountInRoom").html(c);
+			}else{
+				RemoveUser(UserSNNO);
+			}
+			//不需要离开信息
+			/*if ((leaveRoomMsg.length > 0) && (showLeaveRoomMessage)) {
+				addSingleChatMessage4SignalR(leaveRoomMsg, leaveRoomMessageId)
+			}*/
+		}
+	};
 	onConnected = function(userSNNO, sRoomId, chatMessages, myChatMessages, marketTrendMessages, onlineUser) {
 		if ((userSNNO != currentUserSNNOInSignalR) || (sRoomId != roomIdInSignalR)) {
 			return
@@ -1102,9 +1133,10 @@ $(function () {
 	};
 	var userType_SaleMan = 2;
 	var userType_User = 1;
-	onNewUserConnected = function(enterRoomMessage, onlineUser, enterRoomMessageId, relatedSaleManSNNO) {
-		if ((enterRoomMessage.length > 0) && (showEnterRoomMessage)) {
+	onNewUserConnected = function(enterRoomMessage, onlineUser, enterRoomMessageId, relatedSaleManSNNO,roleId) {
+		if ((enterRoomMessage.length > 0) && (showEnterRoomMessage)&&roleId>3) {
 			addSingleChatMessage4SignalR(enterRoomMessage, enterRoomMessageId)
+			$("[id^='lnkUser_ch" + currentUserSNNOInSignalR + "']").find("span").html("[您]");
 		}
 		if (false == isMobile) {
 			var isClient = $("#hfIsClient").val();

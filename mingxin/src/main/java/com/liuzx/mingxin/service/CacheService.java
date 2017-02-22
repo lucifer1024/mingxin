@@ -1,9 +1,6 @@
 package com.liuzx.mingxin.service;
 
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,78 +14,164 @@ public class CacheService {
 	@Autowired
 	private JedisPool jedisPool;
 
-	public Jedis jedis;
+	/*public Jedis jedis;
 
 	@PostConstruct
 	public void init() {
 		try {
-			System.out.println("正在执行初始化的init方法");
 			jedis = jedisPool.getResource();
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (null != jedis)
 				jedis.close();
 		}
-	}
+	}*/
 
-	@PreDestroy
-	public void destroy() {
-		if (jedis != null && jedis.isConnected()) {
-			jedis.close();
-		}
-	}
-
-	public String putString(String key, String value) {
-		if (key == null || "".equals(key)) {
+	public Jedis getJedis() {
+		try {
+			return jedisPool.getResource();
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
-		return jedis.set(key, value);
 	}
+
+/*	@PreDestroy
+	public void destroy() {
+		try {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
+
+	public String putString(String key, String value) {
+		Jedis jedis = getJedis();
+		try {
+			if (key == null || "".equals(key)) {
+				return null;
+			}
+			return jedis.set(key, value);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
+		}
+	}
+
 	public String getString(String key) {
-		return jedis.get(key);
+		Jedis jedis = getJedis();
+		try {
+			return jedis.get(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
+		}
 	}
 
 	public Integer getInteger(String key) {
-		String value = jedis.get(key);
-		int num = 0;
-		if (value != null) {
-			num = Integer.parseInt(value);
+		Jedis jedis = getJedis();
+		try {
+			String value = jedis.get(key);
+			int num = 0;
+			if (value != null) {
+				num = Integer.parseInt(value);
+			}
+			return num;
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return 0;
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
 		}
-		return num;
 	}
 
 	public String putInteger(String key, Integer value) {
-		if (key == null || "".equals(key)) {
+		Jedis jedis = getJedis();
+		try {
+			if (key == null || "".equals(key)) {
+				return null;
+			}
+			return jedis.set(key, String.valueOf(value));
+		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
 		}
-		return jedis.set(key, String.valueOf(value));
 
 	}
+
 	public String setStringEx(String key, Integer seconds, String value) {
-		if (key == null || "".equals(key)) {
-			return null;
+		Jedis jedis = getJedis();
+		try {
+			if (key == null || "".equals(key)) {
+				return null;
+			}
+			return jedis.setex(key, seconds, String.valueOf(value));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return value;
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
 		}
-		return jedis.setex(key, seconds, String.valueOf(value));
 
 	}
-	
-	public int getGuestNum(){
-		String key = CacheKeys.guestNumKey;
-		Integer num = getInteger(key);
-		if(num == null || num <= 1000){
-			num = 1000;
+
+	public int getGuestNum() {
+		try {
+			String key = CacheKeys.guestNumKey;
+			Integer num = getInteger(key);
+			if (num == null || num <= 1000) {
+				num = 1000;
+			}
+			return num;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 1000;
+		} finally {
 		}
-		return num;
 	}
-	public void putGuestNum(Integer num){
-		String key = CacheKeys.guestNumKey;
-		if(num == null || num <= 1000){
-			num = 1000;
+
+	public void putGuestNum(Integer num) {
+
+		try {
+			String key = CacheKeys.guestNumKey;
+			if (num == null || num <= 1000) {
+				num = 1000;
+			}
+			putInteger(key, num);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		putInteger(key, num);
-	} 
-	public void del(String key){
-		jedis.del(key);
+	}
+
+	public void del(String key) {
+		Jedis jedis = getJedis();
+		try {
+			jedis.del(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (jedis != null && jedis.isConnected()) {
+				jedisPool.returnResource(jedis);
+			}
+		}
 	}
 
 }

@@ -1,12 +1,15 @@
 package com.liuzx.mingxin.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.liuzx.mingxin.domain.Message;
+import com.liuzx.mingxin.domain.Notice;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
@@ -267,10 +270,12 @@ public class MsgService {
 		String messageId = MessageUtils.getMessageId();
 		JSONObject retunObj = new JSONObject();
 		retunObj.put("method", methodType);
+		retunObj.put("roleId", user.getRoleId());
 		retunObj.put("sRoomId", room.getRoomId());
 		retunObj.put("enterRoomMessage", generateEnterRoomMessage(user, room, messageId,role));
 		{
 			JSONObject obj = new JSONObject();
+			obj.put("id", user.getId());
 			obj.put("SUserSNNO", UUIDGenerator.ouUid(user.getUid()));
 			obj.put("IsHidden", 0); // 是否隐藏 0 否 1 是
 			obj.put("RoleShowOrder", role.getRoleOrder());
@@ -285,7 +290,26 @@ public class MsgService {
 		return retunObj.toJSONString();
 	}
 	
-
+	public String dealDownLineMsg(String methodType,User user) {
+		JSONObject retunObj = new JSONObject();
+		retunObj.put("method", methodType);
+		retunObj.put("SUserSNNO", user.getUid());
+		retunObj.put("id", user.getId());
+		return retunObj.toJSONString();
+	}
+	public String dealNoticeChangeMsg(String methodType,List<Notice> list) {
+		JSONObject retunObj = new JSONObject();
+		retunObj.put("method", methodType);
+		JSONArray array = new JSONArray();
+		for(int i=0;list!=null&&i<list.size();i++){
+			Notice notice = list.get(i);
+			if(notice.getIsPublish() == 1){
+				array.add(notice.getContent());
+			}
+		}
+		retunObj.put("contents",array);
+		return retunObj.toJSONString();
+	}
 	// private String generateMsg(Message msg, User fromUser, Role role) {
 	// StringBuffer sb = new StringBuffer();
 	// /*

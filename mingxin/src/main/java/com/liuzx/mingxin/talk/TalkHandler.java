@@ -2,8 +2,11 @@ package com.liuzx.mingxin.talk;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,10 +21,13 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.alibaba.fastjson.JSONObject;
 import com.liuzx.mingxin.controller.AccountController;
 import com.liuzx.mingxin.domain.Message;
+import com.liuzx.mingxin.domain.Notice;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
+import com.liuzx.mingxin.service.CacheService;
 import com.liuzx.mingxin.service.MsgService;
+import com.liuzx.mingxin.service.NoticeService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
@@ -37,12 +43,24 @@ public class TalkHandler extends TextWebSocketHandler {
 	private static final String METHOD_ON_LINE = "online";
 	private static final String METHOD_DOWN_LINE = "downline";
 	private static final String METHOD_NO_TALKING = "noTalking";
+	private static final String METHOD_NOTICE_CHANGE = "noticeChange";
 	@Autowired
 	private MsgService msgService;
 	@Autowired
 	private RoomService roomService;
 	@Autowired
 	private RoleService roleService;
+	@Autowired
+	private CacheService cacheService;
+
+	@Autowired
+	private NoticeService noticeService;
+
+	@PostConstruct
+	public void init() {
+		logger.info("启动定时任务");
+		TaskManage.runTask(this, cacheService);
+	}
 
 	@Autowired
 	private UserService userService;
@@ -61,10 +79,11 @@ public class TalkHandler extends TextWebSocketHandler {
 		try {
 			// 接收到客户端消息时调用
 			String receiveMsg = message.getPayload();
-			logger.info("收到信息 "+receiveMsg);
+			logger.info("收到信息 " + receiveMsg);
 			dealReceveMsg(receiveMsg, session);
 		} catch (Exception e) {
-			logger.error(e);;
+			logger.error(e);
+			;
 		}
 	}
 
@@ -79,7 +98,7 @@ public class TalkHandler extends TextWebSocketHandler {
 
 		//
 		String currentUserUid = obj.getString("currentUserUid");
-		if(currentUserUid != null){
+		if (currentUserUid != null) {
 			String roomId = obj.getString("roomId");
 			webSocketMap.put(getKey(roomId, currentUserUid), session);
 			String sessionId = session.getId();
@@ -93,16 +112,16 @@ public class TalkHandler extends TextWebSocketHandler {
 				role = roleService.createGustRole();
 			} else {
 				role = roleService.selectById(user.getRoleId());
-				if(role.getId()>3){
-					//非管理人员才进行提醒
-					sendUserOnline(user, room);
-				}
+				// if(role.getId()>3){
+				// 非管理人员才进行提醒
+				sendUserOnline(user, room);
+				// }
 			}
 			sessionId2RoomMap.put(sessionId, room);
 			sessionId2UserMap.put(sessionId, user);
 			sessionId2RolemMap.put(user.getUid(), role);
 		}
-		
+
 	}
 
 	public void sendMessage(Message msg, User fromUser) {
@@ -178,7 +197,9 @@ public class TalkHandler extends TextWebSocketHandler {
 		TextMessage returnMessage = new TextMessage(sendMsg);
 		for (WebSocketSession item : webSocketSet) {
 			try {
-				item.sendMessage(returnMessage);
+				if (item.isOpen()) {
+					item.sendMessage(returnMessage);
+				}
 			} catch (IOException e) {
 				logger.error(e);
 			}
@@ -186,7 +207,8 @@ public class TalkHandler extends TextWebSocketHandler {
 	}
 
 	private String getKey(String roomId, String uid) {
-		return roomId + "_" + uid;
+		// return roomId + "_" + uid;
+		return uid;
 	}
 
 	/**
@@ -230,7 +252,7 @@ public class TalkHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
 		// 消息传输出错时调用
-		logger.error("消息传输出错 " ,exception);
+		logger.error("消息传输出错 ", exception);
 	}
 
 	@Override
@@ -241,6 +263,7 @@ public class TalkHandler extends TextWebSocketHandler {
 		User user = sessionId2UserMap.get(sessionId);
 		Room room = sessionId2RoomMap.get(sessionId);
 		if (user != null) {
+			logger.info("用户 " + user.getNickName() + "下线啦");
 			CourseTimeUtils.stopCalculateCourserTime(user.getUid());
 			String roomId = room.getRoomId();
 			sendUserDownline(user, roomId);
@@ -281,37 +304,42 @@ public class TalkHandler extends TextWebSocketHandler {
 			Role role = roleService.selectById(user.getRoleId());
 			// 获取上线提醒信息
 			String onlineMsg = msgService.dealLineMsg(user, role, METHOD_ON_LINE, room);
-			// 私聊
+			// 群发
 			sendPublicMessage(onlineMsg);
-			if(role.getId()==7){
-				//游客开始计时
+			if (role.getId() == 7) {
+				// 游客开始计时
 				CourseTimeUtils.startCalculateCourserTime(user.getUid());
-				//游客发送欢迎信息
+				// 游客发送欢迎信息
 				User fromUser = user.getSaleMan();
 				Role fromRole = roleService.selectById(fromUser.getRoleId());
-				String welcomeMsg = msgService.dealWelcomeMsg(welcomMsg( fromUser, user), fromUser, user, METHOD_MESSAGE, fromRole);
+				String welcomeMsg = msgService.dealWelcomeMsg(welcomMsg(fromUser, user), fromUser, user, METHOD_MESSAGE,
+						fromRole);
 				sendPirateMssage(user.getUid(), welcomeMsg, "", "", room.getRoomId());
 			}
-			
+
 			logger.info("用户 " + user.getNickName() + "上线啦");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	private Message welcomMsg(User fromUser,User toUser){
+
+	private Message welcomMsg(User fromUser, User toUser) {
 		Message msg = new Message();
 		msg.setMessageId(MessageUtils.getMessageId());
 		msg.setToUserSNNO(toUser.getUid());
-		msg.setContent("<img src=\"http://img.baidu.com/hi/jx2/j_0051.gif\" />&nbsp;&nbsp;添加客服-"+fromUser.getNickName()+"QQ: "+fromUser.getQq()+"，免费领取听课马甲");
-		msg.setIsWhisper("1"); //是私聊
+		msg.setContent("<img src=\"http://img.baidu.com/hi/jx2/j_0051.gif\" />&nbsp;&nbsp;添加客服-"
+				+ fromUser.getNickName() + "QQ: " + fromUser.getQq() + "，免费领取听课马甲");
+		msg.setIsWhisper("1"); // 是私聊
 		return msg;
 	}
+
 	/**
 	 * 通知用户下线
 	 */
 	private void sendUserDownline(User user, String roomId) {
-		// TODO
-		
+		// 群发用户下线
+		String downlineMsg = msgService.dealDownLineMsg(METHOD_DOWN_LINE, user);
+		sendPublicMessage(downlineMsg);
 	}
 
 	/**
@@ -321,11 +349,11 @@ public class TalkHandler extends TextWebSocketHandler {
 		String uid = UUIDGenerator.unChUid(msg.getUserControlId());
 		WebSocketSession session = webSocketMap.get(getKey(msg.getRoomId(), uid));
 		if (session != null) {
-			//  更新缓存用户
+			// 更新缓存用户
 			User user = sessionId2UserMap.get(session.getId());
 			user.setIsNoTalking(msg.getTrueOrFalse());
-			//  发送禁言信息
-			if(user != null){
+			// 发送禁言信息
+			if (user != null) {
 				String toMsg = msgService.dealToNoTalk(msg, user, METHOD_NO_TALKING);
 				sendPirateMssage(user.getUid(), toMsg, "", "", msg.getRoomId());
 			}
@@ -334,4 +362,14 @@ public class TalkHandler extends TextWebSocketHandler {
 		userService.noTalkUser(uid, msg.getTrueOrFalse());
 	}
 
+	public boolean containsUid(String uid) {
+		return webSocketMap.containsKey(uid);
+	}
+
+	public void noticeChange() {
+		logger.info("公告更新");
+		List<Notice> list = noticeService.selectAll();
+		String msg = msgService.dealNoticeChangeMsg(METHOD_NOTICE_CHANGE, list);
+		sendPublicMessage(msg);
+	}
 }

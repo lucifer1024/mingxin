@@ -1,4 +1,4 @@
-package com.liuzx.mingxin.dao;
+package com.liuzx.mingxin.domain;
 
 public class Page {
 	private int pageIndex = 1;

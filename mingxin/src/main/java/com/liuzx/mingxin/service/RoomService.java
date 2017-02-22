@@ -12,7 +12,7 @@ public class RoomService {
 		room.setRoomId("100001");
 		room.setName("铭鑫财富");
 		room.setLineNum(0);
-		room.setShowLineNum(1050);
+		room.setShowLineNum(1000);
 		
 	}
 	public Room selectById(String roomId){

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.liuzx.mingxin.dao.Page;
 import com.liuzx.mingxin.domain.Message;
+import com.liuzx.mingxin.domain.Page;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.service.CacheService;
@@ -200,6 +200,7 @@ public class AccountController {
 		logger.info("UserRegister action  eventTarget=" + eventTarget);
 		model.put("isClose", "0");
 		model.put("CanClose", CanClose);
+		user.setNickName(user.getUserName());
 		// 同一个IP只能注册一个账号(您的IP:60.194.65.154)
 		if ("lnkRegister".equals(eventTarget)) {
 			// 注册用户

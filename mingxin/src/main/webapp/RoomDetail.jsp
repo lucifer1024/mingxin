@@ -9,7 +9,9 @@
 <meta name="renderer" content="webkit" />
 <meta property="qc:admins" content="64542271216301164756375" />
 <meta property="wb:webmaster" content="ee600f35c5ff2cdc" />
-<title>铭鑫财富</title>
+<meta name="keywords" content="铭鑫财富-原油直播室,原油喊单,EIA原油直播" />
+<meta name='description' content='铭鑫财富-原油直播室,原油喊单,EIA原油直播' />
+<title>原油直播室,原油喊单,EIA原油直播</title>
 <script type="text/javascript">
 	var basePath = "${rc.getContextPath()}";
 </script>
@@ -20,7 +22,7 @@
 <link rel="stylesheet" type="text/css"
 	href="${rc.getContextPath()}/css/cube.min.css" />
 <link rel="stylesheet" type="text/css"
-	href="${rc.getContextPath()}/css/style.css?20161216" />
+	href="${rc.getContextPath()}/css/style.css?20170216" />
 <link rel="stylesheet" type="text/css"
 	href="${rc.getContextPath()}/skin/${user.skinId }/style.css"
 	id="skinFile">
@@ -88,18 +90,27 @@
 <script src="${rc.getContextPath()}/Scripts/jquery.signalR-2.2.0.min.js"
 	type="text/javascript"></script>
 <script type="text/javascript" src='${rc.getContextPath()}/signalr/hubs'></script>
-<script src="${rc.getContextPath()}/Scripts/SignalR4Message.js?20161216"
+<script src="${rc.getContextPath()}/Scripts/SignalR4Message.js?2017021801"
 	type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8"
 	src="${rc.getContextPath()}/Scripts/talk.js"></script>
 <script type="text/javascript" charset="utf-8"
-	src="${rc.getContextPath()}/Scripts/roomdetail.js?20170108"></script>
+	src="${rc.getContextPath()}/Scripts/roomdetail.js?2017021801"></script>
 
 <span id="spnArtDialogJs"> <script lang="ja"
 		type="text/javascript"
 		src="${rc.getContextPath()}/Scripts/artDialog/artDialog.js?skin=blue"></script>
 </span>
-
+<!-- 百度统计 -->
+<script>
+	var _hmt = _hmt || [];
+	(function() {
+		var hm = document.createElement("script");
+		hm.src = "https://hm.baidu.com/hm.js?a675bc30fd053152b91fa9ed9794a3d2";
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(hm, s);
+	})();
+</script>
 
 <script type="text/javascript"
 	src="${rc.getContextPath()}/Scripts/gssdk.js"></script>
@@ -169,6 +180,7 @@ table td, table th {
 </head>
 <body class="body-bg" id="bigtext">
 	<input type="hidden" id="uid" value="${user.uid}" />
+	<input type="hidden" id="roleId" value="${user.roleId}" />
 	<input type="hidden" id="registerIp" value="${user.registerIp}" />
 	<input type="hidden" id="saleManId" value="${user.saleManId}" />
 	<input type="hidden" id="eventTarget" value="${eventTarget}" />
@@ -176,7 +188,7 @@ table td, table th {
 	<input type="hidden" id="filterWord"
 		value="NND|骗子|托|诈骗|他妈的|你妈逼|傻逼|草|操|艹|cao|妈了个逼|MLGB|QQ|Q|qq|q|企鹅|电话|地址|地点|烂|差|坑|蒙|拐|骗|扣扣|麻痹" />
 
-	<form method="post" action="${rc.getContextPath()}/" id="mainForm" >
+	<form method="post" action="${rc.getContextPath()}/" id="mainForm">
 		<div class="aspNetHidden">
 			<input type="hidden" name="eventTarget" id="eventTarget"
 				value="${eventTarget}" /> <input type="hidden" name="eventArgument"
@@ -222,7 +234,20 @@ table td, table th {
 				<a class="qq"
 					href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
 					alt="点击这里给客服-夏夏发消息,QQ:815898519" title="点击这里给客服-夏夏发消息,QQ:815898519">客服夏夏</a>
-
+				<a class="qq"
+					href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
+					title="点击这里给老师助理1发消息,QQ:515898519">老师助理1</a> <a class="qq"
+					href="tencent://message/?uin=315898519&amp;site=qq&amp;menu=yes"
+					title="点击这里给老师助理2发消息,QQ:315898519">老师助理2</a>
+				<!-- <a class="qq"
+					href="tencent://message/?uin=515898519&amp;site=qq&amp;menu=yes"
+					 title="点击这里给老师助理1发消息,QQ:515898519">老师助理1</a>
+				<a class="qq"
+					href="tencent://message/?uin=315898519&amp;site=qq&amp;menu=yes"
+					title="点击这里给老师助理2发消息,QQ:315898519">老师助理2</a>
+				<a class="qq"
+					href="tencent://message/?uin=815898519&amp;site=qq&amp;menu=yes"
+					title="点击这里给老师助理3发消息,QQ:815898519">老师助理3</a> -->
 			</div>
 
 			<ul class="t-ul-r">
@@ -315,7 +340,7 @@ table td, table th {
 						<p>下载中心</p>
 				</a></li>
 				<li><a href="javascript://"
-						onclick="ShowOpenUsereWindow();return false;"> <i
+					onclick="ShowOpenUsereWindow();return false;"> <i
 						class="ico ico24 ico24-grid"></i>
 						<p>在线开户</p>
 				</a></li>
@@ -381,8 +406,12 @@ table td, table th {
 				<div class="tip">
 					<span id="spnOnMicrophoneUser">铭鑫财富</span>
 				</div>
+				<div id="videoTimeUser" style="display: none;" class="videoTime">
+					<div class="videoTimeTxt" style="background-color: red;">&nbsp;开户请咨询客服QQ515898519&nbsp;</div>
+				</div>
 				<div id="videoTime" style="display: none;" class="videoTime">
-					<div class="videoTimeTxt">您可以观看时长</div>
+					<div class="videoTimeTxt" style="background-color: red;">&nbsp;开户请咨询客服QQ515898519&nbsp;</div>
+					<div class="videoTimeTxt">&nbsp;&nbsp;&nbsp;&nbsp;您可以观看时长</div>
 					<div id="colockbox">
 						<!-- <span class="day">00</span> -->
 						<span class="hour">00</span><span class="minute">00</span><span
@@ -497,7 +526,7 @@ table td, table th {
 
 
 									<tbody>
-										<tr style="height: 20px;">
+										<!-- <tr style="height: 20px;">
 											<td>石油帝国-杨老师</td>
 											<td style="width: 10%;">4</td>
 											<td style="width: 14%;">100.00%</td>
@@ -544,7 +573,7 @@ table td, table th {
 											<td style="width: 14%;"></td>
 											<td style="width: 20%;"></td>
 										</tr>
-
+ -->
 
 									</tbody>
 								</table>
@@ -581,7 +610,7 @@ table td, table th {
 								style="overflow: hidden; outline: none; height: 49px;">
 								<table class="table-normal mt10" style="width: 100%;">
 									<tbody>
-										<tr style="height: 20px;">
+										<!-- 	<tr style="height: 20px;">
 											<td>石油帝国-杨老师</td>
 											<td style="width: 10%;">4</td>
 											<td style="width: 14%;">100.00%</td>
@@ -616,7 +645,7 @@ table td, table th {
 											<td style="width: 14%;"></td>
 											<td style="width: 20%;"></td>
 										</tr>
-
+ -->
 
 									</tbody>
 								</table>
@@ -864,18 +893,27 @@ table td, table th {
 						});
 
 					});
+					function searchCon() {
+						SearchOnlineUser($("#hfCurrentRoomId").val());
+					}
+					function searchAll() {
+						$("#txtSearchCondition4OnlineUser").val("");
+						SearchOnlineUser($("#hfCurrentRoomId").val());
+					}
 				</script>
-				<input type="hidden"
-					name="pageIndex"
+				<input type="hidden" name="pageIndex"
 					id="hfCurrentPageIndex4OnlineUser" value="${page.pageIndex }" /> <input
-					type="hidden" name="pageSize"
-					id="hfPageSize4OnlineUser" value="${page.pageSize }" />
+					type="hidden" name="pageSize" id="hfPageSize4OnlineUser"
+					value="${page.pageSize }" />
 
 				<div class="search1">
-				<input type="text" style="display:none" />
-					<input name="UserOnline1$txtSearchCondition4OnlineUser" type="text"
+					<input type="text" style="display: none" /> <input
+						name="UserOnline1$txtSearchCondition4OnlineUser" type="text"
 						id="txtSearchCondition4OnlineUser" placeholder="搜索联系人..." /> <i
-						class="ico ico16 ico16-search"></i>
+						class="ico ico16 ico16-search" onclick="searchCon()"></i> <img
+						onclick="searchAll()" alt="全部"
+						src="${rc.getContextPath()}/img/back-hover.png"
+						style="position: absolute; right: 10px; top: 4px;" />
 				</div>
 				<div class="tab1 chat-contact-tab mt10" id="divUserOnlineHead">
 					<ul class="tab2-change">
@@ -959,7 +997,11 @@ table td, table th {
 								</marquee> -->
 
 								<ul id="Marbox-ul">
-									<li style="display: inline">系统公告：喊单时间...</li>
+									<c:forEach var="item" items="${noticeList}" varStatus="status">
+										<c:if test="${item.isPublish==1 }">
+											<li style="display: inline">${item.content}</li>
+										</c:if>
+									</c:forEach>
 								</ul>
 							</div>
 						</div>
@@ -967,6 +1009,7 @@ table td, table th {
 
 					<script>
 						$(document).ready(BeginMarquee);
+						var myvar = null;
 						function BeginMarquee() {
 							var $iMar = $("#Marbox-i");
 							var $Marbox = $("#Marbox");
@@ -980,13 +1023,32 @@ table td, table th {
 								}
 							}
 							var speed = 50;
-							var myvar = setInterval(Marquee, speed);
+							myvar = setInterval(Marquee, speed);
 							$Marbox.mouseout(function() {
 								myvar = setInterval(Marquee, speed);
 							})
 							$Marbox.mouseover(function() {
 								clearInterval(myvar);
 							})
+						}
+						function changeMarquee(contents) {
+							if (myvar != null) {
+								clearInterval(myvar);
+							}
+							$("#Marbox").empty();
+							var html = "";
+							html += '<div class="chat-box-marquee">';
+							html += '<div class="chat-box-tip-i" id="Marbox-i">';
+							html += '<ul id="Marbox-ul">';
+							for (var i = 0; i < contents.length; i++) {
+								html += '<li style="display: inline">'
+										+ contents[i] + '</li>';
+							}
+							html += '</ul>';
+							html += '</div>';
+							html += '</div>';
+							$("#Marbox").append(html);
+							BeginMarquee();
 						}
 						/* function BeginMarquee() {
 							var $iMar = $("#Marbox-i");
@@ -1207,6 +1269,7 @@ table td, table th {
 				<i class="ico ico16 ico16-price"></i> 行情
 			</div>
 			<ul id="ulForignProduct"></ul>
+			<lable style="opacity: 0.3;">金创互动科技（深圳）有限公司</lable>
 		</div>
 		<input type="hidden" name="hfCurrentRoomId" id="hfCurrentRoomId"
 			value="${room.roomId }" /> <input type="hidden" name="hfUseSignalR"
@@ -1688,6 +1751,8 @@ table td, table th {
 				$("#videoTime").show();
 				countDown(courseTime, "#colockbox .day", "#colockbox .hour",
 						"#colockbox .minute", "#colockbox .second");
+			} else {
+				$("#videoTimeUser").show();
 			}
 			//展示提示信息
 			//SetUserExperience('6eec9256-7951-4a35-8d11-713b617dc3a7',7200);

@@ -1,6 +1,8 @@
 package com.liuzx.mingxin.controller;
 
 
+import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -14,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.liuzx.mingxin.dao.Page;
+import com.liuzx.mingxin.domain.Notice;
+import com.liuzx.mingxin.domain.Page;
 import com.liuzx.mingxin.domain.Role;
 import com.liuzx.mingxin.domain.Room;
 import com.liuzx.mingxin.domain.User;
 import com.liuzx.mingxin.service.CacheService;
+import com.liuzx.mingxin.service.NoticeService;
 import com.liuzx.mingxin.service.RoleService;
 import com.liuzx.mingxin.service.RoomService;
 import com.liuzx.mingxin.service.UserService;
@@ -40,6 +44,8 @@ public class RoomController {
 	private VideoService videoService;
 	@Autowired
 	private CacheService  cacheService;
+	@Autowired
+	private NoticeService noticeService;
 
 	@RequestMapping("/RiskRemind")
 	String RiskRemind(ModelMap model, @RequestParam String RoomId, @RequestParam(required = false) String eventTarget) {
@@ -75,46 +81,70 @@ public class RoomController {
 	
 	@RequestMapping("/RoomDetail")
 	String RoomDetail(ModelMap model,HttpSession session, HttpServletRequest request,@RequestParam(required = false) String RoomId,@RequestParam(required = false) String eventTarget) {
-		User loginUser = (User)session.getAttribute(User.SESSION_ID);
-		Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
-		cacheService.putString("eventTarget", "test");
-		if("lbSignOut".equals(eventTarget)){
-			//注销
-			logger.info("注销");
-			loginUser = null;
-			loginRole = null;
-			model.put("eventTarget", "");
+		try {
+			User loginUser = (User)session.getAttribute(User.SESSION_ID);
+			Role loginRole = (Role)session.getAttribute(Role.SESSION_ID);
+			cacheService.putString("eventTarget", "test");
+			if("lbSignOut".equals(eventTarget)){
+				//注销
+				logger.info("注销");
+				loginUser = null;
+				loginRole = null;
+				model.put("eventTarget", "");
+				
+			}
+			if(loginUser==null){
+				// 生成游客信息
+				//注册用户
+				try {
+					String registerIp = HttpRequestUtils.getRemortIP(request);
+					// 保存到session
+					loginUser = userService.checkGuestUser(registerIp);
+					session.setAttribute(User.SESSION_ID, loginUser);
+					loginRole = roleService.selectById(loginUser.getRoleId());
+					session.setAttribute(Role.SESSION_ID, loginRole);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			Page page = new Page();
+			//根据roomId 查询room信息
+			Room room;
+			try {
+				room = roomService.selectById(RoomId);
+				model.put("room", room);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				JSONArray userArray = userService.findUserLimit(page); //用户列表
+				model.put("userArray", userArray);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
-		}
-		if(loginUser==null){
-			// 生成游客信息
-			//注册用户
-			String registerIp = HttpRequestUtils.getRemortIP(request);
-			// 保存到session
-			loginUser = userService.checkGuestUser(registerIp);
-			session.setAttribute(User.SESSION_ID, loginUser);
-			loginRole = roleService.selectById(loginUser.getRoleId());
-			session.setAttribute(Role.SESSION_ID, loginRole);
-		}
-		Page page = new Page();
-		//根据roomId 查询room信息
-		Room room = roomService.selectById(RoomId);
-//		JSONArray userArray = userService.findOnlineUser(); //用户列表
-		JSONArray userArray = userService.findUserLimit(page); //用户列表
-		model.put("room", room);
-		model.put("user", loginUser);
-		model.put("role", loginRole); 
-		model.put("page", page); 
-		model.put("userArray", userArray);
-		model.put("video", videoService.getVideo());
-		String foreignProductUrl = "http://115.29.249.68/";
-		String foreignProductEncypt = "0a4df49f380e019b734099ace31c5ea4";
-		model.put("userAuths", loginRole.getAuths());
-		model.put("foreignProductUrl", foreignProductUrl);
-		model.put("foreignProductEncypt", foreignProductEncypt);
-		if(loginRole.getId() == 7){
-			model.put("courseTime", CourseTimeUtils.getCourseTime(loginUser.getUid()));
-			model.put("totalCourseTime", CourseTimeUtils.initTime);
+			try {
+				model.put("noticeList", noticeService.selectAll());
+			} catch (Exception e) {
+				e.printStackTrace();
+				model.put("noticeList", new ArrayList<Notice>());
+			}
+			model.put("user", loginUser);
+			model.put("role", loginRole); 
+			model.put("page", page); 
+			
+			model.put("video", videoService.getVideo());
+			String foreignProductUrl = "http://115.29.249.68/";
+			String foreignProductEncypt = "0a4df49f380e019b734099ace31c5ea4";
+			model.put("userAuths", loginRole.getAuths());
+			model.put("foreignProductUrl", foreignProductUrl);
+			model.put("foreignProductEncypt", foreignProductEncypt);
+			if(loginRole.getId() == 7){
+				model.put("courseTime", CourseTimeUtils.getCourseTime(loginUser.getUid()));
+				model.put("totalCourseTime", CourseTimeUtils.initTime);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 //		model.put("eventTarget", eventTarget);
 		return "/RoomDetail.jsp";

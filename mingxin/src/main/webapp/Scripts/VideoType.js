@@ -76,6 +76,7 @@ function ChangeVideoType4RoomInMobile(f, e) {
     }
 }
 function LoadYYVideo(f, c) {
+//    var b = "http://yy.com/s/" + f + "/" + c + "/finscene.swf";
     var b = "http://yy.com/s/" + f + "/" + c + "/yyscene.swf";
     var d = '   <embed src="' + b + '" quality="high" width="100%"';
     d += ' height="100%" align="middle" allowscriptaccess="never" allowfullscreen="true"';
