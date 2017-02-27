@@ -418,9 +418,14 @@ table td, table th {
 							class="second">00</span>
 					</div>
 				</div>
+				<div id="newWeChat">
+				<img src="/images/WeChat/newQRCode.jpg" style="width: 130px;position: absolute;left: 10px;bottom: 10px;z-index: 90;">
+				<a href="javascript://"
+								onclick="$('#newWeChat').hide();return false;" style="position: absolute;left: 140px;bottom: 145px;width: 14px;    height: 18px;font-size: 14px;font-weight: bold;text-decoration: none;    color: #666;z-index: 90;">x</a>
+				</div>
 				<a href="javascript://"
 					onclick="ChangeVideoType4Room('YY');return false;"
-					class="v-refresh"></a>
+					class="v-refresh" style="left: 150px;"></a>
 				<div id="VideoDiv" class="vflash"></div>
 			</div>
 			<div class="box1 mt10">
