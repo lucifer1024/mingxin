@@ -50,6 +50,42 @@ public class DownFileService {
 			file.setFilePath("/File/DownLoadFiles/"+file.getFileName());
 			list.add(file);
 		}
+		{
+			DownFile file = new DownFile();
+			file.setFileNo(UUIDGenerator.getUUID());
+			file.setFileName("兴蜀大宗交易软件.exe");
+			file.setTitle("兴蜀大宗交易软件");
+			file.setFileSize(1.44);
+			file.setFileSizeUnit("MB");
+			file.setUploadDate(new Date());
+			file.setFileDesc("兴蜀大宗交易软件");
+			file.setFilePath("/File/DownLoadFiles/"+file.getFileName());
+			list.add(file);
+		}
+		{
+			DownFile file = new DownFile();
+			file.setFileNo(UUIDGenerator.getUUID());
+			file.setFileName("兴蜀.exe");
+			file.setTitle("兴蜀");
+			file.setFileSize(3.62);
+			file.setFileSizeUnit("MB");
+			file.setUploadDate(new Date());
+			file.setFileDesc("兴蜀交易软件");
+			file.setFilePath("/File/DownLoadFiles/"+file.getFileName());
+			list.add(file);
+		}
+		{
+			DownFile file = new DownFile();
+			file.setFileNo(UUIDGenerator.getUUID());
+			file.setFileName("兴蜀大宗产品规则表.jpg");
+			file.setTitle("兴蜀大宗产品规则表");
+			file.setFileSize(1.44);
+			file.setFileSizeUnit("MB");
+			file.setUploadDate(new Date());
+			file.setFileDesc("兴蜀大宗产品规则表");
+			file.setFilePath("/File/DownLoadFiles/"+file.getFileName());
+			list.add(file);
+		}
 //		{
 //			DownFile file = new DownFile();
 //			file.setFileNo(UUIDGenerator.getUUID());

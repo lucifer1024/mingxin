@@ -107,7 +107,7 @@
 
 #Content-Left {
 	height: 400px;
-	width: 100px;
+	width: 10%;
 	/* margin: 20px; */ /*设置元素跟其他元素的距离为20像素*/
 	margin-top: 50px;
 	float: left; /*设置浮动，实现多列效果，div+Css布局中很重要的*/
@@ -116,7 +116,7 @@
 
 #Content-Main {
 	height: 400px;
-	width: 600px;
+	width: 80%;
 	margin: 20px; /*设置元素跟其他元素的距离为20像素*/
 	float: left; /*设置浮动，实现多列效果，div+Css布局中很重要的*/
 	/* background: #90C; */
@@ -201,7 +201,7 @@
 				</div>
 				<div id="Content-Main">
 					<span style="font-size: 26px;">开户流程：</span>
-					<iframe src="${rc.getContextPath()}/openUserflow.html" width="100%"
+					<iframe src="${rc.getContextPath()}/xingshu_operUserFlow.html" width="100%"
 						height="100%" scrolling="yes" />
 					<div class="Clear"></div>
 				</div>
